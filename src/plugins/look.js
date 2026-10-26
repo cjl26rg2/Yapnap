@@ -209,4 +209,73 @@
     category: 'Look',
     css: '.ctx-menu,.mini-pop{border:1px solid var(--border)!important}'
   });
+
+  // The site's name in the window title and on the page. The check is a plain text search, so only real text changes.
+  Y.add({
+    id: 'yapnap-name',
+    def: true,
+    name: 'Show Yapnap instead of Yapin’',
+    desc: 'Writes Yapnap wherever the site says Yapin’: the window title and the page. Turn it off to see the original name.',
+    category: 'Look',
+    start: function () {
+      var CHECK = /Yapin['’]/;
+      var SWAP = /Yapin(['’])/g;
+      var changed = new Map(); // text node -> the text before this plugin changed it
+      var titleBefore = null;
+      var queued = [];
+      var timer = null;
+
+      function swapText(node) {
+        var before = node.nodeValue;
+        if (!CHECK.test(before)) return;
+        if (!changed.has(node)) changed.set(node, before);
+        node.nodeValue = before.replace(SWAP, 'Yapnap');
+      }
+
+      function scan(node) {
+        if (!node) return;
+        if (node.nodeType === 3) { swapText(node); return; }
+        if (node.nodeType !== 1 || /^(SCRIPT|STYLE|TEXTAREA|INPUT)$/.test(node.tagName)) return;
+        var walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+        for (var text = walker.nextNode(); text; text = walker.nextNode()) swapText(text);
+      }
+
+      function fixTitle() {
+        var title = document.title;
+        if (!CHECK.test(title)) return;
+        if (titleBefore === null) titleBefore = title;
+        document.title = title.replace(SWAP, 'Yapnap');
+      }
+
+      function flush() {
+        timer = null;
+        var batch = queued;
+        queued = [];
+        batch.forEach(scan);
+        fixTitle();
+      }
+
+      var observer = new MutationObserver(function (records) {
+        records.forEach(function (r) {
+          if (r.type === 'characterData') queued.push(r.target);
+          else r.addedNodes.forEach(function (n) { queued.push(n); });
+        });
+        if (!timer) timer = setTimeout(flush, 50);
+      });
+      observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+      if (document.head) observer.observe(document.head, { childList: true, subtree: true, characterData: true });
+      scan(document.body);
+      fixTitle();
+
+      return function stop() {
+        observer.disconnect();
+        if (timer) clearTimeout(timer);
+        changed.forEach(function (before, node) { node.nodeValue = before; });
+        changed.clear();
+        var was = titleBefore === null ? null : /Yapin(['’])/.exec(titleBefore);
+        if (was) document.title = document.title.replace(/Yapnap/g, 'Yapin' + was[1]);
+        titleBefore = null;
+      };
+    }
+  });
 })(window.YAPNAP);

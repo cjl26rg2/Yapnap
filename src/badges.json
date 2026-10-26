@@ -1,6 +1,7 @@
 {
   "tiers": {
     "owner": { "label": "Owner", "color": "#e9b530" },
+    "co-owner": { "label": "Co-owner", "color": "#ff8c42" },
     "admin": { "label": "Admin", "color": "#d94a3f" },
     "mod": { "label": "Mod", "color": "#26a88a" },
     "contributor": { "label": "Contributor", "color": "#3b6fdb" },

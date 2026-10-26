@@ -20,16 +20,18 @@ const PLUGIN_DIR = path.join(SRC, 'plugins');
 const SETTINGS_PAGE = path.join(__dirname, 'settings', 'index.html');
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-// The owner's account ID. The owner can give admin, mod and contributor. Admins can give mod and contributor.
+// The owner's account ID. Yapnap shows this account as the owner everywhere, even offline.
 const OWNER_ID = '879e9081-5614-436d-971a-09481669a35f';
-const STAFF = ['admin', 'mod', 'contributor'];
-const COSMETIC = ['advertiser', 'partner', 'sponsor', 'supporter', 'translator', 'artist', 'designer', 'developer', 'tester', 'helper', 'veteran', 'friend'];
-const ALL_TIERS = [...STAFF, ...COSMETIC];
-// The owner can give any role. Admins can give mod, contributor and the cosmetic roles.
-const GRANTS = { owner: ALL_TIERS, admin: ['mod', 'contributor', ...COSMETIC] };
-const APP_DEFAULTS = { trayOnClose: true, notifications: true, flashOnMention: true, safeMode: false, zoom: 100, myId: '' };
+// The shared role list and the role checks live on the website. The app reads them and asks it to change them.
+const ROLES_URL = 'https://yapnap.pages.dev';
+const ROLES_EVERY = 10 * 60 * 1000;
+const APP_DEFAULTS = { trayOnClose: true, notifications: true, flashOnMention: true, safeMode: false, zoom: 100, myId: '', roleKey: '', customCss: '' };
+const CUSTOM_CSS_MAX = 20000;
+// Custom CSS may not load files, import other sheets, run script, or use angle brackets or backslashes.
+const BAD_CSS = /url\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-binding|[<>\\]/i;
 const DEFAULT_TIERS = {
   owner: { label: 'Owner', color: '#e9b530' },
+  'co-owner': { label: 'Co-owner', color: '#ff8c42' },
   admin: { label: 'Admin', color: '#d94a3f' },
   mod: { label: 'Mod', color: '#26a88a' },
   contributor: { label: 'Contributor', color: '#3b6fdb' },
@@ -62,10 +64,13 @@ let quitting = false;
 
 let prefs = { plugins: {}, app: { ...APP_DEFAULTS } };
 let badges = { tiers: {}, users: {} };
+// What the website says this app's role key may do: 'owner', 'admin', or null when no key is saved or accepted.
+let roleLevel = null;
+let grantable = [];
 let pageBundle = '';
 
 const prefsFile = () => path.join(app.getPath('userData'), 'yapnap-settings.json');
-const badgesFile = () => path.join(app.getPath('userData'), 'badges.json');
+const rolesCacheFile = () => path.join(app.getPath('userData'), 'roles-cache.json');
 
 /** Keeps only well-formed saved settings. The page checks each value again against its plugin's rules. */
 function cleanPrefs(raw) {
@@ -93,6 +98,8 @@ function cleanApp(raw) {
   for (const k of ['trayOnClose', 'notifications', 'flashOnMention', 'safeMode']) if (typeof raw[k] === 'boolean') out[k] = raw[k];
   if (typeof raw.zoom === 'number' && isFinite(raw.zoom)) out.zoom = Math.min(150, Math.max(75, Math.round(raw.zoom)));
   if (typeof raw.myId === 'string' && (raw.myId === '' || /^[A-Za-z0-9-]{8,64}$/.test(raw.myId))) out.myId = raw.myId;
+  if (typeof raw.roleKey === 'string' && raw.roleKey.length <= 200) out.roleKey = raw.roleKey.trim();
+  if (typeof raw.customCss === 'string' && raw.customCss.length <= CUSTOM_CSS_MAX && !BAD_CSS.test(raw.customCss)) out.customCss = raw.customCss;
   return out;
 }
 
@@ -132,35 +139,44 @@ function cleanBadges(raw) {
   return { tiers, users };
 }
 
-/** The role of an account ID: owner, admin, mod, contributor, or null. */
-function roleOf(id) {
-  if (!id) return null;
-  if (id === OWNER_ID) return 'owner';
-  const u = badges.users[id];
-  return u ? u.tier : null;
+function readJson(file) {
+  try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return null; }
 }
 
-function canGrant(actor, tier) {
-  return (GRANTS[actor] || []).includes(tier);
-}
-
-/** Writes the role list to the data folder. The bundled badges.json is never changed. */
-function saveBadges() {
-  try {
-    fs.mkdirSync(app.getPath('userData'), { recursive: true });
-    const tmp = `${badgesFile()}.tmp`;
-    fs.writeFileSync(tmp, JSON.stringify({ tiers: badges.tiers, users: badges.users }, null, 2));
-    fs.renameSync(tmp, badgesFile());
-  } catch (e) { console.error('Could not save roles:', e.message); }
-}
-
-/** A badges.json in the data folder wins over the one shipped inside the app. */
+/** The role list: the copy from the last check with the website, else the one shipped with the app. */
 function loadBadges() {
-  const file = fs.existsSync(badgesFile()) ? badgesFile() : path.join(SRC, 'badges.json');
-  try { return cleanBadges(JSON.parse(fs.readFileSync(file, 'utf8'))); } catch (e) {
-    console.error('Could not read badges:', e.message);
-    return { tiers: {}, users: {} };
-  }
+  const bundled = readJson(path.join(SRC, 'badges.json')) || {};
+  const cached = readJson(rolesCacheFile());
+  return cleanBadges({ tiers: bundled.tiers, users: cached && cached.users ? cached.users : bundled.users });
+}
+
+/** Asks the website what the saved role key may do. A network failure keeps the last answer. */
+async function refreshMe() {
+  const key = prefs.app.roleKey;
+  if (!key) { roleLevel = null; grantable = []; return; }
+  try {
+    const res = await fetch(`${ROLES_URL}/api/roles/me`, { headers: { authorization: `Bearer ${key}` } });
+    if (res.status === 401) { roleLevel = null; grantable = []; return; }
+    const data = res.ok ? await res.json() : null;
+    if (!data || typeof data.role !== 'string') return;
+    roleLevel = data.role;
+    grantable = Array.isArray(data.grantable) ? data.grantable.filter((t) => typeof t === 'string').slice(0, 30) : [];
+  } catch (e) { console.error('Could not check the role key:', e.message); }
+}
+
+/** Gets the shared role list. Keeps the last good copy when offline. */
+async function refreshRoles() {
+  try {
+    const res = await fetch(`${ROLES_URL}/api/roles`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data || typeof data.users !== 'object' || data.users === null) throw new Error('unexpected list');
+    fs.mkdirSync(app.getPath('userData'), { recursive: true });
+    fs.writeFileSync(rolesCacheFile(), JSON.stringify({ users: data.users, updated: data.updated || null }));
+    badges = loadBadges();
+    for (const w of BrowserWindow.getAllWindows()) applyToPage(w.webContents);
+  } catch (e) { console.error('Could not update roles:', e.message); }
+  await refreshMe();
 }
 
 /** Registry, every plugin file, then the runtime, as one script for the page. */
@@ -195,7 +211,7 @@ function appInfo() {
 
 function applyToPage(wc) {
   if (!wc || wc.isDestroyed() || !pageBundle || !ALLOWED.has(hostOf(wc.getURL()))) return;
-  const state = JSON.stringify({ plugins: prefs.plugins, badges, safe: prefs.app.safeMode === true });
+  const state = JSON.stringify({ plugins: prefs.plugins, badges, safe: prefs.app.safeMode === true, custom: prefs.app.customCss || '' });
   wc.executeJavaScript(`${pageBundle}\n;window.__yapnap && window.__yapnap.apply(${state});`, true).catch(() => undefined);
 }
 
@@ -553,7 +569,17 @@ app.whenReady().then(() => {
   // Settings window.
   ipcMain.handle('mod:state', (e) => {
     if (!fromTrusted(e)) return null;
-    return { version: APP_VERSION, badges, plugins: prefs.plugins, app: prefs.app, info: appInfo() };
+    // The role key itself never goes to the page. The page only learns whether one is saved.
+    const { roleKey, ...appSettings } = prefs.app;
+    return {
+      version: APP_VERSION,
+      badges,
+      plugins: prefs.plugins,
+      app: { ...appSettings, hasRoleKey: Boolean(roleKey) },
+      roleLevel,
+      grantable,
+      info: appInfo(),
+    };
   });
   ipcMain.handle('mod:set-plugin', (e, id, on) => {
     if (!fromTrusted(e) || typeof id !== 'string' || !ID.test(id) || typeof on !== 'boolean') return false;
@@ -575,7 +601,7 @@ app.whenReady().then(() => {
     persist();
     return true;
   });
-  ipcMain.handle('mod:set-app', (e, key, value) => {
+  ipcMain.handle('mod:set-app', async (e, key, value) => {
     if (!fromTrusted(e) || typeof key !== 'string') return false;
     if (key === 'zoom') {
       if (typeof value !== 'number' || !isFinite(value)) return false;
@@ -584,6 +610,15 @@ app.whenReady().then(() => {
     } else if (key === 'myId') {
       if (typeof value !== 'string' || (value !== '' && !/^[A-Za-z0-9-]{8,64}$/.test(value))) return false;
       prefs.app.myId = value;
+    } else if (key === 'customCss') {
+      if (typeof value !== 'string' || value.length > CUSTOM_CSS_MAX || BAD_CSS.test(value)) return false;
+      prefs.app.customCss = value;
+    } else if (key === 'roleKey') {
+      if (typeof value !== 'string' || value.length > 200) return false;
+      prefs.app.roleKey = value.trim();
+      persist();
+      await refreshMe();
+      return true;
     } else if (['trayOnClose', 'notifications', 'flashOnMention', 'safeMode'].includes(key)) {
       if (typeof value !== 'boolean') return false;
       prefs.app[key] = value;
@@ -593,19 +628,26 @@ app.whenReady().then(() => {
     persist();
     return true;
   });
-  ipcMain.handle('mod:grant', (e, userId, tier) => {
+  // The website checks who may give what. The app only sends the request with the saved role key.
+  ipcMain.handle('mod:grant', async (e, userId, tier) => {
     if (!fromTrusted(e)) return { ok: false, reason: 'Not allowed here.' };
     if (typeof userId !== 'string' || !/^[A-Za-z0-9-]{8,64}$/.test(userId)) return { ok: false, reason: 'That does not look like a user ID.' };
-    if (userId === OWNER_ID) return { ok: false, reason: 'The owner role cannot be changed here.' };
-    if (tier !== null && !ALL_TIERS.includes(tier)) return { ok: false, reason: 'Unknown role.' };
-    const actor = roleOf(prefs.app.myId || '');
-    const current = badges.users[userId] ? badges.users[userId].tier : null;
-    if (tier && !canGrant(actor, tier)) return { ok: false, reason: 'Your role cannot give that one.' };
-    if (!tier && (!current || !canGrant(actor, current))) return { ok: false, reason: 'Your role cannot remove that one.' };
-    if (tier) badges.users[userId] = { tier, note: '' };
-    else delete badges.users[userId];
-    saveBadges();
-    persist();
+    if (tier !== null && typeof tier !== 'string') return { ok: false, reason: 'Unknown role.' };
+    const key = prefs.app.roleKey;
+    if (!key) return { ok: false, reason: 'Paste your role key in the Roles section first.' };
+    let res;
+    try {
+      res = await fetch(`${ROLES_URL}/api/roles/grant`, {
+        method: 'POST',
+        headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
+        body: JSON.stringify({ userId, tier }),
+      });
+    } catch { return { ok: false, reason: 'Could not reach the role server. Check your connection.' }; }
+    let data = null;
+    try { data = await res.json(); } catch { /* the answer was not JSON */ }
+    if (!data || typeof data.ok !== 'boolean') return { ok: false, reason: 'The role server gave an unexpected answer.' };
+    if (!data.ok) return { ok: false, reason: String(data.reason || 'Could not change that role.').slice(0, 200) };
+    await refreshRoles();
     return { ok: true };
   });
   ipcMain.handle('mod:open-data', (e) => {
@@ -619,6 +661,10 @@ app.whenReady().then(() => {
   ipcMain.handle('yapper:update-install', () => false);
 
   updater.start();
+
+  // The shared role list: read now, then every 10 minutes, so role changes reach everyone without an update.
+  void refreshRoles();
+  setInterval(() => { void refreshRoles(); }, ROLES_EVERY);
 });
 
 // "Playing X": every 20 s look at the running programs for a known game (games.js) and tell the page.

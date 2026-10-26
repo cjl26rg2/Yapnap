@@ -64,6 +64,9 @@
     // Anything still running that is no longer enabled (or no longer registered) is stopped.
     Array.from(running.keys()).forEach(function (id) { if (!active.has(id)) stopPlugin(id); });
 
+    // The person's own CSS comes last, so it wins. Safe mode leaves it out, like every plugin.
+    if (!safe && typeof state.custom === 'string' && state.custom) css.push(state.custom);
+
     styleEl().textContent = css.join('\n');
     return { active: active.size, css: css.length };
   }

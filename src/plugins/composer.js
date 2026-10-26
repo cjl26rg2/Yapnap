@@ -70,8 +70,10 @@
   Y.add({
     id: 'tight-composer',
     name: 'Tight composer padding',
-    desc: 'Less padding inside the composer bar.',
+    desc: 'Less padding inside the composer bar. The typing line and the last message keep their own space above it.',
     category: 'Composer',
-    css: '.composer{padding-top:4px!important;padding-bottom:4px!important}'
+    css: '.composer{padding-top:4px!important;padding-bottom:4px!important}' +
+      '.typing-line{padding-top:8px!important;padding-bottom:6px!important}' +
+      '.messages-inner{padding-bottom:16px!important}'
   });
 })(window.YAPNAP);

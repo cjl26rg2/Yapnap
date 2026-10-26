@@ -12,7 +12,8 @@
     "site:build": "node site/tools/build-plugins.js && node site/tools/build-pages.js && node site/tools/check-links.js && node site/tools/test-validator.js && node site/tools/test-worker.js",
     "test:live": "node tests/live-plugins.js",
     "test": "npm run check && npm run site:build",
-    "dist:linux": "electron-builder --linux AppImage --publish never"
+    "dist:linux": "electron-builder --linux AppImage --publish never",
+    "browser:build": "node browser/build.js"
   },
   "build": {
     "appId": "dev.yapnap.desktop",

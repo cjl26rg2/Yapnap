@@ -119,9 +119,10 @@
     { id: 'theme-forest', name: 'Forest', sw: ['#161c18', '#121813', '#1f2822', '#e2ebe4'] }
   ];
   var PUBLISH_URL = 'https://yapnap.pages.dev/publish/';
-  var TIER_ORDER = ['owner', 'admin', 'mod', 'contributor', 'advertiser', 'partner', 'sponsor', 'supporter', 'translator', 'artist', 'designer', 'developer', 'tester', 'helper', 'veteran', 'friend'];
-  var TIER_LABEL = { owner: 'Owner', admin: 'Admin', mod: 'Mod', contributor: 'Contributor', advertiser: 'Advertiser', partner: 'Partner', sponsor: 'Sponsor', supporter: 'Supporter', translator: 'Translator', artist: 'Artist', designer: 'Designer', developer: 'Developer', tester: 'Tester', helper: 'Helper', veteran: 'Veteran', friend: 'Friend' };
+  var TIER_ORDER = ['owner', 'co-owner', 'admin', 'mod', 'contributor', 'advertiser', 'partner', 'sponsor', 'supporter', 'translator', 'artist', 'designer', 'developer', 'tester', 'helper', 'veteran', 'friend'];
+  var TIER_LABEL = { owner: 'Owner', 'co-owner': 'Co-owner', admin: 'Admin', mod: 'Mod', contributor: 'Contributor', advertiser: 'Advertiser', partner: 'Partner', sponsor: 'Sponsor', supporter: 'Supporter', translator: 'Translator', artist: 'Artist', designer: 'Designer', developer: 'Developer', tester: 'Tester', helper: 'Helper', veteran: 'Veteran', friend: 'Friend' };
   var OWNER_ID = '879e9081-5614-436d-971a-09481669a35f';
+  var BAD_CSS = /url\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-binding|[<>\\]/i;
   var CHANGES = [
     'Settings live inside Yapin’s own settings now.',
     'Roles: owner, admins, mods and contributors.',
@@ -249,9 +250,11 @@
         if (!copyNote.parentNode) row.parentNode.insertBefore(copyNote, row.nextSibling);
       });
       row.appendChild(copy);
-      var folder = button('Data folder', '', 'ui-folder');
-      folder.addEventListener('click', function () { Promise.resolve(bridge.openDataFolder()).catch(logErr); });
-      row.appendChild(folder);
+      if (!(state.info && state.info.browser)) {
+        var folder = button('Data folder', '', 'ui-folder');
+        folder.addEventListener('click', function () { Promise.resolve(bridge.openDataFolder()).catch(logErr); });
+        row.appendChild(folder);
+      }
       var safe = button(state.app.safeMode ? 'Safe mode is on' : 'Safe mode', state.app.safeMode ? 'on warn' : '', 'ui-warning');
       safe.addEventListener('click', function () {
         var next = !state.app.safeMode;
@@ -285,7 +288,10 @@
         ['Plugin API', '1'],
         ['Plugins', String(Y.list().length)]
       ]));
-      grid.appendChild(box('Environment', [
+      grid.appendChild(box('Environment', info.browser ? [
+        ['Running in', 'Browser extension'],
+        ['System', info.platform || 'Unknown']
+      ] : [
         ['Running in', info.packaged ? 'Desktop app' : 'Development'],
         ['Electron', info.electron || 'n/a'],
         ['Chromium', info.chrome || 'n/a'],
@@ -349,9 +355,11 @@
       fresh('Settings', 'Changes apply straight away.');
       view.appendChild(el('div', 'ym-label', 'General'));
       var card = el('div', 'ym-card');
-      card.appendChild(setRow('Keep running in the tray when closed', 'Closing the window hides Yapnap. Calls and mentions keep working.', appToggle('trayOnClose'), 'ui-tray'));
-      card.appendChild(setRow('Desktop notifications', 'Show a system notification for new messages while the window is in the background.', appToggle('notifications'), 'ui-bell'));
-      card.appendChild(setRow('Flash the taskbar on mentions', 'The taskbar button flashes when someone mentions you.', appToggle('flashOnMention'), 'ui-flash'));
+      if (!(state.info && state.info.browser)) {
+        card.appendChild(setRow('Keep running in the tray when closed', 'Closing the window hides Yapnap. Calls and mentions keep working.', appToggle('trayOnClose'), 'ui-tray'));
+        card.appendChild(setRow('Desktop notifications', 'Show a system notification for new messages while the window is in the background.', appToggle('notifications'), 'ui-bell'));
+        card.appendChild(setRow('Flash the taskbar on mentions', 'The taskbar button flashes when someone mentions you.', appToggle('flashOnMention'), 'ui-flash'));
+      }
       var zWrap = el('span', 'ym-set-ctl');
       var zOut = el('output', 'ym-val', (state.app.zoom || 100) + '%');
       var zoom = el('input', 'ym-slider');
@@ -370,36 +378,107 @@
       zWrap.appendChild(zOut);
       card.appendChild(setRow('Chat zoom', '100% is the normal size.', zWrap, 'ui-zoom'));
       var detected = !!state.app.myId;
-      card.appendChild(setRow('Your account', detected ? 'Found automatically from your profile. Roles follow this account.' : 'Waiting for your profile to load. It is found automatically.', el('span', 'ym-val', detected ? 'Detected' : 'Waiting'), 'ui-id'));
+      card.appendChild(setRow('Your account', detected ? 'Found automatically from your profile.' : 'Waiting for your profile to load. It is found automatically.', el('span', 'ym-val', detected ? 'Detected' : 'Waiting'), 'ui-id'));
       view.appendChild(card);
 
       view.appendChild(el('div', 'ym-label', 'Roles'));
       view.appendChild(rolesBlock());
+      view.appendChild(el('div', 'ym-label', 'Custom CSS'));
+      view.appendChild(customCssBlock());
     }
 
+    // The role the website gives this app's role key: 'owner', 'admin', or null.
     function myRole() {
-      var me = state.app.myId || '';
-      if (!me) return null;
-      if (me === OWNER_ID) return 'owner';
-      var u = state.badges.users && state.badges.users[me];
-      return u ? u.tier : 'member';
+      return state.roleLevel || null;
     }
-    function grantable(role) {
-      if (role === 'owner') return ['admin', 'mod', 'contributor'];
-      if (role === 'admin') return ['mod', 'contributor'];
-      return [];
+    // What this role key may give, as the website says. The website makes the rules, so the list always agrees with it.
+    function grantable() {
+      return state.grantable || [];
     }
+    // Your own CSS, added after every plugin so it wins. The same rules as the desktop app check it before it saves.
+    function customCssBlock() {
+      var box5 = el('div', 'ym-card');
+      box5.appendChild(el('p', 'ym-note', 'Your own CSS, added after every plugin so it wins. Links to files, @import, script URLs, angle brackets and backslashes are not allowed.'));
+      var area = el('textarea', 'ym-text-in');
+      area.value = state.app.customCss || '';
+      area.rows = 10;
+      area.spellcheck = false;
+      area.placeholder = '.messages-inner { max-width: 900px; }';
+      area.setAttribute('aria-label', 'Custom CSS');
+      area.style.width = '100%';
+      area.style.fontFamily = 'ui-monospace, Menlo, Consolas, monospace';
+      box5.appendChild(area);
+      var row5 = el('div', 'ym-set-ctl');
+      row5.style.padding = '10px 0';
+      var slot5 = el('div');
+      var save = button('Save CSS', 'primary', 'ui-plus');
+      save.addEventListener('click', function () {
+        slot5.textContent = '';
+        var text = area.value;
+        if (text.length > 20000) { slot5.appendChild(status(false, 'That is too long. The limit is 20,000 characters.')); return; }
+        if (BAD_CSS.test(text)) { slot5.appendChild(status(false, 'That CSS uses something Yapnap does not allow: links to files, @import, script URLs, angle brackets or backslashes.')); return; }
+        Promise.resolve(bridge.setApp('customCss', text)).then(function (ok) {
+          if (ok === false) { slot5.appendChild(status(false, 'Could not save that CSS.')); return null; }
+          slot5.appendChild(status(true, 'Saved. It applies straight away.'));
+          return refresh();
+        }).catch(logErr);
+      });
+      var clear = button('Clear', 'warn', 'ui-user-remove');
+      clear.addEventListener('click', function () {
+        area.value = '';
+        Promise.resolve(bridge.setApp('customCss', '')).then(refresh).catch(logErr);
+      });
+      row5.appendChild(save);
+      row5.appendChild(clear);
+      box5.appendChild(row5);
+      box5.appendChild(slot5);
+      return box5;
+    }
+
     function rolesBlock() {
       var box2 = el('div', 'ym-card');
       var actor = myRole();
-      var can = grantable(actor);
+      var can = grantable();
       var seen = root.__yapnapSeen || {};
       var users = state.badges.users || {};
-      var who = !actor ? 'Roles are given by the owner and admins. Yapnap finds your account automatically.'
+      var who = !actor ? 'Roles are shared with everyone. Paste your role key below to give or remove them.'
         : actor === 'owner' ? 'You are the owner. Choose a person to give them a role.'
+        : actor === 'co-owner' ? 'You are a co-owner. You can give admin, mod, contributor and the cosmetic roles.'
         : actor === 'admin' ? 'You are an admin. You can give mod, contributor and the cosmetic roles.'
         : 'Only the owner and admins can change roles.';
       box2.appendChild(el('p', 'ym-note', who));
+
+      // The role key: the owner's key is the owner's ADMIN_TOKEN, and an admin's key comes from the owner. It is
+      // saved only on this computer, and the page never shows it again.
+      var keyStatus = !state.app.hasRoleKey ? 'No role key saved yet.'
+        : actor ? 'Your role key is accepted.'
+        : 'This role key was not accepted. Check it, or ask the owner for a new one.';
+      box2.appendChild(el('p', 'ym-set-desc', keyStatus));
+      var keyIn = el('input', 'ym-text-in');
+      keyIn.type = 'password';
+      keyIn.placeholder = 'Paste your role key';
+      keyIn.setAttribute('aria-label', 'Role key');
+      keyIn.style.width = '240px';
+      var keySave = button('Save key', 'primary', 'ui-plus');
+      keySave.addEventListener('click', function () {
+        Promise.resolve(bridge.setApp('roleKey', keyIn.value.trim())).then(function () {
+          keyIn.value = '';
+          return refresh();
+        }).catch(logErr);
+      });
+      var keyBox = el('div', 'ym-set-ctl');
+      keyBox.style.flexWrap = 'wrap';
+      keyBox.style.padding = '8px 0 12px';
+      keyBox.appendChild(keyIn);
+      keyBox.appendChild(keySave);
+      if (state.app.hasRoleKey) {
+        var keyClear = button('Remove key', 'warn', 'ui-user-remove');
+        keyClear.addEventListener('click', function () {
+          Promise.resolve(bridge.setApp('roleKey', '')).then(refresh).catch(logErr);
+        });
+        keyBox.appendChild(keyClear);
+      }
+      box2.appendChild(keyBox);
 
       // How many people hold each role. Nobody sees account IDs here.
       var tally = {};
