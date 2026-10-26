@@ -125,7 +125,9 @@
   var BAD_CSS = /url\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-binding|[<>\\]/i;
   var CHANGES = [
     'Settings live inside Yapin’s own settings now.',
-    'Roles: owner, admins, mods and contributors.',
+    'Roles are shared: owner, co-owner, admins, mods and contributors.',
+    'Custom CSS, and Yapnap shows its own name.',
+    'Updates install themselves, or tell you when one is out.',
     'Themes, a safe mode, and a debug copy for reports.'
   ];
 

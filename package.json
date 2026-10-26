@@ -1,7 +1,7 @@
 {
   "name": "yapnap",
   "productName": "Yapnap",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Unofficial desktop app for Yapin' with plugins, settings and contributor badges",
   "main": "main.js",
   "private": true,

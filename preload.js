@@ -4,7 +4,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 // Only the mod's own settings. Main checks the sender before it acts on any of these calls.
 contextBridge.exposeInMainWorld('yapnap', {
-  version: '0.1.0',
+  version: '0.2.0',
   state: () => ipcRenderer.invoke('mod:state'),
   setPlugin: (id, on) => ipcRenderer.invoke('mod:set-plugin', String(id), on === true),
   setSetting: (id, key, value) => ipcRenderer.invoke('mod:set-setting', String(id), String(key), value),
@@ -15,7 +15,7 @@ contextBridge.exposeInMainWorld('yapnap', {
 });
 
 contextBridge.exposeInMainWorld('yapperDesktop', {
-  version: '0.1.0',
+  version: '0.2.0',
   platform: process.platform,
   /** Unread count for the taskbar/dock. */
   setBadge: (count) => ipcRenderer.send('yapper:badge', Number(count) || 0),

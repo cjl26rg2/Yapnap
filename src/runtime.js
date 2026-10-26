@@ -71,5 +71,5 @@
     return { active: active.size, css: css.length };
   }
 
-  window.__yapnap = { apply: apply, version: '0.1.0' };
+  window.__yapnap = { apply: apply, version: '0.2.0' };
 })();
