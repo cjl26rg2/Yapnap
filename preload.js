@@ -29,7 +29,7 @@ contextBridge.exposeInMainWorld('yapperDesktop', {
   screenSources: () => ipcRenderer.invoke('yapper:screen-sources'),
   /** Remember what to share; the next getDisplayMedia (within 30 s) uses it instead of the whole screen. */
   pickScreenSource: (id) => ipcRenderer.invoke('yapper:screen-pick', String(id ?? '')),
-  /** This build does not update itself, so no update is ever offered to the page. */
+  /** The site's own update bar is never used: Yapnap updates itself from its GitHub releases (updater.js). */
   onUpdateReady: () => undefined,
   installUpdate: () => ipcRenderer.invoke('yapper:update-install'),
 });

@@ -118,6 +118,7 @@
     { id: 'theme-frost-light', name: 'Frost light', sw: ['#f4f6f9', '#eaedf2', '#ffffff', '#161922'] },
     { id: 'theme-forest', name: 'Forest', sw: ['#161c18', '#121813', '#1f2822', '#e2ebe4'] }
   ];
+  var PUBLISH_URL = 'https://yapnap.pages.dev/publish/';
   var TIER_ORDER = ['owner', 'admin', 'mod', 'contributor', 'advertiser', 'partner', 'sponsor', 'supporter', 'translator', 'artist', 'designer', 'developer', 'tester', 'helper', 'veteran', 'friend'];
   var TIER_LABEL = { owner: 'Owner', admin: 'Admin', mod: 'Mod', contributor: 'Contributor', advertiser: 'Advertiser', partner: 'Partner', sponsor: 'Sponsor', supporter: 'Supporter', translator: 'Translator', artist: 'Artist', designer: 'Designer', developer: 'Developer', tester: 'Tester', helper: 'Helper', veteran: 'Veteran', friend: 'Friend' };
   var OWNER_ID = '879e9081-5614-436d-971a-09481669a35f';
@@ -706,6 +707,31 @@
         card.appendChild(setRow('Interface scale', 'Makes the whole interface smaller or bigger.', sWrap, null));
       }
       view.appendChild(card);
+      view.appendChild(shareCard());
+    }
+
+    // Publishes the colours of the current look on the website. The form opens in the browser with the colours
+    // already filled in; the name, licence and anything else are added there.
+    function shareCard() {
+      var box4 = el('div', 'ym-card');
+      box4.appendChild(el('p', 'ym-note', 'Made a look you like? Publish its colours for everyone to use. You add the name and licence on the website.'));
+      var publish = button('Publish my look', 'primary', 'ui-plus');
+      publish.addEventListener('click', function () {
+        var active = activeTheme();
+        var chosen = THEMES.filter(function (t) { return t.id === active; })[0];
+        var base = chosen ? chosen.sw : ['#222329', '#1b1c21', '#2b2c33', '#ececf1'];
+        var acc = byId('accent-colour');
+        var accent = acc ? valueOf(acc, acc.settings[0]) : '#ff6b4a';
+        var theme = { name: 'My Yapnap look', description: 'Made in Yapnap.', kind: 'colour',
+          colors: { bg: base[0], side: base[1], elev: base[2], text: base[3], accent: accent } };
+        var bytes = new TextEncoder().encode(JSON.stringify(theme));
+        var binary = '';
+        bytes.forEach(function (b) { binary += String.fromCharCode(b); });
+        var b64 = btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        window.open(PUBLISH_URL + '#data=' + b64, '_blank', 'noopener');
+      });
+      box4.appendChild(publish);
+      return box4;
     }
 
     // ----- routing and refresh -----

@@ -8,10 +8,11 @@
   "scripts": {
     "start": "electron .",
     "check": "node check/check-plugins.js",
-    "dist": "electron-builder --win portable",
-    "site:build": "node site/tools/build-plugins.js && node site/tools/validate.js && node site/tools/build-pages.js && node site/tools/check-links.js",
+    "dist": "electron-builder --win --publish never",
+    "site:build": "node site/tools/build-plugins.js && node site/tools/build-pages.js && node site/tools/check-links.js && node site/tools/test-validator.js && node site/tools/test-worker.js",
     "test:live": "node tests/live-plugins.js",
-    "test": "npm run check && npm run site:build"
+    "test": "npm run check && npm run site:build",
+    "dist:linux": "electron-builder --linux AppImage --publish never"
   },
   "build": {
     "appId": "dev.yapnap.desktop",
@@ -24,25 +25,50 @@
       "main.js",
       "preload.js",
       "games.js",
+      "updater.js",
       "src/**/*",
       "settings/**/*",
       "build/**/*",
       "!build/banner.png",
       "package.json"
     ],
+    "publish": {
+      "provider": "github",
+      "owner": "cjl26rg2",
+      "repo": "Yapnap",
+      "releaseType": "release"
+    },
     "win": {
       "target": [
+        "nsis",
         "portable"
       ],
       "icon": "build/icon.ico",
       "signExecutable": false
     },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "artifactName": "Yapnap-${version}-setup.exe"
+    },
     "portable": {
       "artifactName": "Yapnap-${version}-portable.exe"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "build/icon.png",
+      "category": "Utility",
+      "executableName": "yapnap",
+      "artifactName": "Yapnap-${version}.AppImage"
     }
   },
   "devDependencies": {
     "electron": "^45.0.0",
     "electron-builder": "^26.18.0"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11"
   }
 }

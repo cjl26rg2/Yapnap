@@ -43,7 +43,9 @@
     css: '.ym-badge{display:inline-flex;align-items:center;gap:5px;margin-left:6px;padding:1px 8px 1px 3px;border-radius:999px;' +
       'background:color-mix(in srgb,var(--ym-tier,#888) 16%,transparent);color:var(--ym-tier,#888);font-size:11px;font-weight:750;' +
       'letter-spacing:.01em;line-height:17px;vertical-align:middle;white-space:nowrap;user-select:none}' +
-      '.ym-badge img{width:14px;height:14px;display:block}',
+      '.ym-badge img{width:14px;height:14px;display:block}' +
+      '.ym-avatar-badge{position:absolute;right:-4px;bottom:-4px;display:flex;pointer-events:none;z-index:2}' +
+      '.ym-avatar-badge img{width:16px;height:16px;display:block}',
     start: function (ctx) {
       var tiers = ctx.badges.tiers || {};
       var users = ctx.badges.users || {};
@@ -64,6 +66,49 @@
         return badge;
       }
 
+      // Avatars outside chat messages: the member list, profile cards and popups, and your own user bar.
+      function avatarId(img) {
+        var m = AVATAR_ID.exec(img.getAttribute('src') || '');
+        return m ? m[1].toLowerCase() : null;
+      }
+
+      function decorateAvatars(node) {
+        if (!node.querySelectorAll) return;
+        var imgs = node.matches && node.matches('img[src*="/avatars/"]') ? [node] : Array.prototype.slice.call(node.querySelectorAll('img[src*="/avatars/"]'));
+        imgs.forEach(function (img) {
+          if (img.closest('.msg') || img.dataset.ymAvatar) return;
+          img.dataset.ymAvatar = '1';
+          var id = avatarId(img);
+          var entry = id && Object.prototype.hasOwnProperty.call(users, id) ? users[id] : null;
+          var tier = entry && Object.prototype.hasOwnProperty.call(tiers, entry.tier) ? tiers[entry.tier] : null;
+          if (!tier || !img.parentElement) return;
+
+          var holder = img.parentElement;
+          if (window.getComputedStyle(holder).position === 'static') holder.style.position = 'relative';
+          var mark = document.createElement('span');
+          mark.className = 'ym-avatar-badge';
+          mark.title = 'Yapnap ' + tier.label.toLowerCase();
+          var src = window.YAPNAP_ART ? window.YAPNAP_ART.src('badge-' + entry.tier) : '';
+          if (src) {
+            var picture = document.createElement('img');
+            picture.alt = '';
+            picture.src = src;
+            mark.appendChild(picture);
+          }
+          holder.appendChild(mark);
+
+          // A profile card also gets the text badge in its row of badges.
+          var card = img.closest('.profile-card');
+          if (card && !card.dataset.ymProfile) {
+            var row = card.querySelector('.badge-row');
+            if (row) {
+              card.dataset.ymProfile = '1';
+              row.appendChild(chip(entry.tier, entry, tier));
+            }
+          }
+        });
+      }
+
       function decorate(node) {
         if (!node.querySelectorAll) return;
         var authors = node.matches && node.matches('.msg-author') ? [node] : Array.prototype.slice.call(node.querySelectorAll('.msg-author'));
@@ -82,9 +127,12 @@
       }
 
       decorate(document.body);
+      decorateAvatars(document.body);
       var observer = new MutationObserver(function (records) {
         records.forEach(function (r) {
-          r.addedNodes.forEach(function (n) { if (n.nodeType === 1) decorate(n); });
+          r.addedNodes.forEach(function (n) {
+            if (n.nodeType === 1) { decorate(n); decorateAvatars(n); }
+          });
         });
       });
       observer.observe(document.body, { childList: true, subtree: true });
@@ -96,6 +144,9 @@
         observer.disconnect();
         document.querySelectorAll('.ym-badge').forEach(function (b) { b.remove(); });
         document.querySelectorAll('[data-ym-badged]').forEach(function (a) { delete a.dataset.ymBadged; });
+        document.querySelectorAll('.ym-avatar-badge').forEach(function (b) { b.remove(); });
+        document.querySelectorAll('[data-ym-avatar]').forEach(function (a) { delete a.dataset.ymAvatar; });
+        document.querySelectorAll('[data-ym-profile]').forEach(function (c) { delete c.dataset.ymProfile; });
       };
     }
   });

@@ -6,9 +6,10 @@ const os = require('node:os');
 const path = require('node:path');
 const { execFile } = require('node:child_process');
 const GAMES = require('./games');
+const updater = require('./updater');
 
 const APP_NAME = 'Yapnap';
-const APP_VERSION = '0.1.0';
+const APP_VERSION = require('./package.json').version;
 const SITE = 'https://www.yapper.website';
 const ALLOWED = new Set(['www.yapper.website', 'yapper.website', 'rt.yapper.website', 'lk.yapper.website']);
 // Put your own art at build/icon.png (512 px) and build/icon.ico. Until then the app has no custom icon.
@@ -425,6 +426,7 @@ function buildMenu() {
       label: APP_NAME,
       submenu: [
         { label: 'Settings', accelerator: 'Ctrl+,', click: openSettings },
+        { label: 'Check for updates', click: updater.checkFromMenu },
         { label: 'Reload chat', accelerator: 'Ctrl+R', click: () => win?.webContents.reload() },
         { type: 'separator' },
         { label: `Quit ${APP_NAME}`, accelerator: 'Ctrl+Q', click: () => { quitting = true; app.quit(); } },
@@ -613,8 +615,10 @@ app.whenReady().then(() => {
     return true;
   });
 
-  // The site's own "Restart to update" bar is never offered: this build does not update itself.
+  // The site's own "Restart to update" bar is never offered. Yapnap updates itself from its GitHub releases instead.
   ipcMain.handle('yapper:update-install', () => false);
+
+  updater.start();
 });
 
 // "Playing X": every 20 s look at the running programs for a known game (games.js) and tell the page.

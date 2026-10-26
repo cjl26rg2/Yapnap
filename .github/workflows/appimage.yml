@@ -1,0 +1,39 @@
+name: linux-appimage
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  appimage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Plugin checks
+        run: npm run check
+      # A version tag (v0.1.1) builds the AppImage and attaches it to that GitHub release, which is what the
+      # auto-updater reads. Any other run only builds it, so you can download and test it from the run page.
+      - name: Build and publish the AppImage
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: npx electron-builder --linux AppImage --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build the AppImage (not published)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run: npm run dist:linux
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Yapnap-AppImage
+          path: |
+            dist/*.AppImage
+            dist/*.blockmap
+            dist/latest-linux.yml
