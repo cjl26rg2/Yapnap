@@ -1,0 +1,13 @@
+# Dependencies and build output
+node_modules/
+dist/
+
+# Site and tooling that stays out of the public repo
+site/
+.claude/
+
+# Logs, local settings and my own composed banner (the app does not use it)
+*.log
+.env
+.env.*
+build/banner.png

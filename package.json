@@ -1,0 +1,48 @@
+{
+  "name": "yapnap",
+  "productName": "Yapnap",
+  "version": "0.1.0",
+  "description": "Unofficial desktop app for Yapin' with plugins, settings and contributor badges",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "check": "node check/check-plugins.js",
+    "dist": "electron-builder --win portable",
+    "site:build": "node site/tools/build-plugins.js && node site/tools/validate.js && node site/tools/build-pages.js && node site/tools/check-links.js",
+    "test:live": "node tests/live-plugins.js",
+    "test": "npm run check && npm run site:build"
+  },
+  "build": {
+    "appId": "dev.yapnap.desktop",
+    "productName": "Yapnap",
+    "copyright": "Unofficial. Not affiliated with Yapin' or Yapper.",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "games.js",
+      "src/**/*",
+      "settings/**/*",
+      "build/**/*",
+      "!build/banner.png",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "build/icon.ico",
+      "signExecutable": false
+    },
+    "portable": {
+      "artifactName": "Yapnap-${version}-portable.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.0.0",
+    "electron-builder": "^26.18.0"
+  }
+}

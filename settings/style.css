@@ -1,0 +1,63 @@
+/* The fallback window uses the same neutral dark as Yapin's settings, so it matches the site. */
+:root {
+  color-scheme: dark;
+  --bg-main: #222329;
+  --bg-side: #1b1c21;
+  --bg-elev: #2b2c33;
+  --bg-hover: #2f3038;
+  --bg-active: #383944;
+  --bg-input: #2d2e36;
+  --text: #ececf1;
+  --text-muted: #9c9daa;
+  --text-faint: #9294a1;
+  --border: #ffffff12;
+  --accent: #ff6b4a;
+  --accent-hover: #ff5a35;
+  --on-accent: #fff;
+  --danger: #f2555a;
+  --success: #3fcf82;
+  --radius: 10px;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg-main);
+  color: var(--text);
+}
+
+.frame {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  height: 100%;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 20px 10px;
+  background: var(--bg-side);
+}
+
+.side button {
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-muted);
+  font: 500 15px/1.2 system-ui, "Segoe UI", sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.side button:hover { background: var(--bg-hover); color: var(--text); }
+.side button[aria-current="true"] { background: var(--bg-active); color: var(--text); }
+
+.content {
+  box-sizing: border-box;
+  height: 100%;
+  overflow: auto;
+  padding: 26px 30px 36px;
+}

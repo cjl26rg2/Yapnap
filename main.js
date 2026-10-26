@@ -1,0 +1,682 @@
+// Yapnap: an unofficial desktop app for Yapin' (www.yapper.website). A window around the site with plugins,
+// settings and contributor badges added. It is not made by, or affiliated with, Yapin' or the Yapper team.
+const { app, BrowserWindow, Menu, Tray, nativeImage, shell, session, desktopCapturer, ipcMain, Notification } = require('electron');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { execFile } = require('node:child_process');
+const GAMES = require('./games');
+
+const APP_NAME = 'Yapnap';
+const APP_VERSION = '0.1.0';
+const SITE = 'https://www.yapper.website';
+const ALLOWED = new Set(['www.yapper.website', 'yapper.website', 'rt.yapper.website', 'lk.yapper.website']);
+// Put your own art at build/icon.png (512 px) and build/icon.ico. Until then the app has no custom icon.
+const ICON_FILE = path.join(__dirname, 'build', 'icon.png');
+const ICON = fs.existsSync(ICON_FILE) ? ICON_FILE : undefined;
+const SRC = path.join(__dirname, 'src');
+const PLUGIN_DIR = path.join(SRC, 'plugins');
+const SETTINGS_PAGE = path.join(__dirname, 'settings', 'index.html');
+const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+// The owner's account ID. The owner can give admin, mod and contributor. Admins can give mod and contributor.
+const OWNER_ID = '879e9081-5614-436d-971a-09481669a35f';
+const STAFF = ['admin', 'mod', 'contributor'];
+const COSMETIC = ['advertiser', 'partner', 'sponsor', 'supporter', 'translator', 'artist', 'designer', 'developer', 'tester', 'helper', 'veteran', 'friend'];
+const ALL_TIERS = [...STAFF, ...COSMETIC];
+// The owner can give any role. Admins can give mod, contributor and the cosmetic roles.
+const GRANTS = { owner: ALL_TIERS, admin: ['mod', 'contributor', ...COSMETIC] };
+const APP_DEFAULTS = { trayOnClose: true, notifications: true, flashOnMention: true, safeMode: false, zoom: 100, myId: '' };
+const DEFAULT_TIERS = {
+  owner: { label: 'Owner', color: '#e9b530' },
+  admin: { label: 'Admin', color: '#d94a3f' },
+  mod: { label: 'Mod', color: '#26a88a' },
+  contributor: { label: 'Contributor', color: '#3b6fdb' },
+  advertiser: { label: 'Advertiser', color: '#b57bff' },
+  partner: { label: 'Partner', color: '#3ec5d9' },
+  sponsor: { label: 'Sponsor', color: '#9be564' },
+  supporter: { label: 'Supporter', color: '#ff7eb3' },
+  translator: { label: 'Translator', color: '#f5e663' },
+  artist: { label: 'Artist', color: '#d46bff' },
+  designer: { label: 'Designer', color: '#66d1ff' },
+  developer: { label: 'Developer', color: '#c0c6d1' },
+  tester: { label: 'Tester', color: '#8a94a6' },
+  helper: { label: 'Helper', color: '#7bdcb5' },
+  veteran: { label: 'Veteran', color: '#c9a227' },
+  friend: { label: 'Friend', color: '#d7dbe4' },
+};
+
+// Its own name, so its data folder and single-instance lock are separate from the official Yapper app.
+app.setName(APP_NAME);
+
+// One copy of the app at a time.
+if (!app.requestSingleInstanceLock()) { app.quit(); }
+
+let win = null;
+let tray = null;
+let settingsWin = null;
+let quitting = false;
+
+// ---------- settings and badges ----------
+
+let prefs = { plugins: {}, app: { ...APP_DEFAULTS } };
+let badges = { tiers: {}, users: {} };
+let pageBundle = '';
+
+const prefsFile = () => path.join(app.getPath('userData'), 'yapnap-settings.json');
+const badgesFile = () => path.join(app.getPath('userData'), 'badges.json');
+
+/** Keeps only well-formed saved settings. The page checks each value again against its plugin's rules. */
+function cleanPrefs(raw) {
+  const out = { plugins: {}, app: cleanApp(raw && raw.app) };
+  if (!raw || typeof raw !== 'object' || !raw.plugins || typeof raw.plugins !== 'object') return out;
+  for (const [id, v] of Object.entries(raw.plugins).slice(0, 500)) {
+    if (!ID.test(id) || !v || typeof v !== 'object') continue;
+    const entry = {};
+    if (typeof v.on === 'boolean') entry.on = v.on;
+    if (v.s && typeof v.s === 'object') {
+      entry.s = {};
+      for (const [k, val] of Object.entries(v.s).slice(0, 20)) {
+        if (validSettingValue(k, val)) entry.s[k] = val;
+      }
+    }
+    out.plugins[id] = entry;
+  }
+  return out;
+}
+
+/** Keeps only well-formed global settings. Anything else falls back to the default. */
+function cleanApp(raw) {
+  const out = { ...APP_DEFAULTS };
+  if (!raw || typeof raw !== 'object') return out;
+  for (const k of ['trayOnClose', 'notifications', 'flashOnMention', 'safeMode']) if (typeof raw[k] === 'boolean') out[k] = raw[k];
+  if (typeof raw.zoom === 'number' && isFinite(raw.zoom)) out.zoom = Math.min(150, Math.max(75, Math.round(raw.zoom)));
+  if (typeof raw.myId === 'string' && (raw.myId === '' || /^[A-Za-z0-9-]{8,64}$/.test(raw.myId))) out.myId = raw.myId;
+  return out;
+}
+
+function validSettingValue(key, value) {
+  if (!/^[a-z]{1,20}$/.test(key)) return false;
+  return typeof value === 'number' || typeof value === 'boolean' || (typeof value === 'string' && value.length <= 16);
+}
+
+function loadPrefs() {
+  try { prefs = cleanPrefs(JSON.parse(fs.readFileSync(prefsFile(), 'utf8'))); } catch { prefs = { plugins: {}, app: { ...APP_DEFAULTS } }; }
+}
+
+function savePrefs() {
+  try {
+    fs.mkdirSync(app.getPath('userData'), { recursive: true });
+    const tmp = `${prefsFile()}.tmp`;
+    fs.writeFileSync(tmp, JSON.stringify(prefs, null, 2));
+    fs.renameSync(tmp, prefsFile());
+  } catch (e) { console.error('Could not save settings:', e.message); }
+}
+
+/** Keeps only tiers with a valid colour, and users whose tier exists. Names are never used to match badges. */
+function cleanBadges(raw) {
+  const tiers = {};
+  const users = {};
+  for (const [key, t] of Object.entries(raw?.tiers || {}).slice(0, 20)) {
+    if (!ID.test(key) || !t || typeof t.label !== 'string' || typeof t.color !== 'string') continue;
+    if (!/^#[0-9a-f]{6}$/i.test(t.color)) continue;
+    tiers[key] = { label: t.label.slice(0, 20), color: t.color };
+  }
+  for (const [key, t] of Object.entries(DEFAULT_TIERS)) if (!tiers[key]) tiers[key] = t;
+  for (const [id, u] of Object.entries(raw?.users || {}).slice(0, 5000)) {
+    if (!/^[A-Za-z0-9_-]{1,64}$/.test(id) || !u || !Object.prototype.hasOwnProperty.call(tiers, u.tier)) continue;
+    users[id] = { tier: u.tier, note: typeof u.note === 'string' ? u.note.slice(0, 80) : '' };
+  }
+  users[OWNER_ID] = { tier: 'owner', note: 'Owner' };
+  return { tiers, users };
+}
+
+/** The role of an account ID: owner, admin, mod, contributor, or null. */
+function roleOf(id) {
+  if (!id) return null;
+  if (id === OWNER_ID) return 'owner';
+  const u = badges.users[id];
+  return u ? u.tier : null;
+}
+
+function canGrant(actor, tier) {
+  return (GRANTS[actor] || []).includes(tier);
+}
+
+/** Writes the role list to the data folder. The bundled badges.json is never changed. */
+function saveBadges() {
+  try {
+    fs.mkdirSync(app.getPath('userData'), { recursive: true });
+    const tmp = `${badgesFile()}.tmp`;
+    fs.writeFileSync(tmp, JSON.stringify({ tiers: badges.tiers, users: badges.users }, null, 2));
+    fs.renameSync(tmp, badgesFile());
+  } catch (e) { console.error('Could not save roles:', e.message); }
+}
+
+/** A badges.json in the data folder wins over the one shipped inside the app. */
+function loadBadges() {
+  const file = fs.existsSync(badgesFile()) ? badgesFile() : path.join(SRC, 'badges.json');
+  try { return cleanBadges(JSON.parse(fs.readFileSync(file, 'utf8'))); } catch (e) {
+    console.error('Could not read badges:', e.message);
+    return { tiers: {}, users: {} };
+  }
+}
+
+/** Registry, every plugin file, then the runtime, as one script for the page. */
+function readPageBundle() {
+  const files = fs.readdirSync(PLUGIN_DIR).filter((f) => f.endsWith('.js')).sort();
+  return [
+    path.join(SRC, 'registry.js'),
+    ...files.map((f) => path.join(PLUGIN_DIR, f)),
+    path.join(SRC, 'art.js'),
+    path.join(SRC, 'panel.js'),
+    path.join(SRC, 'settings-nav.js'),
+    path.join(SRC, 'runtime.js'),
+  ]
+    .map((f) => fs.readFileSync(f, 'utf8'))
+    .join('\n;\n');
+}
+
+/** Runs the page bundle and applies the current settings. Safe to call again: the page keeps one runtime. */
+/** What the About page shows about this build. */
+function appInfo() {
+  return {
+    version: APP_VERSION,
+    built: fs.statSync(__filename).mtime.toISOString(),
+    electron: process.versions.electron,
+    chrome: process.versions.chrome,
+    node: process.versions.node,
+    platform: process.platform,
+    os: os.release(),
+    packaged: app.isPackaged,
+  };
+}
+
+function applyToPage(wc) {
+  if (!wc || wc.isDestroyed() || !pageBundle || !ALLOWED.has(hostOf(wc.getURL()))) return;
+  const state = JSON.stringify({ plugins: prefs.plugins, badges, safe: prefs.app.safeMode === true });
+  wc.executeJavaScript(`${pageBundle}\n;window.__yapnap && window.__yapnap.apply(${state});`, true).catch(() => undefined);
+}
+
+/** Applies the chat zoom from the global settings. */
+function applyZoom() {
+  if (win && !win.isDestroyed()) win.webContents.setZoomFactor(prefs.app.zoom / 100);
+}
+
+function persist() {
+  savePrefs();
+  applyToPage(win?.webContents);
+}
+
+// ---------- the chat window ----------
+
+let loadTimer = null;
+let lastUrl = SITE;
+let errorPage = false;
+let everShown = false;
+const LOAD_TIMEOUT = 20_000;
+const startHidden = process.argv.includes('--hidden');
+
+function hostOf(url) {
+  try { return new URL(url).hostname; } catch { return ''; }
+}
+
+function esc(t) {
+  return String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
+function errorHtml(title, detail, retryUrl) {
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${APP_NAME}</title><style>
+html,body{margin:0;height:100%;background:#17181b;color:#e6e7ea;font:15px/1.45 system-ui,"Segoe UI",sans-serif}
+body{display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;text-align:center}
+.card{max-width:380px}h1{font-size:20px;font-weight:600;margin:0 0 8px}p{margin:0 0 20px;color:#9a9ea7}
+a.btn{display:inline-block;padding:9px 20px;border-radius:6px;background:#7aa2ff;color:#101114;font-weight:600;text-decoration:none}
+.alt{display:block;margin-top:14px;color:#9a9ea7;font-size:13px}.alt a{color:#9ec2ff}
+code{display:block;margin-top:22px;color:#6c707a;font-size:12px}
+</style></head><body><div class="card">
+<h1>${esc(title)}</h1>
+<p>Check your internet connection. A VPN, proxy or antivirus can also block Yapin'.</p>
+<a class="btn" id="retry" href="${esc(retryUrl)}">Retry</a>
+<span class="alt">Still stuck? <a href="${esc(SITE)}" target="_blank">Open Yapin' in your browser</a></span>
+${detail ? `<code>${esc(detail)}</code>` : ''}
+</div><script>
+var go=function(){location.href=document.getElementById('retry').href};
+addEventListener('online',go);setTimeout(go,60000);
+</script></body></html>`;
+}
+
+function showLoadError(title, detail) {
+  if (!win || win.isDestroyed()) return;
+  clearTimeout(loadTimer);
+  loadTimer = null;
+  errorPage = true;
+  const retry = lastUrl && ALLOWED.has(hostOf(lastUrl)) ? lastUrl : SITE;
+  win.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(errorHtml(title, detail, retry))}`).catch(() => undefined);
+  if (win.isVisible() || (!startHidden && !everShown)) show();
+}
+
+/** Every load of the site goes through here, so a failed one always ends on the error screen. */
+function loadSite(url) {
+  if (!win) return;
+  lastUrl = url;
+  win.loadURL(url).catch(() => undefined);
+}
+
+function show() {
+  if (!win) {
+    if (!app.isReady()) return;
+    quitting = false;
+    createWindow();
+    win?.once('ready-to-show', () => { win?.show(); win?.focus(); });
+    return;
+  }
+  if (win.isMinimized()) win.restore();
+  win.show();
+  win.focus();
+}
+
+function createWindow() {
+  win = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    minWidth: 480,
+    minHeight: 360,
+    backgroundColor: '#17181b',
+    icon: ICON,
+    title: APP_NAME,
+    autoHideMenuBar: true,
+    show: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+      spellcheck: true,
+    },
+  });
+  win.once('ready-to-show', () => { if (!startHidden) win.show(); });
+  win.on('show', () => { everShown = true; });
+
+  const wc = win.webContents;
+  // A fresh load of the site starts the 20 s clock. It stops once the page has its HTML.
+  wc.on('did-start-navigation', (d) => {
+    if (!d.isMainFrame || d.isSameDocument || d.url.startsWith('data:')) return;
+    lastUrl = d.url;
+    errorPage = false;
+    clearTimeout(loadTimer);
+    loadTimer = setTimeout(() => showLoadError('Yapin\' is taking too long to load', 'Timed out after 20 s'), LOAD_TIMEOUT);
+  });
+  wc.on('dom-ready', () => {
+    if (errorPage) return;
+    clearTimeout(loadTimer);
+    loadTimer = null;
+    applyToPage(wc);
+    applyZoom();
+    if (!startHidden && !everShown) win.show();
+  });
+  wc.on('did-fail-load', (_e, code, desc, url, isMainFrame) => {
+    if (!isMainFrame || code === -3 || String(url).startsWith('data:')) return;
+    showLoadError('Can\'t reach Yapin\'', `${desc || 'Load failed'} (${code})`);
+  });
+  wc.on('render-process-gone', (_e, d) => {
+    if (d.reason === 'clean-exit') return;
+    showLoadError('Yapin\' stopped working', `Page ${d.reason}${d.exitCode ? ` (${d.exitCode})` : ''}`);
+  });
+  let hangTimer = null;
+  win.on('unresponsive', () => {
+    clearTimeout(hangTimer);
+    hangTimer = setTimeout(() => showLoadError('Yapin\' stopped responding', 'Page unresponsive'), 15_000);
+  });
+  win.on('responsive', () => { clearTimeout(hangTimer); hangTimer = null; });
+
+  win.webContents.on('before-input-event', (e, input) => {
+    if (input.type !== 'keyDown') return;
+    if (input.key === 'F11') {
+      e.preventDefault();
+      win.setFullScreen(!win.isFullScreen());
+    } else if (input.key === 'Escape' && win.isFullScreen()) {
+      win.webContents.executeJavaScript('!!document.fullscreenElement && (document.exitFullscreen().catch(() => {}), true)', true)
+        .then((wasHtml) => { if (wasHtml && win.isFullScreen()) win.setFullScreen(false); })
+        .catch(() => undefined);
+    }
+  });
+  loadSite(SITE);
+
+  // Links to other sites open in the normal browser; the site itself stays in the app.
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (errorPage) { if (/^https:\/\//.test(url)) void shell.openExternal(url); return { action: 'deny' }; }
+    try {
+      if (ALLOWED.has(new URL(url).hostname)) { loadSite(url); return { action: 'deny' }; }
+    } catch { /* not a URL */ }
+    void shell.openExternal(url);
+    return { action: 'deny' };
+  });
+  win.webContents.on('will-navigate', (e, url) => {
+    try { if (!ALLOWED.has(new URL(url).hostname)) { e.preventDefault(); void shell.openExternal(url); } } catch { e.preventDefault(); }
+  });
+
+  // Closing the window keeps the app in the tray, so calls keep running. Quit from the tray.
+  win.on('close', (e) => {
+    if (quitting) return;
+    if (!prefs.app.trayOnClose) { quitting = true; app.quit(); return; }
+    e.preventDefault();
+    win.hide();
+  });
+  win.on('closed', () => { win = null; });
+}
+
+// ---------- the settings window ----------
+
+/** Only the fallback settings window and the Yapin' site may use the settings API. */
+function fromTrusted(e) {
+  const fromWindow = !!settingsWin && !settingsWin.isDestroyed() && e.sender === settingsWin.webContents;
+  return fromWindow || ALLOWED.has(hostOf(e.senderFrame?.url ?? ''));
+}
+
+/** Opens Yapin's own settings with the Yapnap panel in them. Falls back to a separate window if that fails. */
+async function openSettings() {
+  const wc = win?.webContents;
+  if (wc && !wc.isDestroyed() && ALLOWED.has(hostOf(wc.getURL()))) {
+    show();
+    const ok = await wc.executeJavaScript('window.__yapnapUI ? window.__yapnapUI.open() : false', true).catch(() => false);
+    if (ok) return;
+  }
+  openStandalone();
+}
+
+function openStandalone() {
+  if (settingsWin && !settingsWin.isDestroyed()) {
+    if (settingsWin.isMinimized()) settingsWin.restore();
+    settingsWin.show();
+    settingsWin.focus();
+    return;
+  }
+  settingsWin = new BrowserWindow({
+    width: 980,
+    height: 680,
+    minWidth: 720,
+    minHeight: 480,
+    title: `${APP_NAME} settings`,
+    backgroundColor: '#17181b',
+    icon: ICON,
+    autoHideMenuBar: true,
+    show: false,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
+  });
+  settingsWin.once('ready-to-show', () => { settingsWin?.show(); settingsWin?.focus(); });
+  settingsWin.on('closed', () => { settingsWin = null; });
+  // If the page cannot load, still show the window so it is never invisible.
+  settingsWin.loadFile(SETTINGS_PAGE).catch((err) => {
+    console.error('Settings failed to load:', err.message);
+    settingsWin?.show();
+  });
+}
+
+// The menu gives Settings a real Ctrl+, shortcut that works whatever has focus in the chat.
+// The menu bar stays hidden; the accelerators still work.
+function buildMenu() {
+  Menu.setApplicationMenu(Menu.buildFromTemplate([
+    {
+      label: APP_NAME,
+      submenu: [
+        { label: 'Settings', accelerator: 'Ctrl+,', click: openSettings },
+        { label: 'Reload chat', accelerator: 'Ctrl+R', click: () => win?.webContents.reload() },
+        { type: 'separator' },
+        { label: `Quit ${APP_NAME}`, accelerator: 'Ctrl+Q', click: () => { quitting = true; app.quit(); } },
+      ],
+    },
+  ]));
+}
+
+// ---------- tray ----------
+
+function createTray() {
+  const img = ICON ? nativeImage.createFromPath(ICON).resize({ width: 16, height: 16 }) : nativeImage.createEmpty();
+  tray = new Tray(img);
+  tray.setToolTip(APP_NAME);
+  tray.setContextMenu(Menu.buildFromTemplate([
+    { label: `Open ${APP_NAME}`, click: show },
+    { label: 'Settings', click: openSettings },
+    { type: 'separator' },
+    { label: `Quit ${APP_NAME}`, click: () => { quitting = true; app.quit(); } },
+  ]));
+  tray.on('click', show);
+  tray.on('double-click', show);
+}
+
+// ---------- screen sharing ----------
+
+const SOURCE_ID = /^(screen|window):[\w:-]{1,64}$/;
+const PICK_TTL = 30_000;
+let pendingPick = null;
+
+/** Only the Yapin' site itself may list or pick screens. */
+function fromSite(e) {
+  return ALLOWED.has(hostOf(e.senderFrame?.url ?? ''));
+}
+function takePick(req) {
+  const p = pendingPick;
+  pendingPick = null;
+  if (!p || Date.now() - p.at > PICK_TTL) return null;
+  if (req?.frame && !ALLOWED.has(hostOf(req.frame.url))) return null;
+  return p.id;
+}
+/** "window:1234:0" -> "window:1234", so our own window matches whatever suffix the capturer uses. */
+function windowKey(id) {
+  return String(id).split(':').slice(0, 2).join(':');
+}
+function ownWindowKey() {
+  try { return win && typeof win.getMediaSourceId === 'function' ? windowKey(win.getMediaSourceId()) : ''; } catch { return ''; }
+}
+
+app.on('second-instance', () => show());
+
+app.whenReady().then(() => {
+  // The site can tell it is running in this app; the mod's own name is added to the user agent.
+  app.userAgentFallback = `${app.userAgentFallback} ${APP_NAME}/${APP_VERSION}`;
+  if (process.platform === 'win32') app.setAppUserModelId('dev.yapnap.desktop');
+
+  loadPrefs();
+  badges = loadBadges();
+  try { pageBundle = readPageBundle(); } catch (e) { console.error('Could not read plugins:', e.message); }
+
+  const ses = session.defaultSession;
+  // Mic, camera and notifications: yes for the site, no for anything else.
+  ses.setPermissionRequestHandler((wc, permission, cb, details) => {
+    let host = '';
+    try { host = new URL(details.requestingUrl || wc.getURL()).hostname; } catch { /* ignore */ }
+    cb(ALLOWED.has(host) && ['media', 'notifications', 'display-capture', 'clipboard-read', 'clipboard-sanitized-write', 'fullscreen'].includes(permission));
+  });
+  ses.setPermissionCheckHandler((wc, permission, origin) => {
+    try { return ALLOWED.has(new URL(origin).hostname); } catch { return false; }
+  });
+  // Screen sharing: the site shows its own picker, sends the pick, then calls getDisplayMedia, which lands here.
+  ses.setDisplayMediaRequestHandler(async (req, cb) => {
+    try {
+      const picked = takePick(req);
+      const sources = await desktopCapturer.getSources({ types: ['screen', 'window'], thumbnailSize: { width: 0, height: 0 } });
+      const chosen = picked && sources.find((s) => s.id === picked);
+      if (chosen) {
+        const loopback = chosen.id.startsWith('screen:') && process.platform === 'win32';
+        return cb(loopback ? { video: chosen, audio: 'loopback' } : { video: chosen });
+      }
+      const screen = sources.find((s) => s.id.startsWith('screen')) ?? sources[0];
+      if (!screen) return cb({});
+      cb({ video: screen, audio: 'loopback' });
+    } catch { cb({}); }
+  }, { useSystemPicker: false });
+
+  createWindow();
+  createTray();
+  buildMenu();
+  // First launch: open settings once, so the plugins are easy to find.
+  if (!fs.existsSync(prefsFile())) setTimeout(() => openSettings(), 4000);
+
+  ipcMain.on('yapper:badge', (_e, count) => {
+    if (process.platform === 'darwin') app.dock?.setBadge(count > 0 ? String(count) : '');
+    else if (win) win.setOverlayIcon(null, '');
+    if (win && count > 0 && !win.isFocused() && prefs.app.flashOnMention) win.flashFrame(true);
+  });
+  ipcMain.on('yapper:notify', (_e, n) => {
+    if (!Notification.isSupported() || !prefs.app.notifications || (win && win.isFocused())) return;
+    const note = new Notification({ title: String(n?.title ?? APP_NAME).slice(0, 80), body: String(n?.body ?? '').slice(0, 180), icon: ICON, silent: true });
+    note.on('click', () => { show(); if (n?.url) loadSite(`${SITE}${n.url}`); });
+    note.show();
+  });
+  ipcMain.handle('yapper:screen-sources', async (e) => {
+    if (!fromSite(e)) return [];
+    const own = ownWindowKey();
+    const sources = await desktopCapturer.getSources({ types: ['screen', 'window'], thumbnailSize: { width: 320, height: 180 }, fetchWindowIcon: true });
+    return sources
+      .filter((s) => !(own && s.id.startsWith('window:') && windowKey(s.id) === own))
+      .map((s) => ({
+        id: s.id,
+        name: String(s.name || '').slice(0, 120),
+        kind: s.id.startsWith('screen:') ? 'screen' : 'window',
+        thumb: s.thumbnail && !s.thumbnail.isEmpty() ? `data:image/jpeg;base64,${s.thumbnail.toJPEG(70).toString('base64')}` : null,
+        icon: s.appIcon && !s.appIcon.isEmpty() ? s.appIcon.resize({ width: 32, height: 32 }).toDataURL() : null,
+      }));
+  });
+  ipcMain.handle('yapper:screen-pick', (e, id) => {
+    if (!fromSite(e) || typeof id !== 'string' || !SOURCE_ID.test(id)) { pendingPick = null; return false; }
+    pendingPick = { id, at: Date.now() };
+    return true;
+  });
+
+  // Settings window.
+  ipcMain.handle('mod:state', (e) => {
+    if (!fromTrusted(e)) return null;
+    return { version: APP_VERSION, badges, plugins: prefs.plugins, app: prefs.app, info: appInfo() };
+  });
+  ipcMain.handle('mod:set-plugin', (e, id, on) => {
+    if (!fromTrusted(e) || typeof id !== 'string' || !ID.test(id) || typeof on !== 'boolean') return false;
+    if (Object.keys(prefs.plugins).length >= 500 && !prefs.plugins[id]) return false;
+    prefs.plugins[id] = { ...prefs.plugins[id], on };
+    persist();
+    return true;
+  });
+  ipcMain.handle('mod:set-setting', (e, id, key, value) => {
+    if (!fromTrusted(e) || typeof id !== 'string' || !ID.test(id) || !validSettingValue(key, value)) return false;
+    const cur = prefs.plugins[id] || {};
+    prefs.plugins[id] = { ...cur, s: { ...cur.s, [key]: value } };
+    persist();
+    return true;
+  });
+  ipcMain.handle('mod:reset', (e) => {
+    if (!fromTrusted(e)) return false;
+    prefs = { plugins: {}, app: prefs.app };
+    persist();
+    return true;
+  });
+  ipcMain.handle('mod:set-app', (e, key, value) => {
+    if (!fromTrusted(e) || typeof key !== 'string') return false;
+    if (key === 'zoom') {
+      if (typeof value !== 'number' || !isFinite(value)) return false;
+      prefs.app.zoom = Math.min(150, Math.max(75, Math.round(value)));
+      applyZoom();
+    } else if (key === 'myId') {
+      if (typeof value !== 'string' || (value !== '' && !/^[A-Za-z0-9-]{8,64}$/.test(value))) return false;
+      prefs.app.myId = value;
+    } else if (['trayOnClose', 'notifications', 'flashOnMention', 'safeMode'].includes(key)) {
+      if (typeof value !== 'boolean') return false;
+      prefs.app[key] = value;
+    } else {
+      return false;
+    }
+    persist();
+    return true;
+  });
+  ipcMain.handle('mod:grant', (e, userId, tier) => {
+    if (!fromTrusted(e)) return { ok: false, reason: 'Not allowed here.' };
+    if (typeof userId !== 'string' || !/^[A-Za-z0-9-]{8,64}$/.test(userId)) return { ok: false, reason: 'That does not look like a user ID.' };
+    if (userId === OWNER_ID) return { ok: false, reason: 'The owner role cannot be changed here.' };
+    if (tier !== null && !ALL_TIERS.includes(tier)) return { ok: false, reason: 'Unknown role.' };
+    const actor = roleOf(prefs.app.myId || '');
+    const current = badges.users[userId] ? badges.users[userId].tier : null;
+    if (tier && !canGrant(actor, tier)) return { ok: false, reason: 'Your role cannot give that one.' };
+    if (!tier && (!current || !canGrant(actor, current))) return { ok: false, reason: 'Your role cannot remove that one.' };
+    if (tier) badges.users[userId] = { tier, note: '' };
+    else delete badges.users[userId];
+    saveBadges();
+    persist();
+    return { ok: true };
+  });
+  ipcMain.handle('mod:open-data', (e) => {
+    if (!fromTrusted(e)) return false;
+    fs.mkdirSync(app.getPath('userData'), { recursive: true });
+    void shell.openPath(app.getPath('userData'));
+    return true;
+  });
+
+  // The site's own "Restart to update" bar is never offered: this build does not update itself.
+  ipcMain.handle('yapper:update-install', () => false);
+});
+
+// "Playing X": every 20 s look at the running programs for a known game (games.js) and tell the page.
+// Only the game's name leaves this machine, and only while it runs.
+let lastGame = null;
+function listProcesses() {
+  return new Promise((resolve) => {
+    const done = (err, out) => resolve(err ? [] : String(out).split(/\r?\n/));
+    if (process.platform === 'win32') execFile('tasklist', ['/FO', 'CSV', '/NH'], { windowsHide: true, maxBuffer: 8e6 }, done);
+    else execFile('ps', ['-axo', 'comm='], { maxBuffer: 8e6 }, done);
+  }).then((lines) => {
+    const names = new Set();
+    for (const line of lines) {
+      const raw = process.platform === 'win32' ? (/^"([^"]+)"/.exec(line) || [])[1] : line.trim().split('/').pop();
+      if (raw) names.add(raw.toLowerCase());
+    }
+    return names;
+  });
+}
+const HELPER = /launch|install|update|crash|helper|service|setup|bootstrap|widget|provider|uninst|webview|handler|tray|agent|server|report/;
+function matchGame(proc, key) {
+  const base = proc.replace(/\.exe$/, '');
+  if (key.endsWith('.exe')) return base === key.slice(0, -4);
+  if (process.platform === 'linux' && proc.length === 15 && key.startsWith(proc)) return true;
+  return base.startsWith(key) && !HELPER.test(base.slice(key.length));
+}
+function withWindow(procs) {
+  if (process.platform !== 'win32' || !procs.length) return Promise.resolve(null);
+  const list = procs.map((p) => `'${p.replace(/\.exe$/, '').replace(/'/g, "''")}'`).join(',');
+  const cmd = `Get-Process -Name ${list} -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 } | ForEach-Object { $_.ProcessName }; exit 0`;
+  return new Promise((resolve) => {
+    execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', cmd], { windowsHide: true, timeout: 15_000 }, (err, out) => {
+      if (err) return resolve(null);
+      resolve(new Set(String(out).split(/\r?\n/).map((l) => l.trim().toLowerCase()).filter(Boolean)));
+    });
+  });
+}
+let polling = false;
+async function pollGames() {
+  if (polling) return;
+  polling = true;
+  try {
+    const procs = [...(await listProcesses())];
+    const hits = [];
+    for (const [key, name] of GAMES) for (const p of procs) if (matchGame(p, key)) hits.push([p, name]);
+    let found = null;
+    if (hits.length) {
+      const shown = await withWindow([...new Set(hits.map(([p]) => p))]);
+      const hit = shown ? hits.find(([p]) => shown.has(p.replace(/\.exe$/, ''))) : hits[0];
+      found = hit ? hit[1] : null;
+    }
+    if (found !== lastGame) { lastGame = found; win?.webContents.send('yapper:activity', found); }
+  } finally {
+    polling = false;
+  }
+}
+ipcMain.on('yapper:activity:ask', (e) => e.sender.send('yapper:activity', lastGame));
+setInterval(() => { pollGames().catch(() => undefined); }, 20_000);
+setTimeout(() => { pollGames().catch(() => undefined); }, 3000);
+
+app.on('before-quit', () => { quitting = true; });
+// Quitting must really end the app, even if something holds it up.
+app.on('will-quit', () => { setTimeout(() => app.exit(0), 8_000).unref?.(); });
+app.on('window-all-closed', () => { /* stays in the tray */ });
+app.on('activate', () => { if (win) show(); else createWindow(); });

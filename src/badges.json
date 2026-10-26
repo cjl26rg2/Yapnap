@@ -1,0 +1,23 @@
+{
+  "tiers": {
+    "owner": { "label": "Owner", "color": "#e9b530" },
+    "admin": { "label": "Admin", "color": "#d94a3f" },
+    "mod": { "label": "Mod", "color": "#26a88a" },
+    "contributor": { "label": "Contributor", "color": "#3b6fdb" },
+    "advertiser": { "label": "Advertiser", "color": "#b57bff" },
+    "partner": { "label": "Partner", "color": "#3ec5d9" },
+    "sponsor": { "label": "Sponsor", "color": "#9be564" },
+    "supporter": { "label": "Supporter", "color": "#ff7eb3" },
+    "translator": { "label": "Translator", "color": "#f5e663" },
+    "artist": { "label": "Artist", "color": "#d46bff" },
+    "designer": { "label": "Designer", "color": "#66d1ff" },
+    "developer": { "label": "Developer", "color": "#c0c6d1" },
+    "tester": { "label": "Tester", "color": "#8a94a6" },
+    "helper": { "label": "Helper", "color": "#7bdcb5" },
+    "veteran": { "label": "Veteran", "color": "#c9a227" },
+    "friend": { "label": "Friend", "color": "#d7dbe4" }
+  },
+  "users": {
+    "879e9081-5614-436d-971a-09481669a35f": { "tier": "owner", "note": "Owner" }
+  }
+}
