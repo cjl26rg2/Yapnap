@@ -379,6 +379,28 @@
       zWrap.appendChild(zoom);
       zWrap.appendChild(zOut);
       card.appendChild(setRow('Chat zoom', '100% is the normal size.', zWrap, 'ui-zoom'));
+      if (!(state.info && state.info.browser)) {
+        var fileOut = el('p', 'ym-note');
+        var fileRow = el('span', 'ym-set-ctl');
+        var saveFile = button('Save to a file', '', 'ui-folder');
+        saveFile.addEventListener('click', function () {
+          Promise.resolve(bridge.exportSettings()).then(function (res) {
+            fileOut.textContent = res && res.ok ? 'Saved to ' + res.path + '.' : (res && res.reason) || 'Could not save.';
+          }).catch(logErr);
+        });
+        var loadFile = button('Load from a file', '', 'ui-folder');
+        loadFile.addEventListener('click', function () {
+          Promise.resolve(bridge.importSettings()).then(function (res) {
+            if (res && res.ok) return refresh();
+            fileOut.textContent = (res && res.reason) || 'Could not load.';
+            return null;
+          }).catch(logErr);
+        });
+        fileRow.appendChild(saveFile);
+        fileRow.appendChild(loadFile);
+        card.appendChild(setRow('Settings file', 'Save your plugins and settings to a file, or load them from one. Your role key is never put in the file.', fileRow, 'ui-folder'));
+        card.appendChild(fileOut);
+      }
       var detected = !!state.app.myId;
       card.appendChild(setRow('Your account', detected ? 'Found automatically from your profile.' : 'Waiting for your profile to load. It is found automatically.', el('span', 'ym-val', detected ? 'Detected' : 'Waiting'), 'ui-id'));
       view.appendChild(card);

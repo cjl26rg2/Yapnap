@@ -1,6 +1,6 @@
 // Yapnap: an unofficial desktop app for Yapin' (www.yapper.website). A window around the site with plugins,
 // settings and contributor badges added. It is not made by, or affiliated with, Yapin' or the Yapper team.
-const { app, BrowserWindow, Menu, Tray, nativeImage, shell, session, desktopCapturer, ipcMain, Notification } = require('electron');
+const { app, BrowserWindow, Menu, Tray, nativeImage, shell, session, desktopCapturer, ipcMain, Notification, dialog } = require('electron');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -209,9 +209,14 @@ function appInfo() {
   };
 }
 
+/** Sends the current page state to every Yapnap window, for example when the update bar changes. */
+function pushUpdateState() {
+  for (const w of BrowserWindow.getAllWindows()) applyToPage(w.webContents);
+}
+
 function applyToPage(wc) {
   if (!wc || wc.isDestroyed() || !pageBundle || !ALLOWED.has(hostOf(wc.getURL()))) return;
-  const state = JSON.stringify({ plugins: prefs.plugins, badges, safe: prefs.app.safeMode === true, custom: prefs.app.customCss || '' });
+  const state = JSON.stringify({ plugins: prefs.plugins, badges, safe: prefs.app.safeMode === true, custom: prefs.app.customCss || '', update: updater.updateStatus() });
   wc.executeJavaScript(`${pageBundle}\n;window.__yapnap && window.__yapnap.apply(${state});`, true).catch(() => undefined);
 }
 
@@ -650,6 +655,38 @@ app.whenReady().then(() => {
     await refreshRoles();
     return { ok: true };
   });
+  // Settings in a file. The role key is never written to the file, and never read from it.
+  ipcMain.handle('mod:export-settings', async (e) => {
+    if (!fromTrusted(e)) return { ok: false, reason: 'Not allowed here.' };
+    const { filePath, canceled } = await dialog.showSaveDialog({
+      title: 'Save Yapnap settings',
+      defaultPath: 'yapnap-settings.json',
+      filters: [{ name: 'Yapnap settings', extensions: ['json'] }],
+    });
+    if (canceled || !filePath) return { ok: false, reason: 'Cancelled.' };
+    const { roleKey, ...app } = prefs.app;
+    fs.writeFileSync(filePath, JSON.stringify({ format: 'yapnap-settings', version: 1, plugins: prefs.plugins, app }, null, 2));
+    return { ok: true, path: filePath };
+  });
+  ipcMain.handle('mod:import-settings', async (e) => {
+    if (!fromTrusted(e)) return { ok: false, reason: 'Not allowed here.' };
+    const { filePaths, canceled } = await dialog.showOpenDialog({
+      title: 'Load Yapnap settings',
+      properties: ['openFile'],
+      filters: [{ name: 'Yapnap settings', extensions: ['json'] }],
+    });
+    if (canceled || !filePaths[0]) return { ok: false, reason: 'Cancelled.' };
+    let raw;
+    try { raw = JSON.parse(fs.readFileSync(filePaths[0], 'utf8')); } catch { return { ok: false, reason: 'That file is not valid JSON.' }; }
+    if (!raw || raw.format !== 'yapnap-settings') return { ok: false, reason: 'That is not a Yapnap settings file.' };
+    const cleaned = cleanPrefs({ plugins: raw.plugins, app: raw.app });
+    cleaned.app.roleKey = prefs.app.roleKey; // this computer keeps its own role key
+    prefs = cleaned;
+    persist();
+    await refreshMe();
+    return { ok: true };
+  });
+
   ipcMain.handle('mod:open-data', (e) => {
     if (!fromTrusted(e)) return false;
     fs.mkdirSync(app.getPath('userData'), { recursive: true });
@@ -658,9 +695,10 @@ app.whenReady().then(() => {
   });
 
   // The site's own "Restart to update" bar is never offered. Yapnap updates itself from its GitHub releases instead.
-  ipcMain.handle('yapper:update-install', () => false);
+  // The update bar's button. Only the Yapnap page itself may use it.
+  ipcMain.handle('yapper:update-install', (e) => (fromSite(e) ? updater.installUpdate() : false));
 
-  updater.start();
+  updater.start(pushUpdateState);
 
   // The shared role list: read now, then every 10 minutes, so role changes reach everyone without an update.
   void refreshRoles();

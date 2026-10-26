@@ -11,3 +11,6 @@ site/
 .env
 .env.*
 build/banner.png
+
+# Build output for a second Windows build
+dist-next/

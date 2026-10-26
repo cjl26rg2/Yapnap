@@ -22,6 +22,37 @@
     return el;
   }
 
+  // The update bar: a strip across the top while a newer version is known. It is not a plugin, so it cannot be turned off.
+  var BAR_ID = 'yapnap-update-bar';
+  var BAR_CSS = '#yapnap-update-bar{position:fixed;top:0;left:0;right:0;z-index:2147483000;display:flex;align-items:center;' +
+    'justify-content:center;gap:12px;padding:8px 14px;background:var(--accent,#ff6b4a);color:#fff;font:600 13px/1.4 system-ui,sans-serif}' +
+    '#yapnap-update-bar button{border:0;border-radius:6px;padding:5px 12px;background:#fff;color:#111;font:600 13px system-ui,sans-serif;cursor:pointer}';
+
+  function renderUpdateBar(update) {
+    var bar = document.getElementById(BAR_ID);
+    if (!update || !update.version) {
+      if (bar) bar.remove();
+      return;
+    }
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = BAR_ID;
+      bar.setAttribute('role', 'status');
+      (document.body || document.documentElement).appendChild(bar);
+    }
+    bar.textContent = '';
+    var text = document.createElement('span');
+    text.textContent = update.ready ? 'Yapnap ' + update.version + ' is ready.' : 'Yapnap ' + update.version + ' is out.';
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = update.ready ? 'Restart to update' : 'Get it';
+    button.addEventListener('click', function () {
+      if (window.yapperDesktop && window.yapperDesktop.installUpdate) window.yapperDesktop.installUpdate();
+    });
+    bar.appendChild(text);
+    bar.appendChild(button);
+  }
+
   function stopPlugin(id) {
     var r = running.get(id);
     if (!r) return;
@@ -64,6 +95,9 @@
     // Anything still running that is no longer enabled (or no longer registered) is stopped.
     Array.from(running.keys()).forEach(function (id) { if (!active.has(id)) stopPlugin(id); });
 
+    css.push(BAR_CSS);
+    renderUpdateBar(state.update);
+
     // The person's own CSS comes last, so it wins. Safe mode leaves it out, like every plugin.
     if (!safe && typeof state.custom === 'string' && state.custom) css.push(state.custom);
 
@@ -71,5 +105,5 @@
     return { active: active.size, css: css.length };
   }
 
-  window.__yapnap = { apply: apply, version: '0.2.0' };
+  window.__yapnap = { apply: apply, version: '0.3.0' };
 })();
