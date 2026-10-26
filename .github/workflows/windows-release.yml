@@ -1,0 +1,56 @@
+name: windows-release
+
+# Builds the Windows files for a release tag and uploads them to that release: the installer, its blockmap and
+# latest.yml (for installed copies), and the portable exe in a zip (for the portable copy's update check).
+# Start it from the Actions tab with the tag, for example v0.3.0.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The release tag to build, for example v0.3.0'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Plugin checks
+        run: npm run check
+      - name: Build the installer and the portable exe
+        run: npx electron-builder --win --publish never
+      - name: Zip the portable exe
+        shell: pwsh
+        run: |
+          $version = node -p "require('./package.json').version"
+          Compress-Archive -Path "dist/Yapnap-$version-portable.exe" -DestinationPath "dist/Yapnap-$version-portable.zip" -Force
+      - name: Upload to the release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $version = node -p "require('./package.json').version"
+          gh release upload "${{ inputs.tag }}" `
+            "dist/Yapnap-$version-setup.exe" `
+            "dist/Yapnap-$version-setup.exe.blockmap" `
+            "dist/latest.yml" `
+            "dist/Yapnap-$version-portable.zip" `
+            --clobber
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Yapnap-Windows
+          path: |
+            dist/*.exe
+            dist/*.blockmap
+            dist/*.zip
+            dist/latest.yml
