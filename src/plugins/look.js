@@ -15,7 +15,7 @@
       '--nl-line': p.border
     };
     var decls = Object.keys(v).map(function (k) { return k + ':' + v[k] + '!important'; });
-    return ':root,.app{' + decls.join(';') + '}';
+    return ':root:root:root:root,.app.app.app.app{' + decls.join(';') + '}';
   }
 
   function luminance(hex) {
@@ -88,7 +88,7 @@
     settings: [{ key: 'hex', label: 'Colour', type: 'color', def: '#5b8def' }],
     css: function (s) {
       var on = luminance(s.hex) > 0.6 ? '#101114' : '#ffffff';
-      return ':root,.app{--accent:' + s.hex + '!important;--accent-hover:' + s.hex + 'dd!important;' +
+      return ':root:root:root:root,.app.app.app.app{--accent:' + s.hex + '!important;--accent-hover:' + s.hex + 'dd!important;' +
         '--accent-soft:color-mix(in srgb,' + s.hex + ' 22%,transparent)!important;--on-accent:' + on + '!important}';
     }
   });
@@ -99,7 +99,7 @@
     desc: 'How round panels, cards and inputs are, in pixels. 0 is fully square.',
     category: 'Look',
     settings: [{ key: 'px', label: 'Radius', type: 'range', min: 0, max: 16, step: 1, def: 8 }],
-    css: function (s) { return ':root,.app{--radius:' + s.px + 'px!important;--card-r:' + s.px + 'px!important}'; }
+    css: function (s) { return ':root:root:root:root,.app.app.app.app{--radius:' + s.px + 'px!important;--card-r:' + s.px + 'px!important}'; }
   });
 
   Y.add({
@@ -125,7 +125,7 @@
     name: 'No shadows',
     desc: 'Flat look with no drop shadows.',
     category: 'Look',
-    css: ':root,.app{--shadow:none!important}.modal,.ctx-menu,.mini-pop{box-shadow:none!important}'
+    css: ':root:root:root:root,.app.app.app.app{--shadow:none!important}.modal,.ctx-menu,.mini-pop{box-shadow:none!important}'
   });
 
   Y.add({
@@ -158,7 +158,7 @@
     name: 'High contrast text',
     desc: 'Brighter text on the same backgrounds.',
     category: 'Look',
-    css: ':root,.app{--text:#ffffff!important;--text-muted:#cfd2d9!important;--text-faint:#aeb2bb!important}'
+    css: ':root:root:root:root,.app.app.app.app{--text:#ffffff!important;--text-muted:#cfd2d9!important;--text-faint:#aeb2bb!important}'
   });
 
   Y.add({
@@ -166,7 +166,7 @@
     name: 'Stronger borders',
     desc: 'Panel edges and dividers are easier to see.',
     category: 'Look',
-    css: ':root,.app{--border:rgba(255,255,255,.22)!important}'
+    css: ':root:root:root:root,.app.app.app.app{--border:rgba(255,255,255,.22)!important}'
   });
 
   Y.add({

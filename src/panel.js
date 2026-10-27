@@ -128,6 +128,13 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
 .ym-group-head img{width:18px;height:18px}
 .ym-group-head .ym-count{margin-left:auto;font-size:12px;font-weight:600;color:var(--text-faint,#9294a1);font-variant-numeric:tabular-nums}
 .ym-search-row{display:flex;align-items:center;gap:10px}
+.ym-seg{display:flex;gap:4px;flex:none}
+.ym-seg button{height:30px;padding:0 11px;border:1px solid var(--border,#ffffff12);border-radius:8px;background:none;color:var(--text-muted,#9c9daa);font-size:12.5px;font-weight:600;cursor:pointer;transition:background var(--ym-fast) var(--ym-ease),color var(--ym-fast) var(--ym-ease)}
+.ym-seg button:hover{background:var(--bg-hover,#2f3038);color:var(--text,#ececf1)}
+.ym-seg button[aria-pressed="true"]{background:var(--bg-active,#383944);color:var(--text,#ececf1);border-color:transparent}
+.ym-seg button:focus-visible{outline:2px solid var(--ym-accent);outline-offset:2px}
+.ym-btn.small{height:28px;padding:0 10px;font-size:12.5px}
+.ym-plugin-ctl [hidden]{display:none!important}
 .ym-plugin{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 24px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border,#ffffff12)}
 .ym-plugin:last-child{border-bottom:0}
 .ym-plugin.is-failed{}
@@ -205,7 +212,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
   var PAGE_LEAD = {
     about: 'What Yapnap is running, and what changed.',
     settings: 'Changes apply straight away.',
-    plugins: 'Switch on the plugins you want. Each one changes one part of Yapin.',
+    plugins: 'Switch on the plugins you want. Each one changes one part of Yapin. A plugin with settings shows them when it is on.',
     themes: 'Choosing a theme turns the others off.'
   };
   // The category icons come from the art pack: cat-messages, cat-composer and so on.
@@ -221,7 +228,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
   var TIER_ORDER = ['owner', 'co-owner', 'manager', 'admin', 'mod', 'contributor', 'advertiser', 'partner', 'sponsor', 'supporter', 'translator', 'artist', 'designer', 'developer', 'tester', 'helper', 'veteran', 'friend'];
   var TIER_LABEL = { owner: 'Owner', 'co-owner': 'Co-owner', admin: 'Admin', manager: 'Manager', mod: 'Mod', contributor: 'Contributor', advertiser: 'Advertiser', partner: 'Partner', sponsor: 'Sponsor', supporter: 'Supporter', translator: 'Translator', artist: 'Artist', designer: 'Designer', developer: 'Developer', tester: 'Tester', helper: 'Helper', veteran: 'Veteran', friend: 'Friend' };
   var OWNER_ID = '879e9081-5614-436d-971a-09481669a35f';
-  var BAD_CSS = /url\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-binding|[<>\\]/i;
+  var BAD_CSS = /url\s*\(|image-set\s*\(|\bimage\s*\(|\bsrc\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-binding|\\/i;
   var CHANGES = [
     'Yapper’s own names stay as they are, including Yapin’ Plus.',
     '37 more plugins, 200 in all.',
@@ -270,6 +277,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
     var state = { plugins: {}, badges: { tiers: {}, users: {} }, app: {}, info: {} };
     var page = 'about';
     var query = '';
+    var status = 'all'; // the plugin filter: all, on, off or changed
     var cat = 'All';
     function isBrowser() { return !!(state.info && state.info.browser); }
 
@@ -292,13 +300,27 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
     }
     function byId(id) { return Y.get(id); }
     function inCategory(c) { return Y.list().filter(function (p) { return p.category === c; }); }
+    // Changed means not at its default: switched the other way, or with its own settings saved.
+    function changed(p) {
+      return isOn(p) !== !!p.def || Object.keys(savedOf(p).s || {}).length > 0;
+    }
     function matches(p) {
+      if (status === 'on' && !isOn(p)) return false;
+      if (status === 'off' && isOn(p)) return false;
+      if (status === 'changed' && !changed(p)) return false;
       if (!query) return true;
       return (p.name + ' ' + p.desc + ' ' + p.category).toLowerCase().indexOf(query.toLowerCase()) !== -1;
     }
     function activeTheme() {
       var on = THEMES.filter(function (t) { var p = byId(t.id); return p && isOn(p); });
       return on.length ? on[0].id : 'default';
+    }
+    // The theme installed from a file, if there is one. Its colours are the ones in the file.
+    function installedTheme() {
+      var t = state.app.theme;
+      if (!t || !t.colors) return null;
+      var c = t.colors;
+      return { id: 'installed', name: t.name, sw: [c.bg, c.side, c.elev, c.text] };
     }
 
     // Each change is applied in the page, and saved. If the save fails, the change is taken back and the person is told.
@@ -334,6 +356,40 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       return call(bridge.setApp(key, value)).then(function (ok) {
         if (ok === false) toast('app-save', 'Could not save that setting.', 'bad');
         return ok !== false;
+      });
+    }
+    // Several plugins switched in one save, so the page is updated once. Resolves to how many changed, or -1 on failure.
+    function setMany(list, on) {
+      var todo = list.filter(function (p) { return isOn(p) !== on; });
+      if (!todo.length) return Promise.resolve(0);
+      if (typeof bridge.setPlugins !== 'function') {
+        return Promise.all(todo.map(function (p) { return setOn(p, on); })).then(function (results) {
+          return results.indexOf(false) === -1 ? todo.length : -1;
+        });
+      }
+      var before = {};
+      var changes = {};
+      todo.forEach(function (p) {
+        before[p.id] = savedOf(p);
+        changes[p.id] = on;
+        state.plugins[p.id] = Object.assign({}, savedOf(p), { on: on });
+      });
+      return call(bridge.setPlugins(changes)).then(function (ok) {
+        if (ok === false) {
+          Object.keys(before).forEach(function (id) { state.plugins[id] = before[id]; });
+          toast('plugin-save', 'Could not save those changes.', 'bad');
+          return -1;
+        }
+        return todo.length;
+      });
+    }
+    // Back to the default: the plugin's own switch and settings are removed.
+    function resetOne(p) {
+      call(bridge.resetPlugin(p.id)).then(function (ok) {
+        if (ok === false) return toast('plugin-reset', 'Could not reset ' + p.name + '.', 'bad');
+        delete state.plugins[p.id];
+        toast('plugin-reset', p.name + ' is back to its default.', 'ok');
+        return refresh();
       });
     }
 
@@ -629,7 +685,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       roles.appendChild(rolesBlock());
       view.appendChild(roles);
 
-      var css = sectionTitle('Custom CSS', 'Your own CSS, added after every plugin so it wins. Links to files, @import, script URLs, angle brackets and backslashes are not allowed.');
+      var css = sectionTitle('Custom CSS', 'Your own CSS, added after every plugin so it wins. Colours may need !important to beat the new layout. Links to files, @import, script URLs and backslashes are not allowed.');
       css.appendChild(customCssBlock());
       view.appendChild(css);
       startPage();
@@ -682,7 +738,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         slot.textContent = '';
         var text = area.value;
         if (text.length > 20000) { slot.appendChild(status(false, 'That is too long. The limit is 20,000 characters.')); return; }
-        if (BAD_CSS.test(text)) { slot.appendChild(status(false, 'That CSS uses something Yapnap does not allow: links to files, @import, script URLs, angle brackets or backslashes.')); return; }
+        if (BAD_CSS.test(text)) { slot.appendChild(status(false, 'That CSS uses something Yapnap does not allow: links to files, @import, script URLs or backslashes.')); return; }
         setBusy(save, true);
         call(bridge.setApp('customCss', text)).then(function (ok) {
           setBusy(save, false);
@@ -916,7 +972,11 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
           counts();
         });
       });
+      var undo = button('Reset', 'ghost small', 'ui-reset');
+      undo.setAttribute('aria-label', 'Reset ' + p.name + ' to its default');
+      undo.addEventListener('click', function () { resetOne(p); });
       ctl.appendChild(state2);
+      ctl.appendChild(undo);
       ctl.appendChild(sw);
       r.appendChild(text);
       r.appendChild(ctl);
@@ -929,6 +989,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         r._collapse = collapse;
       }
       r._state = state2;
+      r._undo = undo;
       r._sw = sw;
       r._fail = failLine;
       paint(r, p);
@@ -939,6 +1000,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       var on = isOn(p);
       var fail = on ? Y.failure(p.id) : null;
       r._sw.checked = on;
+      r._undo.hidden = !changed(p) || typeof bridge.resetPlugin !== 'function';
       r.classList.toggle('is-failed', !!fail);
       r._state.textContent = fail ? 'Failed' : (on ? 'On' : 'Off');
       r._state.className = 'ym-state' + (fail ? ' bad' : (on ? ' on' : ''));
@@ -972,6 +1034,25 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         note.appendChild(el('span', null, 'Safe mode is on, so no plugin runs right now. The switches show what will run when it is off.'));
         view.appendChild(note);
       }
+      // A plugin that is on but could not start on this page. It is named here, with a way to switch it off.
+      var failing = all.filter(function (p) { return isOn(p) && Y.failure(p.id); });
+      if (failing.length) {
+        var broken = el('div', 'ym-notice');
+        broken.appendChild(art('ui-warning', 15));
+        var names = failing.map(function (p) { return p.name; }).join(', ');
+        broken.appendChild(el('span', null, (failing.length === 1 ? '1 plugin is on but did not start here: ' : failing.length + ' plugins are on but did not start here: ') + names + '.'));
+        var stopBroken = button('Turn them off', 'ghost small', 'ui-reset');
+        stopBroken.addEventListener('click', function () {
+          setBusy(stopBroken, true);
+          setMany(failing, false).then(function (n) {
+            setBusy(stopBroken, false);
+            if (n > 0) toast('failed-off', 'Turned off ' + n + (n === 1 ? ' plugin.' : ' plugins.'), 'ok');
+            return refresh();
+          });
+        });
+        broken.appendChild(stopBroken);
+        view.appendChild(broken);
+      }
 
       var tools = el('div', 'ym-search-row');
       var box = el('label', 'ym-search');
@@ -983,6 +1064,28 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       search.setAttribute('aria-label', 'Search plugins');
       box.appendChild(search);
       tools.appendChild(box);
+      var FILTERS = [['all', 'All'], ['on', 'On'], ['off', 'Off'], ['changed', 'Changed']];
+      var seg = el('div', 'ym-seg');
+      seg.setAttribute('role', 'group');
+      seg.setAttribute('aria-label', 'Show plugins');
+      FILTERS.forEach(function (f) {
+        var b = el('button', null, f[1]);
+        b.type = 'button';
+        b.setAttribute('data-filter', f[0]);
+        b.addEventListener('click', function () {
+          status = f[0];
+          paintSeg();
+          drawGroups();
+        });
+        seg.appendChild(b);
+      });
+      function paintSeg() {
+        seg.querySelectorAll('button').forEach(function (b) {
+          b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === status));
+        });
+      }
+      paintSeg();
+      tools.appendChild(seg);
       var total = el('span', 'ym-row-desc');
       tools.appendChild(total);
       view.appendChild(tools);
@@ -1018,7 +1121,18 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         groups.textContent = '';
         var shown = Y.categories.filter(function (c) { return inCategory(c).filter(matches).length > 0; });
         if (!shown.length) {
-          groups.appendChild(el('p', 'ym-empty', 'No plugin matches "' + query + '".'));
+          var empty = el('div', 'ym-empty');
+          empty.appendChild(el('p', null, 'No plugin matches' + (query ? ' "' + query + '"' : '') + (status !== 'all' ? ' with this filter' : '') + '.'));
+          var showAll = button('Show all plugins', 'ghost', null);
+          showAll.addEventListener('click', function () {
+            query = '';
+            status = 'all';
+            search.value = '';
+            paintSeg();
+            drawGroups();
+          });
+          empty.appendChild(showAll);
+          groups.appendChild(empty);
           return;
         }
         shown.forEach(function (c) {
@@ -1029,9 +1143,27 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
           head.appendChild(art('cat-' + c.toLowerCase(), 18));
           head.appendChild(el('span', null, c));
           head.appendChild(el('span', 'ym-count', inCat.filter(isOn).length + ' of ' + inCat.length + ' on'));
+          // All on / All off act on the plugins this group shows, so a search or filter limits them too.
+          var shownHere = inCat.filter(matches);
+          var onAll = button('All on', 'ghost small', null);
+          var offAll = button('All off', 'ghost small', null);
+          onAll.addEventListener('click', function () { bulkIn(shownHere, true, c); });
+          offAll.addEventListener('click', function () { bulkIn(shownHere, false, c); });
+          head.appendChild(onAll);
+          head.appendChild(offAll);
           sec.appendChild(head);
-          inCat.filter(matches).forEach(function (p) { sec.appendChild(pluginRow(p)); });
+          shownHere.forEach(function (p) { sec.appendChild(pluginRow(p)); });
           groups.appendChild(sec);
+        });
+      }
+      function bulkIn(list, on, c) {
+        setMany(list, on).then(function (n) {
+          if (n < 0) return null;
+          if (n === 0) toast('bulk', 'Every plugin in ' + c + ' is already ' + (on ? 'on' : 'off') + '.', 'ok');
+          else toast('bulk', (on ? 'Turned on ' : 'Turned off ') + n + (n === 1 ? ' plugin' : ' plugins') + ' in ' + c + '.', 'ok');
+          counts();
+          drawGroups();
+          return null;
         });
       }
       function jump(c) {
@@ -1059,14 +1191,15 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
 
     // ----- Themes -----
     function renderThemes() {
-      var all = [DEFAULT_THEME].concat(THEMES);
+      var installed = installedTheme();
+      var all = [DEFAULT_THEME].concat(installed ? [installed] : [], THEMES);
       view.appendChild(pageHead('Themes', []));
 
       var grid = el('div', 'ym-themes');
       grid.setAttribute('role', 'radiogroup');
       grid.setAttribute('aria-label', 'Themes');
       var tiles = {};
-      var chosen = activeTheme();
+      var chosen = installed && state.app.themeOn ? 'installed' : activeTheme();
 
       function paintTiles() {
         all.forEach(function (t) {
@@ -1085,6 +1218,8 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
           var p = byId(t.id);
           return p ? setOn(p, t.id === id) : Promise.resolve(true);
         });
+        // The installed theme and a built-in one are never on together, so choosing one turns the other off.
+        jobs.push(setApp('themeOn', id === 'installed'));
         Promise.all(jobs).then(function (results) {
           if (results.indexOf(false) !== -1) {
             chosen = before;
@@ -1142,6 +1277,41 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       paintTiles();
       view.appendChild(grid);
 
+      var install = sectionTitle('Install a theme', 'Get a theme from the Themes page on the Yapnap website: press Copy theme file, save the text as a .json file, then install that file here. A picture theme brings its picture with it.');
+      var installActions = el('div', 'ym-actions');
+      var add = button('Install a theme file', 'primary', 'ui-plus');
+      add.addEventListener('click', function () {
+        setBusy(add, true);
+        call(bridge.importTheme()).then(function (res) {
+          setBusy(add, false);
+          if (!res || res.ok !== true) {
+            if (res && res.reason && res.reason !== 'Cancelled.') toast('theme-install', res.reason, 'bad');
+            return null;
+          }
+          toast('theme-install', 'Theme installed: ' + res.name, 'ok');
+          return refresh();
+        });
+      });
+      installActions.appendChild(add);
+      if (installed) {
+        var remove = button('Remove theme', 'danger', 'ui-trash');
+        remove.addEventListener('click', function () {
+          confirmDialog({ title: 'Remove ' + installed.name + '?', body: 'The installed theme is removed. Your built-in themes and plugins are not changed.', confirm: 'Remove theme', danger: true }).then(function (yes) {
+            if (!yes) return null;
+            setBusy(remove, true);
+            return call(bridge.removeTheme()).then(function (ok) {
+              setBusy(remove, false);
+              if (ok === false) { toast('theme-install', 'Could not remove that theme.', 'bad'); return null; }
+              toast('theme-install', 'Theme removed.', 'ok');
+              return refresh();
+            });
+          });
+        });
+        installActions.appendChild(remove);
+      }
+      install.appendChild(installActions);
+      if (!isBrowser()) view.appendChild(install);
+
       var adjust = sectionTitle('Adjust');
       var acc = byId('accent-colour');
       if (acc) {
@@ -1179,8 +1349,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       var share = sectionTitle('Share a look', 'Made a look you like? Publish its colours for everyone to use. You add the name and licence on the website.');
       var publish = button('Publish my look', 'primary', 'ui-plus');
       publish.addEventListener('click', function () {
-        var active = activeTheme();
-        var chosenTheme = all.filter(function (t) { return t.id === active; })[0];
+        var chosenTheme = all.filter(function (t) { return t.id === chosen; })[0];
         var base = chosenTheme ? chosenTheme.sw : DEFAULT_THEME.sw;
         var accP = byId('accent-colour');
         var accent = accP ? valueOf(accP, accP.settings[0]) : '#ff6b4a';

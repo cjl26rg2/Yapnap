@@ -35,7 +35,7 @@ function manifest(target) {
   const out = {
     manifest_version: 3,
     name: 'Yapnap',
-    version: '1.0.0',
+    version: '1.0.1',
     description: "Unofficial plugins, settings and contributor badges for Yapin'.",
     icons: { 512: 'icon.png' },
     permissions: ['storage'],

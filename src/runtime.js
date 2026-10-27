@@ -36,6 +36,49 @@
     '@keyframes yapnap-bar-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}' +
     '@media (prefers-reduced-motion:reduce){#yapnap-update-bar{animation:none}}';
 
+  // An installed theme: its colours for the panels and text, and its picture behind the chat. The picture shows through
+  // the panels: its opacity is how much of it shows, so the panels are that much see-through. The selectors are the
+  // strong ones the palettes use, so they win.
+  function rgbOf(hex) {
+    var n = parseInt(hex.slice(1), 16);
+    return ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255);
+  }
+  function brightness(hex) {
+    var n = parseInt(hex.slice(1), 16);
+    return (0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255;
+  }
+  function themeCss(t) {
+    var c = t.colors;
+    var picture = !!t.image;
+    var panel = picture ? Math.max(0.15, 1 - t.opacity) : 1;
+    var alpha = function (hex, a) { return 'rgba(' + rgbOf(hex) + ',' + a + ')'; };
+    var lift = function (hex, pct) { return 'color-mix(in srgb,' + hex + ' ' + pct + '%,#ffffff)'; };
+    var sel = ':root:root:root:root,.app.app.app.app';
+    var vars = {
+      '--bg-main': alpha(c.bg, panel), '--bg-side': alpha(c.side, panel), '--bg-side-solid': alpha(c.side, panel), '--bg-rail': alpha(c.side, panel),
+      '--bg-elev': alpha(c.elev, panel), '--bg-float': c.elev, '--bg-floating': c.elev,
+      '--bg-hover': lift(c.elev, 92), '--bg-active': lift(c.elev, 86), '--bg-input': c.side,
+      '--border': alpha(c.text, 0.14), '--text': c.text, '--text-muted': alpha(c.text, 0.72), '--text-faint': alpha(c.text, 0.5),
+      '--nl-side': alpha(c.side, panel), '--nl-rail': alpha(c.side, panel), '--nl-panel': alpha(c.bg, panel), '--nl-elev': alpha(c.elev, panel),
+      '--nl-hover': lift(c.elev, 92), '--nl-active': lift(c.elev, 86), '--nl-input': c.side, '--nl-float': c.elev,
+      '--nl-line': alpha(c.text, 0.14),
+      '--accent': c.accent, '--accent-hover': lift(c.accent, 88), '--accent-soft': alpha(c.accent, 0.14),
+      '--on-accent': brightness(c.accent) > 0.6 ? '#101114' : '#ffffff'
+    };
+    var decls = Object.keys(vars).map(function (k) { return k + ':' + vars[k] + '!important'; });
+    var css = sel + '{' + decls.join(';') + '}';
+    // Yapper paints the body with its own rules, so the body is made clear: the page's colour or picture shows through.
+    css += ':root:root:root:root body{background:transparent!important}';
+    if (picture) {
+      var tile = t.size === 'tile';
+      css += ':root:root:root:root{background-color:' + c.bg + '!important;background-image:url("' + t.image + '")!important;' +
+        'background-size:' + (tile ? 'auto' : 'cover') + '!important;background-repeat:' + (tile ? 'repeat' : 'no-repeat') + '!important;background-position:center!important}';
+    } else {
+      css += ':root:root:root:root{background-color:' + c.bg + '!important;background-image:none!important}';
+    }
+    return css;
+  }
+
   function renderUpdateBar(update) {
     var bar = document.getElementById(BAR_ID);
     if (!update || !update.version || window.__yapnapDismissed === update.version) {
@@ -124,11 +167,15 @@
     renderUpdateBar(state.update);
 
     // The person's own CSS comes last, so it wins. Safe mode leaves it out, like every plugin.
+    // An installed theme comes after the plugins, so it wins over them. The person's own CSS still comes last.
+    if (!safe && state.theme && state.theme.colors) {
+      try { css.push(themeCss(state.theme)); } catch (e) { log('theme failed:', e); }
+    }
     if (!safe && typeof state.custom === 'string' && state.custom) css.push(state.custom);
 
     styleEl().textContent = css.join('\n');
     return { active: active.size, css: css.length };
   }
 
-  window.__yapnap = { apply: apply, version: '1.0.0' };
+  window.__yapnap = { apply: apply, version: '1.0.1' };
 })();

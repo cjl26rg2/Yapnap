@@ -3,22 +3,33 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 // Only the mod's own settings. Main checks the sender before it acts on any of these calls.
+// The calls that change something important (roles, the role key, files, theme files, sign-out) also need a click first.
+// A script on the page cannot make a click, so a script that gets into the page cannot use them on its own.
+const clicked = () => Boolean(navigator.userActivation && navigator.userActivation.isActive);
+const withClick = (fail, call) => (...args) => (clicked() ? call(...args) : Promise.resolve(fail));
+const NEEDS_CLICK = { ok: false, reason: 'Click the button again to do that.' };
+
 contextBridge.exposeInMainWorld('yapnap', {
-  version: '1.0.0',
+  version: '1.0.1',
   state: () => ipcRenderer.invoke('mod:state'),
   setPlugin: (id, on) => ipcRenderer.invoke('mod:set-plugin', String(id), on === true),
   setSetting: (id, key, value) => ipcRenderer.invoke('mod:set-setting', String(id), String(key), value),
-  reset: () => ipcRenderer.invoke('mod:reset'),
-  openDataFolder: () => ipcRenderer.invoke('mod:open-data'),
-  signOut: () => ipcRenderer.invoke('mod:sign-out'),
-  setApp: (key, value) => ipcRenderer.invoke('mod:set-app', String(key), value),
-  grant: (userId, tier) => ipcRenderer.invoke('mod:grant', String(userId), tier === null ? null : String(tier)),
-  exportSettings: () => ipcRenderer.invoke('mod:export-settings'),
-  importSettings: () => ipcRenderer.invoke('mod:import-settings'),
+  setPlugins: (changes) => ipcRenderer.invoke('mod:set-plugins', changes),
+  resetPlugin: (id) => ipcRenderer.invoke('mod:reset-plugin', String(id)),
+  reset: withClick(false, () => ipcRenderer.invoke('mod:reset')),
+  openDataFolder: withClick(false, () => ipcRenderer.invoke('mod:open-data')),
+  signOut: withClick(false, () => ipcRenderer.invoke('mod:sign-out')),
+  importTheme: withClick(NEEDS_CLICK, () => ipcRenderer.invoke('mod:import-theme')),
+  removeTheme: withClick(false, () => ipcRenderer.invoke('mod:remove-theme')),
+  // Only changing the role key needs a click. The other settings change without one.
+  setApp: (key, value) => (String(key) === 'roleKey' && !clicked() ? Promise.resolve(false) : ipcRenderer.invoke('mod:set-app', String(key), value)),
+  grant: withClick(NEEDS_CLICK, (userId, tier) => ipcRenderer.invoke('mod:grant', String(userId), tier === null ? null : String(tier))),
+  exportSettings: withClick(NEEDS_CLICK, () => ipcRenderer.invoke('mod:export-settings')),
+  importSettings: withClick(NEEDS_CLICK, () => ipcRenderer.invoke('mod:import-settings')),
 });
 
 contextBridge.exposeInMainWorld('yapperDesktop', {
-  version: '1.0.0',
+  version: '1.0.1',
   platform: process.platform,
   /** Unread count for the taskbar/dock. */
   setBadge: (count) => ipcRenderer.send('yapper:badge', Number(count) || 0),

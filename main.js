@@ -7,6 +7,8 @@ const path = require('node:path');
 const { execFile } = require('node:child_process');
 const GAMES = require('./games');
 const updater = require('./updater');
+const themeFile = require('./theme');
+const secrets = require('./secrets');
 const auth = require('./auth');
 
 const APP_NAME = 'Yapnap';
@@ -27,10 +29,13 @@ const OWNER_ID = '879e9081-5614-436d-971a-09481669a35f';
 // YAPNAP_ROLES_URL points the app at a local test server (see the testing notes). Normally this is the site.
 const ROLES_URL = process.env.YAPNAP_ROLES_URL || 'https://yapnap.pages.dev';
 const ROLES_EVERY = 10 * 60 * 1000;
-const APP_DEFAULTS = { trayOnClose: true, notifications: true, flashOnMention: true, safeMode: false, zoom: 100, myId: '', roleKey: '', customCss: '' };
+const APP_DEFAULTS = { trayOnClose: true, notifications: true, flashOnMention: true, safeMode: false, zoom: 100, myId: '', roleKey: '', customCss: '', themeOn: false, theme: null };
 const CUSTOM_CSS_MAX = 20000;
+const SETTINGS_FILE_MAX = 8 * 1024 * 1024; // a settings file may hold a theme picture, so it is larger than a theme file
+const ROLE_KEY_FILE = 'role-key.json';
 // Custom CSS may not load files, import other sheets, run script, or use angle brackets or backslashes.
-const BAD_CSS = /url\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-binding|[<>\\]/i;
+// Angle brackets and '>' are fine in CSS (child selectors), because the CSS is set as text, never as markup.
+const BAD_CSS = /url\s*\(|image-set\s*\(|\bimage\s*\(|\bsrc\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-binding|\\/i;
 const DEFAULT_TIERS = {
   owner: { label: 'Owner', color: '#e9b530' },
   'co-owner': { label: 'Co-owner', color: '#ff8c42' },
@@ -103,6 +108,9 @@ function cleanApp(raw) {
   if (typeof raw.myId === 'string' && (raw.myId === '' || /^[A-Za-z0-9-]{8,64}$/.test(raw.myId))) out.myId = raw.myId;
   if (typeof raw.roleKey === 'string' && raw.roleKey.length <= 200) out.roleKey = raw.roleKey.trim();
   if (typeof raw.customCss === 'string' && raw.customCss.length <= CUSTOM_CSS_MAX && !BAD_CSS.test(raw.customCss)) out.customCss = raw.customCss;
+  const theme = themeFile.cleanTheme(raw.theme);
+  if (theme) out.theme = theme;
+  if (typeof raw.themeOn === 'boolean') out.themeOn = raw.themeOn && Boolean(out.theme);
   return out;
 }
 
@@ -115,11 +123,28 @@ function loadPrefs() {
   try { prefs = cleanPrefs(JSON.parse(fs.readFileSync(prefsFile(), 'utf8'))); } catch { prefs = { plugins: {}, app: { ...APP_DEFAULTS } }; }
 }
 
+// The role key lives in its own encrypted file (secrets.js). An older settings file may still hold it in plain text:
+// that copy is moved over once, and then taken out of the settings file.
+let roleKeyReady = Promise.resolve();
+function startRoleKey() {
+  roleKeyReady = (async () => {
+    const legacy = prefs.app.roleKey;
+    if (legacy) {
+      await secrets.saveSecret(ROLE_KEY_FILE, legacy);
+      savePrefs();
+    } else {
+      prefs.app.roleKey = await secrets.loadSecret(ROLE_KEY_FILE);
+    }
+  })().catch((e) => console.error('Could not read the role key:', e.message));
+}
+
 function savePrefs() {
   try {
     fs.mkdirSync(app.getPath('userData'), { recursive: true });
     const tmp = `${prefsFile()}.tmp`;
-    fs.writeFileSync(tmp, JSON.stringify(prefs, null, 2));
+    // The role key is never written here. It is in its own encrypted file.
+    const { roleKey, ...appSettings } = prefs.app;
+    fs.writeFileSync(tmp, JSON.stringify({ plugins: prefs.plugins, app: appSettings }, null, 2));
     fs.renameSync(tmp, prefsFile());
   } catch (e) { console.error('Could not save settings:', e.message); }
 }
@@ -155,10 +180,12 @@ function loadBadges() {
 
 /** Asks the website what the saved role key may do. A network failure keeps the last answer. */
 async function refreshMe() {
+  await roleKeyReady;
   const key = prefs.app.roleKey;
   if (!key) { roleLevel = null; grantable = []; return; }
   try {
-    const res = await fetch(`${ROLES_URL}/api/roles/me`, { headers: { authorization: `Bearer ${key}` } });
+    // A redirect would send the key to another address, so it is never followed.
+    const res = await fetch(`${ROLES_URL}/api/roles/me`, { headers: { authorization: `Bearer ${key}` }, redirect: 'error' });
     if (res.status === 401) { roleLevel = null; grantable = []; return; }
     const data = res.ok ? await res.json() : null;
     if (!data || typeof data.role !== 'string') return;
@@ -219,7 +246,8 @@ function pushUpdateState() {
 
 function applyToPage(wc) {
   if (!wc || wc.isDestroyed() || !pageBundle || !ALLOWED.has(hostOf(wc.getURL()))) return;
-  const state = JSON.stringify({ plugins: prefs.plugins, badges, safe: prefs.app.safeMode === true, custom: prefs.app.customCss || '', update: updater.updateStatus() });
+  const theme = prefs.app.themeOn && prefs.app.safeMode !== true ? prefs.app.theme : null;
+  const state = JSON.stringify({ plugins: prefs.plugins, badges, safe: prefs.app.safeMode === true, custom: prefs.app.customCss || '', theme, update: updater.updateStatus() });
   wc.executeJavaScript(`${pageBundle}\n;window.__yapnap && window.__yapnap.apply(${state});`, true).catch(() => undefined);
 }
 
@@ -291,6 +319,10 @@ function showLoadError(title, detail) {
 /** Every load of the site goes through here, so a failed one always ends on the error screen. */
 function loadSite(url) {
   if (!win) return;
+  // Only the Yapin' site over https may load in this window, whatever asked for it (a notification, a link, a redirect).
+  let allowed = false;
+  try { const u = new URL(url); allowed = u.protocol === 'https:' && ALLOWED.has(u.hostname); } catch { /* not a URL */ }
+  if (!allowed) return;
   lastUrl = url;
   win.loadURL(url).catch(() => undefined);
 }
@@ -521,6 +553,7 @@ app.whenReady().then(() => {
   if (process.platform === 'win32') app.setAppUserModelId('dev.yapnap.desktop');
 
   loadPrefs();
+  startRoleKey();
   badges = loadBadges();
   try { pageBundle = readPageBundle(); } catch (e) { console.error('Could not read plugins:', e.message); }
 
@@ -568,7 +601,7 @@ app.whenReady().then(() => {
   ipcMain.on('yapper:notify', (_e, n) => {
     if (!Notification.isSupported() || !prefs.app.notifications || (win && win.isFocused())) return;
     const note = new Notification({ title: String(n?.title ?? APP_NAME).slice(0, 80), body: String(n?.body ?? '').slice(0, 180), icon: ICON, silent: true });
-    note.on('click', () => { show(); if (n?.url) loadSite(`${SITE}${n.url}`); });
+    note.on('click', () => { show(); if (typeof n?.url === 'string' && n.url.startsWith('/')) loadSite(`${SITE}${n.url}`); });
     note.show();
   });
   ipcMain.handle('yapper:screen-sources', async (e) => {
@@ -595,12 +628,12 @@ app.whenReady().then(() => {
   ipcMain.handle('mod:state', (e) => {
     if (!fromTrusted(e)) return null;
     // The role key itself never goes to the page. The page only learns whether one is saved.
-    const { roleKey, ...appSettings } = prefs.app;
+    const { roleKey, theme, ...appSettings } = prefs.app;
     return {
       version: APP_VERSION,
       badges,
       plugins: prefs.plugins,
-      app: { ...appSettings, hasRoleKey: Boolean(roleKey) },
+      app: { ...appSettings, hasRoleKey: Boolean(roleKey), theme: theme ? themeFile.themeInfo(theme) : null },
       roleLevel,
       grantable,
       info: appInfo(),
@@ -611,6 +644,22 @@ app.whenReady().then(() => {
     if (!fromTrusted(e) || typeof id !== 'string' || !ID.test(id) || typeof on !== 'boolean') return false;
     if (Object.keys(prefs.plugins).length >= 500 && !prefs.plugins[id]) return false;
     prefs.plugins[id] = { ...prefs.plugins[id], on };
+    persist();
+    return true;
+  });
+  // Several plugins at once, saved once: the All on and All off buttons use it.
+  ipcMain.handle('mod:set-plugins', (e, changes) => {
+    if (!fromTrusted(e) || !changes || typeof changes !== 'object' || Array.isArray(changes)) return false;
+    const entries = Object.entries(changes);
+    if (entries.length > 500 || !entries.every(([id, on]) => ID.test(id) && typeof on === 'boolean')) return false;
+    for (const [id, on] of entries) prefs.plugins[id] = { ...prefs.plugins[id], on };
+    persist();
+    return true;
+  });
+  // Back to the default: the plugin's own switch and its settings are removed.
+  ipcMain.handle('mod:reset-plugin', (e, id) => {
+    if (!fromTrusted(e) || typeof id !== 'string' || !ID.test(id)) return false;
+    delete prefs.plugins[id];
     persist();
     return true;
   });
@@ -641,12 +690,15 @@ app.whenReady().then(() => {
       prefs.app.customCss = value;
     } else if (key === 'roleKey') {
       if (typeof value !== 'string' || value.length > 200) return false;
-      prefs.app.roleKey = value.trim();
+      const next = value.trim();
+      try { await secrets.saveSecret(ROLE_KEY_FILE, next); } catch (err) { console.error('Could not save the role key:', err.message); return false; }
+      prefs.app.roleKey = next;
       persist();
       await refreshMe();
       return true;
-    } else if (['trayOnClose', 'notifications', 'flashOnMention', 'safeMode'].includes(key)) {
+    } else if (['trayOnClose', 'notifications', 'flashOnMention', 'safeMode', 'themeOn'].includes(key)) {
       if (typeof value !== 'boolean') return false;
+      if (key === 'themeOn' && value && !prefs.app.theme) return false; // there is no theme to turn on
       prefs.app[key] = value;
     } else {
       return false;
@@ -665,6 +717,7 @@ app.whenReady().then(() => {
     try {
       res = await fetch(`${ROLES_URL}/api/roles/grant`, {
         method: 'POST',
+        redirect: 'error',
         headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
         body: JSON.stringify({ userId, tier }),
       });
@@ -697,6 +750,7 @@ app.whenReady().then(() => {
       filters: [{ name: 'Yapnap settings', extensions: ['json'] }],
     });
     if (canceled || !filePaths[0]) return { ok: false, reason: 'Cancelled.' };
+    if (fs.statSync(filePaths[0]).size > SETTINGS_FILE_MAX) return { ok: false, reason: 'That file is too large to be a settings file.' };
     let raw;
     try { raw = JSON.parse(fs.readFileSync(filePaths[0], 'utf8')); } catch { return { ok: false, reason: 'That file is not valid JSON.' }; }
     if (!raw || raw.format !== 'yapnap-settings') return { ok: false, reason: 'That is not a Yapnap settings file.' };
@@ -715,6 +769,34 @@ app.whenReady().then(() => {
     quitting = true;
     app.relaunch();
     app.quit();
+    return true;
+  });
+
+  // A theme file from the website, with its picture. The file is chosen here, in the settings window or the chat's own
+  // settings, so the picture is read by the app and never by the page.
+  ipcMain.handle('mod:import-theme', async (e) => {
+    if (!fromTrusted(e)) return { ok: false, reason: 'Not allowed here.' };
+    const { filePaths, canceled } = await dialog.showOpenDialog({
+      title: 'Install a theme',
+      properties: ['openFile'],
+      filters: [{ name: 'Theme file', extensions: ['json'] }],
+    });
+    if (canceled || !filePaths[0]) return { ok: false, reason: 'Cancelled.' };
+    try {
+      const theme = await themeFile.loadThemeFile(filePaths[0], (url, options) => fetch(url, options));
+      prefs.app.theme = theme;
+      prefs.app.themeOn = true;
+      persist();
+      return { ok: true, name: theme.name };
+    } catch (err) {
+      return { ok: false, reason: String(err.message || 'That theme could not be installed.').slice(0, 200) };
+    }
+  });
+  ipcMain.handle('mod:remove-theme', (e) => {
+    if (!fromTrusted(e)) return false;
+    prefs.app.theme = null;
+    prefs.app.themeOn = false;
+    persist();
     return true;
   });
 
