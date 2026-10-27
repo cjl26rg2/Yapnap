@@ -25,4 +25,4 @@ no `eval`.
 
 ## Licence
 
-The licence has not been chosen yet. Until it is, the code is shared for personal use and testing only.
+The code is released under the MIT licence. See [LICENSE](LICENSE). Yapin' and its names and logos belong to their owners, and they are not covered by this licence.
