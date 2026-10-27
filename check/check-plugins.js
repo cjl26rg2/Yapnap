@@ -11,7 +11,7 @@ const vm = require('node:vm');
 const ROOT = path.join(__dirname, '..');
 const SRC = path.join(ROOT, 'src');
 const PLUGIN_DIR = path.join(SRC, 'plugins');
-const EXPECTED = 200; // toggleable plugins; the core badge module is not listed
+const EXPECTED = 231; // toggleable plugins; the core badge module is not listed
 const ALLOW_CLICK = new Set(['behaviour.js']); // alt-server-jump presses a server icon for the user
 
 const problems = [];

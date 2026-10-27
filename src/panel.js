@@ -231,7 +231,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
   var BAD_CSS = /url\s*\(|image-set\s*\(|\bimage\s*\(|\bsrc\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-binding|\\/i;
   var CHANGES = [
     'Yapper’s own names stay as they are, including Yapin’ Plus.',
-    '37 more plugins, 200 in all.',
+    '31 more plugins, 231 in all.',
     'Settings live inside Yapin’s own settings now.',
     'Roles are shared: owner, co-owner, admins, mods and contributors.',
     'Custom CSS, and a settings file.',

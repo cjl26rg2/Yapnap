@@ -2,6 +2,16 @@
 
 What changed in each Yapnap release, newest first.
 
+## 1.0.2 (2026-10-27)
+
+- 31 more plugins, 231 in all: embeds, link chips, polls, the GIF picker, the server rail, profile cards, calls and dialogs. Each one is off until you switch it on.
+- Safe mode is in the app menu and the tray (Ctrl+Shift+Y), so a bad custom CSS or theme can always be turned off.
+- Every role icon is drawn at the same visible size, and Developer is listed above Manager.
+- The portable copy never loses its exe if an update step fails, and two update checks cannot run at the same time.
+- Yapper can send at most five desktop notifications in ten seconds.
+- A settings file that cannot be read is kept as a .broken copy before the defaults are saved.
+- The Windows release includes the portable exe as well as its zip.
+
 ## 1.0.1 (2026-10-27)
 
 - Colour themes show in the chat. They used to lose to Yapper's new look, so they changed nothing.
@@ -13,11 +23,6 @@ What changed in each Yapnap release, newest first.
 - Role requests never follow a redirect, so the role key is never sent to another address.
 - Roles, the role key, reset, sign-out, and theme and settings files can only be changed by a click in the panel, not by a script on the page.
 - Plugins: filter by On, Off or Changed; All on and All off for each category; Reset on any plugin that differs from its default; and a notice for plugins that are on but did not start here, with Turn them off.
-- Safe mode is in the app menu and the tray (Ctrl+Shift+Y), so a bad custom CSS or theme can always be turned off.
-- The portable copy never loses its exe if an update step fails, and two update checks cannot run at the same time.
-- Yapper can send at most five desktop notifications in ten seconds.
-- Every role icon is drawn at the same visible size, and Developer is listed above Manager.
-- A settings file that cannot be read is kept as a .broken copy before the defaults are saved.
 
 ## 1.0.0 (2026-10-27)
 
