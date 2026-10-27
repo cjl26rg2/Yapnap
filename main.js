@@ -7,6 +7,7 @@ const path = require('node:path');
 const { execFile } = require('node:child_process');
 const GAMES = require('./games');
 const updater = require('./updater');
+const auth = require('./auth');
 
 const APP_NAME = 'Yapnap';
 const APP_VERSION = require('./package.json').version;
@@ -23,7 +24,8 @@ const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 // The owner's account ID. Yapnap shows this account as the owner everywhere, even offline.
 const OWNER_ID = '879e9081-5614-436d-971a-09481669a35f';
 // The shared role list and the role checks live on the website. The app reads them and asks it to change them.
-const ROLES_URL = 'https://yapnap.pages.dev';
+// YAPNAP_ROLES_URL points the app at a local test server (see the testing notes). Normally this is the site.
+const ROLES_URL = process.env.YAPNAP_ROLES_URL || 'https://yapnap.pages.dev';
 const ROLES_EVERY = 10 * 60 * 1000;
 const APP_DEFAULTS = { trayOnClose: true, notifications: true, flashOnMention: true, safeMode: false, zoom: 100, myId: '', roleKey: '', customCss: '' };
 const CUSTOM_CSS_MAX = 20000;
@@ -32,6 +34,7 @@ const BAD_CSS = /url\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-bind
 const DEFAULT_TIERS = {
   owner: { label: 'Owner', color: '#e9b530' },
   'co-owner': { label: 'Co-owner', color: '#ff8c42' },
+  manager: { label: 'Manager', color: '#84cc16' },
   admin: { label: 'Admin', color: '#d94a3f' },
   mod: { label: 'Mod', color: '#26a88a' },
   contributor: { label: 'Contributor', color: '#3b6fdb' },
@@ -248,14 +251,22 @@ function esc(t) {
 }
 
 function errorHtml(title, detail, retryUrl) {
-  return `<!doctype html><html><head><meta charset="utf-8"><title>${APP_NAME}</title><style>
-html,body{margin:0;height:100%;background:#17181b;color:#e6e7ea;font:15px/1.45 system-ui,"Segoe UI",sans-serif}
+  return `<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'"><title>${APP_NAME}</title><style>
+:root{color-scheme:dark}
+html,body{margin:0;height:100%;background:#0f1013;color:#eceef3;font:15px/1.55 system-ui,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
 body{display:flex;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;text-align:center}
-.card{max-width:380px}h1{font-size:20px;font-weight:600;margin:0 0 8px}p{margin:0 0 20px;color:#9a9ea7}
-a.btn{display:inline-block;padding:9px 20px;border-radius:6px;background:#7aa2ff;color:#101114;font-weight:600;text-decoration:none}
-.alt{display:block;margin-top:14px;color:#9a9ea7;font-size:13px}.alt a{color:#9ec2ff}
-code{display:block;margin-top:22px;color:#6c707a;font-size:12px}
+.card{width:min(400px,100%);padding:34px 30px 28px;border:1px solid #262830;border-radius:12px;background:#15161b}
+.mark{display:grid;place-items:center;width:46px;height:46px;margin:0 auto 18px;border-radius:50%;border:1px solid #e5737c;color:#e5737c;background:rgba(229,115,124,.1)}
+.mark svg{width:20px;height:20px}
+h1{font-size:19px;font-weight:650;letter-spacing:-.015em;margin:0 0 8px}
+p{margin:0 0 22px;color:#a6abb7;font-size:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 18px;border-radius:8px;background:#ef9448;border:1px solid #ef9448;color:#140d06;font-weight:600;text-decoration:none}
+.btn:hover{background:#f5a867;border-color:#f5a867}
+.btn:focus-visible{outline:2px solid #ef9448;outline-offset:3px}
+.alt{display:block;margin-top:16px;color:#7d828e;font-size:13px}.alt a{color:#ef9448}
+code{display:block;margin-top:20px;padding-top:14px;border-top:1px solid #262830;color:#7d828e;font:12px/1.5 ui-monospace,Consolas,monospace;word-break:break-word}
 </style></head><body><div class="card">
+<div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 8l8 8M16 8l-8 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
 <h1>${esc(title)}</h1>
 <p>Check your internet connection. A VPN, proxy or antivirus can also block Yapin'.</p>
 <a class="btn" id="retry" href="${esc(retryUrl)}">Retry</a>
@@ -534,11 +545,15 @@ app.whenReady().then(() => {
     } catch { cb({}); }
   }, { useSystemPicker: false });
 
-  createWindow();
-  createTray();
-  buildMenu();
-  // First launch: open settings once, so the plugins are easy to find.
-  if (!fs.existsSync(prefsFile())) setTimeout(() => openSettings(), 4000);
+  // The app opens only after a Yapnap sign-in. Until then the sign-in window is the only thing shown.
+  void auth.ensureSignedIn().then((ok) => {
+    if (!ok) { quitting = true; app.quit(); return; }
+    createWindow();
+    createTray();
+    buildMenu();
+    // First launch: open settings once, so the plugins are easy to find.
+    if (!fs.existsSync(prefsFile())) setTimeout(() => openSettings(), 4000);
+  });
 
   ipcMain.on('yapper:badge', (_e, count) => {
     if (process.platform === 'darwin') app.dock?.setBadge(count > 0 ? String(count) : '');
@@ -584,6 +599,7 @@ app.whenReady().then(() => {
       roleLevel,
       grantable,
       info: appInfo(),
+      account: auth.account(),
     };
   });
   ipcMain.handle('mod:set-plugin', (e, id, on) => {
@@ -685,6 +701,16 @@ app.whenReady().then(() => {
     persist();
     await refreshMe();
     return { ok: true };
+  });
+
+  // Signing out ends this session and starts the app again, which asks for a sign-in.
+  ipcMain.handle('mod:sign-out', (e) => {
+    if (!fromTrusted(e)) return false;
+    auth.signOut();
+    quitting = true;
+    app.relaunch();
+    app.quit();
+    return true;
   });
 
   ipcMain.handle('mod:open-data', (e) => {

@@ -14,3 +14,12 @@ build/banner.png
 
 # Build output for a second Windows build
 dist-next/
+
+# Local test key for wrangler pages dev. Never deploy this.
+.dev.vars
+
+# Copy of site/ for Cloudflare Pages uploads (generated)
+pages-deploy/
+
+# Local state from wrangler (dev server and deploy cache)
+.wrangler/

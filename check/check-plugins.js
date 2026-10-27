@@ -1,5 +1,5 @@
 // Checks the plugin set without starting Electron. Run with: npm run check
-// - exactly 100 plugins, every id unique, every setting well-formed
+// - exactly 200 plugins, every id unique, every setting well-formed
 // - every class a plugin's CSS uses exists in the chat site's own CSS (check/site-classes.json)
 // - no plugin reaches the network, browser storage, eval or raw HTML
 // - settings/index.html loads exactly the plugin files that exist
@@ -11,7 +11,7 @@ const vm = require('node:vm');
 const ROOT = path.join(__dirname, '..');
 const SRC = path.join(ROOT, 'src');
 const PLUGIN_DIR = path.join(SRC, 'plugins');
-const EXPECTED = 165; // toggleable plugins; the core badge module is not listed
+const EXPECTED = 200; // toggleable plugins; the core badge module is not listed
 const ALLOW_CLICK = new Set(['behaviour.js']); // alt-server-jump presses a server icon for the user
 
 const problems = [];

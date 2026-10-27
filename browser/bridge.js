@@ -6,7 +6,7 @@
   'use strict';
 
   var api = typeof browser !== 'undefined' ? browser : chrome;
-  var VERSION = '0.3.0';
+  var VERSION = '1.0.0';
   var BUILT = '__BUILT__';
   var BUNDLED_BADGES = __BADGES__;
   var KEY = 'yapnap';
@@ -17,6 +17,7 @@
   var DEFAULT_TIERS = {
     owner: { label: 'Owner', color: '#e9b530' },
     'co-owner': { label: 'Co-owner', color: '#ff8c42' },
+    manager: { label: 'Manager', color: '#84cc16' },
     admin: { label: 'Admin', color: '#d94a3f' },
     mod: { label: 'Mod', color: '#26a88a' },
     contributor: { label: 'Contributor', color: '#3b6fdb' },

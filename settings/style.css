@@ -1,4 +1,4 @@
-/* The fallback window uses the same neutral dark as Yapin's settings, so it matches the site. */
+/* The fallback window. It uses the same neutral dark as Yapin's settings, so it matches the chat. */
 :root {
   color-scheme: dark;
   --bg-main: #222329;
@@ -27,9 +27,14 @@ body {
   color: var(--text);
 }
 
+body {
+  font: 14px/1.5 "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
 .frame {
   display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
+  grid-template-columns: 208px minmax(0, 1fr);
   height: 100%;
 }
 
@@ -37,27 +42,47 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 20px 10px;
+  padding: 22px 12px;
   background: var(--bg-side);
+  border-right: 1px solid var(--border);
+}
+
+.side-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 0 10px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .side button {
   padding: 8px 10px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 7px;
   background: none;
   color: var(--text-muted);
-  font: 500 15px/1.2 system-ui, "Segoe UI", sans-serif;
+  font: 500 14.5px/1.2 "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
   text-align: left;
   cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .side button:hover { background: var(--bg-hover); color: var(--text); }
 .side button[aria-current="true"] { background: var(--bg-active); color: var(--text); }
+.side button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 
 .content {
   box-sizing: border-box;
   height: 100%;
   overflow: auto;
-  padding: 26px 30px 36px;
+  padding: 34px 40px 48px;
 }
+
+.content > * { max-width: 920px; }
+
+.content::-webkit-scrollbar { width: 10px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: var(--bg-active); border-radius: 10px; border: 3px solid var(--bg-main); }

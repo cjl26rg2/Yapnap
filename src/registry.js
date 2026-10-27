@@ -6,6 +6,7 @@
   if (root.YAPNAP) return;
 
   var plugins = new Map();
+  var failures = new Map();
   var CATEGORIES = ['Messages', 'Composer', 'Sidebar', 'Members', 'Voice', 'Look', 'Access', 'Behaviour'];
   var ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
@@ -20,6 +21,10 @@
     list: function () { return Array.from(plugins.values()).filter(function (p) { return !p.core; }); },
     all: function () { return Array.from(plugins.values()); },
     get: function (id) { return plugins.get(id) || null; },
+    // A plugin that threw while it was applied. The settings panel shows it, so it never looks like it is working.
+    fail: function (id, reason) { failures.set(id, String(reason || 'It could not start.').slice(0, 160)); },
+    clearFail: function (id) { failures.delete(id); },
+    failure: function (id) { return failures.get(id) || null; },
     defaults: function (p) {
       var out = {};
       (p.settings || []).forEach(function (s) { out[s.key] = s.def; });

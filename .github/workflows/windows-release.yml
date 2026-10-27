@@ -2,13 +2,13 @@ name: windows-release
 
 # Builds the Windows files for a release tag and uploads them to that release: the installer, its blockmap and
 # latest.yml (for installed copies), and the portable exe in a zip (for the portable copy's update check).
-# Start it from the Actions tab with the tag, for example v0.3.0.
+# Start it from the Actions tab with the tag, for example v1.0.0.
 
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'The release tag to build, for example v0.3.0'
+        description: 'The release tag to build, for example v1.0.0'
         required: true
 
 permissions:

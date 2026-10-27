@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
   <title>Yapnap settings</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="frame">
-    <nav id="side" class="side" aria-label="Yapnap"></nav>
+    <nav id="side" class="side" aria-label="Yapnap"><p class="side-brand">Yapnap</p></nav>
     <main id="root" class="content"></main>
   </div>
 
@@ -25,6 +26,7 @@
   <script src="../src/plugins/sidebar.js"></script>
   <script src="../src/plugins/voice.js"></script>
   <script src="../src/plugins/extra.js"></script>
+  <script src="../src/plugins/extra2.js"></script>
   <script src="../src/art.js"></script>
   <script src="../src/panel.js"></script>
   <script src="app.js"></script>

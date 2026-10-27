@@ -1,32 +1,10 @@
 // Extra plugins: small looks and tidy-ups for the top bar, messages, reactions, replies, the sidebar, the composer,
-// the member list and voice. Each one is a CSS rule, except the Yapnap logo, which swaps one image.
+// the member list and voice. Each one is a CSS rule.
 (function (Y) {
   'use strict';
 
   // Look
   Y.add({ id: 'hide-top-brand', name: 'Hide the top brand', desc: 'Hides the name and logo at the top of the chat.', category: 'Look', css: '.topbar-brand{display:none!important}' });
-  Y.add({
-    id: 'yapnap-logo',
-    def: true,
-    name: 'Yapnap logo at the top',
-    desc: 'Shows the Yapnap cat in place of the Yapper logo at the top of the chat.',
-    category: 'Look',
-    start: function () {
-      var art = window.YAPNAP_ART ? window.YAPNAP_ART.src('yapnap-logo') : '';
-      if (!art) return undefined;
-      function swap() {
-        document.querySelectorAll('.topbar-brand img').forEach(function (img) {
-          if (img.dataset.yapnapLogo) return;
-          img.dataset.yapnapLogo = '1';
-          img.src = art;
-        });
-      }
-      swap();
-      var observer = new MutationObserver(swap);
-      observer.observe(document.body, { childList: true, subtree: true });
-      return function stop() { observer.disconnect(); };
-    }
-  });
   Y.add({ id: 'compact-topbar', name: 'Compact top bar', desc: 'A shorter top bar.', category: 'Look', css: '.topbar{min-height:40px!important}' });
   Y.add({ id: 'flat-scrolled-header', name: 'Flat header when scrolled', desc: 'No shadow under the top bar when you scroll.', category: 'Look', css: '.scrolled{box-shadow:none!important}' });
 

@@ -13,6 +13,21 @@
   var PAGES = ['about', 'settings', 'plugins', 'themes'];
   var TITLES = { about: 'About', settings: 'Settings', plugins: 'Plugins', themes: 'Themes' };
 
+  // The few rules the Yapnap entries need on top of Yapin's own classes: a logo in the group label, an accent bar on the
+  // active entry (the same accent the panel uses for its controls), and a focus ring. Nothing else on Yapin's page changes.
+  var NAV_STYLE_ID = 'ym-nav-style';
+  var NAV_CSS = '.ym-nav-label{display:flex;align-items:center;gap:7px}' +
+    '[' + ENTRY + ']{position:relative}' +
+    '[' + ENTRY + '].active{box-shadow:inset 3px 0 0 #ef9448}' +
+    '[' + ENTRY + ']:focus-visible{outline:2px solid #ef9448;outline-offset:-2px}';
+  function injectNavStyle() {
+    if (document.getElementById(NAV_STYLE_ID)) return;
+    var s = document.createElement('style');
+    s.id = NAV_STYLE_ID;
+    s.textContent = NAV_CSS;
+    (document.head || document.documentElement).appendChild(s);
+  }
+
   var active = false;
   var page = 'about';
   var hiddenNodes = [];
@@ -36,13 +51,22 @@
       hidePanel();
       return;
     }
+    injectNavStyle();
     if (nav.querySelector('[' + GROUP + ']')) return;
     var base = nav.querySelector('button');
     var existingLabel = nav.querySelector('.settings-nav-label');
     var label = document.createElement('div');
-    label.className = existingLabel ? existingLabel.className : 'settings-nav-label';
+    label.className = (existingLabel ? existingLabel.className : 'settings-nav-label') + ' ym-nav-label';
     label.setAttribute(GROUP, '1');
-    label.textContent = 'Yapnap';
+    if (root.YAPNAP_ART) {
+      var logo = document.createElement('img');
+      logo.alt = '';
+      logo.width = 14;
+      logo.height = 14;
+      logo.src = root.YAPNAP_ART.src('yapnap-logo');
+      label.appendChild(logo);
+    }
+    label.appendChild(document.createTextNode('Yapnap'));
     nav.appendChild(label);
     PAGES.forEach(function (p) {
       var btn = document.createElement('button');
