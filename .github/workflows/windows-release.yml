@@ -52,6 +52,7 @@ jobs:
             "dist/Yapnap-${VERSION}-setup.exe" \
             "dist/Yapnap-${VERSION}-setup.exe.blockmap" \
             "dist/latest.yml" \
+            "dist/Yapnap-${VERSION}-portable.exe" \
             "dist/Yapnap-${VERSION}-portable.zip" \
             --clobber
       - uses: actions/upload-artifact@v4

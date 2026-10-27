@@ -13,6 +13,10 @@ What changed in each Yapnap release, newest first.
 - Role requests never follow a redirect, so the role key is never sent to another address.
 - Roles, the role key, reset, sign-out, and theme and settings files can only be changed by a click in the panel, not by a script on the page.
 - Plugins: filter by On, Off or Changed; All on and All off for each category; Reset on any plugin that differs from its default; and a notice for plugins that are on but did not start here, with Turn them off.
+- Safe mode is in the app menu and the tray (Ctrl+Shift+Y), so a bad custom CSS or theme can always be turned off.
+- The portable copy never loses its exe if an update step fails, and two update checks cannot run at the same time.
+- Yapper can send at most five desktop notifications in ten seconds.
+- A settings file that cannot be read is kept as a .broken copy before the defaults are saved.
 
 ## 1.0.0 (2026-10-27)
 

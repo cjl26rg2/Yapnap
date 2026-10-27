@@ -113,7 +113,7 @@ function appImagePath() {
 
 /** Updates the AppImage from the release zip, for a release that has no update file. GitHub's checksum for the zip
  *  must match, or nothing changes. The new file takes the old file's place, so shortcuts to it keep working. */
-async function updateFromZip() {
+async function updateFromZipOnce() {
   // Installed copies have no target to replace, so they only learn that a version is out.
   const kind = zipKind() || { asset: /portable.*\.zip$/i, target: null };
   const res = await fetch(LATEST_API, { headers: { accept: 'application/vnd.github+json' } });
@@ -164,7 +164,13 @@ async function updateFromZip() {
   fs.writeFileSync(next, data, { mode: 0o755 });
   // A running exe can be renamed on Windows but not overwritten, so the old one is moved aside first.
   if (portableExe()) fs.renameSync(kind.target, `${kind.target}.old`);
-  fs.renameSync(next, kind.target);
+  try {
+    fs.renameSync(next, kind.target);
+  } catch (err) {
+    // Put the working copy back, so a failed update never leaves the app missing.
+    if (portableExe()) fs.renameSync(`${kind.target}.old`, kind.target);
+    throw err;
+  }
   log('zip check: replaced with', version);
   restartPath = kind.target;
   setStatus({ version, ready: true });
@@ -178,6 +184,13 @@ async function updateFromZip() {
     detail: 'Restart to finish updating. If you choose Later, the new version starts the next time you open Yapnap.',
   });
   if (response === 0) restartInto(kind.target);
+}
+
+// A manual check and the timed check can overlap. Only one may replace the file at a time.
+let zipCheck = null;
+function updateFromZip() {
+  if (!zipCheck) zipCheck = updateFromZipOnce().finally(() => { zipCheck = null; });
+  return zipCheck;
 }
 
 /** Starts the checks. Only the installed app checks, so a development run (npm start) never reaches GitHub. */

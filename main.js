@@ -32,6 +32,7 @@ const ROLES_EVERY = 10 * 60 * 1000;
 const APP_DEFAULTS = { trayOnClose: true, notifications: true, flashOnMention: true, safeMode: false, zoom: 100, myId: '', roleKey: '', customCss: '', themeOn: false, theme: null };
 const CUSTOM_CSS_MAX = 20000;
 const SETTINGS_FILE_MAX = 8 * 1024 * 1024; // a settings file may hold a theme picture, so it is larger than a theme file
+let notifyTimes = []; // when the page last sent a notification, for the rate limit
 const ROLE_KEY_FILE = 'role-key.json';
 // Custom CSS may not load files, import other sheets, run script, or use angle brackets or backslashes.
 // Angle brackets and '>' are fine in CSS (child selectors), because the CSS is set as text, never as markup.
@@ -120,7 +121,15 @@ function validSettingValue(key, value) {
 }
 
 function loadPrefs() {
-  try { prefs = cleanPrefs(JSON.parse(fs.readFileSync(prefsFile(), 'utf8'))); } catch { prefs = { plugins: {}, app: { ...APP_DEFAULTS } }; }
+  try {
+    prefs = cleanPrefs(JSON.parse(fs.readFileSync(prefsFile(), 'utf8')));
+  } catch (err) {
+    prefs = { plugins: {}, app: { ...APP_DEFAULTS } };
+    // A settings file that exists but cannot be read is kept as a copy, so the next save never overwrites it silently.
+    if (err.code !== 'ENOENT') {
+      try { fs.copyFileSync(prefsFile(), `${prefsFile()}.broken`); } catch { /* nothing to keep */ }
+    }
+  }
 }
 
 // The role key lives in its own encrypted file (secrets.js). An older settings file may still hold it in plain text:
@@ -489,6 +498,15 @@ function openStandalone() {
 
 // The menu gives Settings a real Ctrl+, shortcut that works whatever has focus in the chat.
 // The menu bar stays hidden; the accelerators still work.
+// Safe mode turns off every plugin, the picture theme and custom CSS. It is in both menus, so a bad style can always be
+// turned off, even when it hides the settings page.
+function toggleSafeMode() {
+  prefs.app.safeMode = !prefs.app.safeMode;
+  persist();
+  buildMenu();
+  if (tray) tray.setContextMenu(trayMenu());
+}
+
 function buildMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate([
     {
@@ -497,6 +515,7 @@ function buildMenu() {
         { label: 'Settings', accelerator: 'Ctrl+,', click: openSettings },
         { label: 'Check for updates', click: updater.checkFromMenu },
         { label: 'Reload chat', accelerator: 'Ctrl+R', click: () => win?.webContents.reload() },
+        { label: 'Safe mode', type: 'checkbox', checked: prefs.app.safeMode === true, accelerator: 'Ctrl+Shift+Y', click: toggleSafeMode },
         { type: 'separator' },
         { label: `Quit ${APP_NAME}`, accelerator: 'Ctrl+Q', click: () => { quitting = true; app.quit(); } },
       ],
@@ -510,14 +529,19 @@ function createTray() {
   const img = ICON ? nativeImage.createFromPath(ICON).resize({ width: 16, height: 16 }) : nativeImage.createEmpty();
   tray = new Tray(img);
   tray.setToolTip(APP_NAME);
-  tray.setContextMenu(Menu.buildFromTemplate([
-    { label: `Open ${APP_NAME}`, click: show },
-    { label: 'Settings', click: openSettings },
-    { type: 'separator' },
-    { label: `Quit ${APP_NAME}`, click: () => { quitting = true; app.quit(); } },
-  ]));
+  tray.setContextMenu(trayMenu());
   tray.on('click', show);
   tray.on('double-click', show);
+}
+
+function trayMenu() {
+  return Menu.buildFromTemplate([
+    { label: `Open ${APP_NAME}`, click: show },
+    { label: 'Settings', click: openSettings },
+    { label: 'Safe mode', type: 'checkbox', checked: prefs.app.safeMode === true, click: toggleSafeMode },
+    { type: 'separator' },
+    { label: `Quit ${APP_NAME}`, click: () => { quitting = true; app.quit(); } },
+  ]);
 }
 
 // ---------- screen sharing ----------
@@ -600,6 +624,11 @@ app.whenReady().then(() => {
   });
   ipcMain.on('yapper:notify', (_e, n) => {
     if (!Notification.isSupported() || !prefs.app.notifications || (win && win.isFocused())) return;
+    // A page that sends notifications in a loop would flood the desktop. At most five in ten seconds get through.
+    const now = Date.now();
+    notifyTimes = notifyTimes.filter((t) => now - t < 10_000);
+    if (notifyTimes.length >= 5) return;
+    notifyTimes.push(now);
     const note = new Notification({ title: String(n?.title ?? APP_NAME).slice(0, 80), body: String(n?.body ?? '').slice(0, 180), icon: ICON, silent: true });
     note.on('click', () => { show(); if (typeof n?.url === 'string' && n.url.startsWith('/')) loadSite(`${SITE}${n.url}`); });
     note.show();
