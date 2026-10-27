@@ -329,6 +329,11 @@ function createWindow() {
   });
   win.once('ready-to-show', () => { if (!startHidden) win.show(); });
   win.on('show', () => { everShown = true; });
+  // The window's own title says Yapnap. Yapper's page title is not changed: only the title bar and taskbar are.
+  win.webContents.on('page-title-updated', (event, title) => {
+    event.preventDefault();
+    win.setTitle(String(title || APP_NAME).replace(/Yapin(['’])/g, APP_NAME));
+  });
 
   const wc = win.webContents;
   // A fresh load of the site starts the 20 s clock. It stops once the page has its HTML.
