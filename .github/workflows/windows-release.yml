@@ -1,10 +1,13 @@
 name: windows-release
 
-# Builds the Windows files for a release tag and uploads them to that release: the installer, its blockmap and
+# Builds the Windows files for a version tag and uploads them to that release: the installer, its blockmap and
 # latest.yml (for installed copies), and the portable exe in a zip (for the portable copy's update check).
-# Start it from the Actions tab with the tag, for example v1.0.0.
+# It runs when a tag such as v1.0.0 is pushed, and can also be started by hand from the Actions tab.
 
 on:
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
     inputs:
       tag:
@@ -17,16 +20,23 @@ permissions:
 jobs:
   windows:
     runs-on: windows-latest
+    env:
+      TAG: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ github.event_name == 'push' && github.ref || inputs.tag }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - run: npm install --no-audit --no-fund
       - name: Plugin checks
         run: npm run check
+      # Whichever workflow gets there first creates the release, with the changelog as its notes.
+      - name: Make sure the release exists
+        shell: bash
+        run: gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Yapnap $TAG" --notes-file CHANGELOG.md || gh release view "$TAG" >/dev/null
       - name: Build the installer and the portable exe
         run: npx electron-builder --win --publish never
       - name: Zip the portable exe
@@ -35,16 +45,14 @@ jobs:
           $version = node -p "require('./package.json').version"
           Compress-Archive -Path "dist/Yapnap-$version-portable.exe" -DestinationPath "dist/Yapnap-$version-portable.zip" -Force
       - name: Upload to the release
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
         run: |
-          $version = node -p "require('./package.json').version"
-          gh release upload "${{ inputs.tag }}" `
-            "dist/Yapnap-$version-setup.exe" `
-            "dist/Yapnap-$version-setup.exe.blockmap" `
-            "dist/latest.yml" `
-            "dist/Yapnap-$version-portable.zip" `
+          VERSION=$(node -p "require('./package.json').version")
+          gh release upload "$TAG" \
+            "dist/Yapnap-${VERSION}-setup.exe" \
+            "dist/Yapnap-${VERSION}-setup.exe.blockmap" \
+            "dist/latest.yml" \
+            "dist/Yapnap-${VERSION}-portable.zip" \
             --clobber
       - uses: actions/upload-artifact@v4
         with:
