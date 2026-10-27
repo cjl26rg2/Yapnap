@@ -16,6 +16,7 @@ What changed in each Yapnap release, newest first.
 - Safe mode is in the app menu and the tray (Ctrl+Shift+Y), so a bad custom CSS or theme can always be turned off.
 - The portable copy never loses its exe if an update step fails, and two update checks cannot run at the same time.
 - Yapper can send at most five desktop notifications in ten seconds.
+- Every role icon is drawn at the same visible size, and Developer is listed above Manager.
 - A settings file that cannot be read is kept as a .broken copy before the defaults are saved.
 
 ## 1.0.0 (2026-10-27)

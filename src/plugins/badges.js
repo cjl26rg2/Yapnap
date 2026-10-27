@@ -34,6 +34,25 @@
     if (root.yapnap && root.yapnap.setApp) root.yapnap.setApp('myId', id).catch(function () { /* settings unavailable */ });
   }
 
+  // Every rank icon looks the same size. The artwork does not fill its frame the same way (the developer icon fills all
+  // of it, the owner icon only about four fifths), so each icon's frame is sized from its own artwork: the visible part
+  // is 16 px in the member list, 20 px on a profile card and 13 px in the small pill beside a name. The numbers are the
+  // largest visible side of each 128 px artwork, measured from the art.
+  var RANK_CONTENT = {
+    owner: 101, 'co-owner': 101, manager: 101, admin: 102, mod: 102, contributor: 102,
+    supporter: 124, advertiser: 124, sponsor: 124, partner: 124,
+    designer: 123, developer: 123, friend: 123, translator: 123, helper: 123, veteran: 123, artist: 123, tester: 123
+  };
+  var RANK_CSS = Object.keys(RANK_CONTENT).map(function (tier) {
+    var scale = 128 / RANK_CONTENT[tier];
+    var icon = (16 * scale).toFixed(1);
+    var row = (20 * scale).toFixed(1);
+    var pill = (13 * scale).toFixed(1);
+    return '.ym-badge-icon.ym-tier-' + tier + ' img{width:' + icon + 'px!important;height:' + icon + 'px!important}' +
+      '.badge-row .ym-badge-icon.ym-tier-' + tier + ' img{width:' + row + 'px!important;height:' + row + 'px!important}' +
+      '.ym-badge.ym-pill-' + tier + ' img{width:' + pill + 'px;height:' + pill + 'px}';
+  }).join('');
+
   Y.add({
     id: 'contributor-badges',
     name: 'Contributor badges',
@@ -48,10 +67,8 @@
       '.ym-badge-icon{background:none!important;border:0!important;padding:0!important;box-shadow:none!important}' +
       '.ym-badge-icon{position:relative}' +
       '.ym-badge-icon img{width:16px!important;height:16px!important}' +
-      '.ym-badge-icon img{transform:scale(1.35)}' +
-      '.ym-badge-icon.ym-tier-owner img{transform:scale(1.24)}' +
-      '.ym-badge-icon.ym-tier-admin img{transform:scale(1.15)}' +
       '.badge-row .ym-badge-icon img{width:20px!important;height:20px!important}' +
+      RANK_CSS +
       '.badge-row:has(> .ym-badge-icon:only-child){justify-content:center!important;align-items:center!important}' +
       '#ym-rank-tip{display:none;position:fixed;z-index:2147483000;width:240px;max-width:260px;padding:11px 14px 12px;border-radius:10px;border:1px solid var(--border,#ffffff12);background:var(--bg-float,#1e1f22);box-shadow:0 10px 24px rgba(0,0,0,0.32);text-align:left;white-space:normal;pointer-events:none;font-weight:400;font-style:normal;letter-spacing:normal;text-transform:none}' +
       '#ym-rank-tip strong{display:block;font-size:13.5px;font-weight:650;letter-spacing:-0.01em;margin-bottom:3px;color:var(--text,#f2f3f5)}' +
@@ -64,7 +81,7 @@
 
       function chip(tierId, entry, tier) {
         var badge = document.createElement('span');
-        badge.className = 'ym-badge';
+        badge.className = 'ym-badge ym-pill-' + tierId;
         badge.style.setProperty('--ym-tier', tier.color);
         var src = root.YAPNAP_ART ? root.YAPNAP_ART.src('badge-' + tierId) : '';
         if (src) {

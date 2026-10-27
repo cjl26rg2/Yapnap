@@ -225,7 +225,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
   ];
   var DEFAULT_THEME = { id: 'default', name: 'Yapin default', sw: ['#222329', '#1b1c21', '#2b2c33', '#ececf1'] };
   var PUBLISH_URL = 'https://yapnap.pages.dev/publish/';
-  var TIER_ORDER = ['owner', 'co-owner', 'manager', 'admin', 'mod', 'contributor', 'advertiser', 'partner', 'sponsor', 'supporter', 'translator', 'artist', 'designer', 'developer', 'tester', 'helper', 'veteran', 'friend'];
+  var TIER_ORDER = ['owner', 'co-owner', 'developer', 'manager', 'admin', 'mod', 'contributor', 'advertiser', 'partner', 'sponsor', 'supporter', 'translator', 'artist', 'designer', 'tester', 'helper', 'veteran', 'friend'];
   var TIER_LABEL = { owner: 'Owner', 'co-owner': 'Co-owner', admin: 'Admin', manager: 'Manager', mod: 'Mod', contributor: 'Contributor', advertiser: 'Advertiser', partner: 'Partner', sponsor: 'Sponsor', supporter: 'Supporter', translator: 'Translator', artist: 'Artist', designer: 'Designer', developer: 'Developer', tester: 'Tester', helper: 'Helper', veteran: 'Veteran', friend: 'Friend' };
   var OWNER_ID = '879e9081-5614-436d-971a-09481669a35f';
   var BAD_CSS = /url\s*\(|image-set\s*\(|\bimage\s*\(|\bsrc\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-binding|\\/i;
