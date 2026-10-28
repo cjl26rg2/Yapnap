@@ -8,6 +8,10 @@ What changed in each Yapnap release, newest first.
 - Installed mods show when a newer version is out, and Update installs it and keeps its switch.
 - Plugin profiles: save the switches you have now, then use them again from the Plugins page. Up to 20 profiles.
 - The website has a Marketplace page and a Security page, and its homepage counts the built-in plugins and the marketplace mods.
+- Share your mods to a file, and import a mod file. Every mod in a file is checked, and imported mods start switched off.
+- Marketplace is in the app menu and the tray, and opens its page directly.
+- Copy support info on the Security page: the version, the platform, and what is switched on. It has no account details and no custom CSS text.
+- A settings backup is kept each day for the last seven days. Settings, then Load settings, can use one to put things back.
 - 60 plugins are built in. The rest moved to the marketplace, and any plugin you had on keeps working.
 - Compact top bar makes the bar shorter (20 px). The top bar height setting works from 18 to 40 px, with 26 as the default.
 - A Security page in the settings explains what Yapnap checks, what it cannot promise, and the state of this computer.

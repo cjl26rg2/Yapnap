@@ -30,6 +30,10 @@ contextBridge.exposeInMainWorld('yapnap', {
   profileSave: (name, states) => ipcRenderer.invoke('mod:profile-save', String(name), states),
   profileUse: (name) => ipcRenderer.invoke('mod:profile-use', String(name)),
   profileDelete: (name) => ipcRenderer.invoke('mod:profile-delete', String(name)),
+  // Sharing mods means reading or writing a file, so it needs a click. Support info has nothing private in it.
+  marketExport: withClick(NEEDS_CLICK, () => ipcRenderer.invoke('mod:market-export')),
+  marketImport: withClick(NEEDS_CLICK, () => ipcRenderer.invoke('mod:market-import')),
+  supportInfo: () => ipcRenderer.invoke('mod:support'),
   // Only changing the role key needs a click. The other settings change without one.
   setApp: (key, value) => (String(key) === 'roleKey' && !clicked() ? Promise.resolve(false) : ipcRenderer.invoke('mod:set-app', String(key), value)),
   grant: withClick(NEEDS_CLICK, (userId, tier) => ipcRenderer.invoke('mod:grant', String(userId), tier === null ? null : String(tier))),

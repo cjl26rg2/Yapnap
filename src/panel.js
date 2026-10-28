@@ -1450,7 +1450,37 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       }
       var refreshBtn = button('Refresh list', 'ghost', 'ui-reset');
       refreshBtn.addEventListener('click', function () { loadMarket(true); });
-      view.appendChild(pageHead('Marketplace', [refreshBtn]));
+      var shareBtn = button('Share my mods', 'ghost', 'ui-saved');
+      shareBtn.addEventListener('click', function () {
+        setBusy(shareBtn, true);
+        call(bridge.marketExport()).then(function (res) {
+          setBusy(shareBtn, false);
+          if (!res || res.ok !== true) {
+            if (res && res.reason && res.reason !== 'Cancelled.') toast('market-export', res.reason, 'bad');
+            return null;
+          }
+          toast('market-export', 'Saved ' + res.count + (res.count === 1 ? ' mod.' : ' mods.'), 'ok');
+          return null;
+        });
+      });
+      var importBtn = button('Import mods', 'ghost', 'ui-plus');
+      importBtn.addEventListener('click', function () {
+        setBusy(importBtn, true);
+        call(bridge.marketImport()).then(function (res) {
+          setBusy(importBtn, false);
+          if (!res || res.ok !== true) {
+            if (res && res.reason && res.reason !== 'Cancelled.') toast('market-import', res.reason, 'bad');
+            return null;
+          }
+          var refused = res.refused && res.refused.length ? ' Refused: ' + res.refused.join(', ') + '.' : '';
+          toast('market-import', res.added + (res.added === 1 ? ' mod' : ' mods') + ' imported. They are off until you switch them on.' + refused, refused ? 'bad' : 'ok');
+          return loadMarket(false);
+        });
+      });
+      var headActions = [refreshBtn];
+      if (typeof bridge.marketExport === 'function') headActions.push(shareBtn);
+      if (typeof bridge.marketImport === 'function') headActions.push(importBtn);
+      view.appendChild(pageHead('Marketplace', headActions));
       var sourceLine = el('div', 'ym-notice');
       sourceLine.appendChild(art('ui-saved', 15));
       mk.sourceEl = el('span', null, marketSourceText());
@@ -1634,6 +1664,24 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         ['Yapper’s own website', 'Yapnap runs inside Yapper’s website. If that site were compromised, Yapnap could not protect you from it.'],
       ];
       rows.forEach(function (r) { box.appendChild(row(r[0], r[1], status(false, 'Not promised'), null)); });
+      // Support info is a short text with the version and what is switched on. Nothing private goes in it.
+      if (typeof bridge.supportInfo === 'function') {
+        var copyInfo = button('Copy support info', 'ghost', 'ui-saved');
+        copyInfo.addEventListener('click', function () {
+          setBusy(copyInfo, true);
+          call(bridge.supportInfo()).then(function (text) {
+            setBusy(copyInfo, false);
+            if (!text) { toast('support', 'Could not prepare the support info.', 'bad'); return null; }
+            if (!(navigator.clipboard && navigator.clipboard.writeText)) { toast('support', 'Could not copy it here.', 'bad'); return null; }
+            return navigator.clipboard.writeText(text).then(function () {
+              toast('support', 'Support info copied. Paste it into your message.', 'ok');
+            }, function () {
+              toast('support', 'Could not copy it here.', 'bad');
+            });
+          });
+        });
+        box.appendChild(copyInfo);
+      }
       call(bridge.security()).then(function (f) {
         if (!f) return null;
         var here = el('div', null);

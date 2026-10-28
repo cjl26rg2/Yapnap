@@ -37,7 +37,7 @@ let notifyTimes = []; // when the page last sent a notification, for the rate li
 const ROLE_KEY_FILE = 'role-key.json';
 // Custom CSS may not load files, import other sheets, run script, or use angle brackets or backslashes.
 // Angle brackets and '>' are fine in CSS (child selectors), because the CSS is set as text, never as markup.
-const { BAD_CSS } = require('./market-rules'); // the same rules the marketplace uses, so custom CSS and mods agree
+const { BAD_CSS, validateMod } = require('./market-rules'); // the same rules the marketplace uses, so custom CSS and mods agree
 const DEFAULT_TIERS = {
   owner: { label: 'Owner', color: '#e9b530' },
   'co-owner': { label: 'Co-owner', color: '#ff8c42' },
@@ -192,6 +192,20 @@ function migrateMarket() {
   if (changed) savePrefs();
 }
 
+// Once a day, the settings file as it was before a save is copied to a dated backup, and the last seven are kept. A
+// backup is a normal settings file, so Settings, then Load settings, can use it to put things back.
+function backupPrefsOnce() {
+  try {
+    if (!fs.existsSync(prefsFile())) return;
+    const dir = app.getPath('userData');
+    const day = new Date().toISOString().slice(0, 10);
+    const copy = path.join(dir, `yapnap-settings.backup-${day}.json`);
+    if (!fs.existsSync(copy)) fs.copyFileSync(prefsFile(), copy);
+    const backups = fs.readdirSync(dir).filter((f) => /^yapnap-settings\.backup-\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort();
+    for (const f of backups.slice(0, -7)) fs.rmSync(path.join(dir, f), { force: true });
+  } catch { /* a missing backup never stops a save */ }
+}
+
 function savePrefs() {
   try {
     fs.mkdirSync(app.getPath('userData'), { recursive: true });
@@ -199,6 +213,7 @@ function savePrefs() {
     // The role key is never written here. It is in its own encrypted file.
     const { roleKey, ...appSettings } = prefs.app;
     fs.writeFileSync(tmp, JSON.stringify({ plugins: prefs.plugins, market: prefs.market, profiles: prefs.profiles, app: appSettings }, null, 2));
+    backupPrefsOnce();
     fs.renameSync(tmp, prefsFile());
   } catch (e) { console.error('Could not save settings:', e.message); }
 }
@@ -498,11 +513,13 @@ function fromTrusted(e) {
 }
 
 /** Opens Yapin's own settings with the Yapnap panel in them. Falls back to a separate window if that fails. */
-async function openSettings() {
+async function openSettings(page) {
+  // Menu items pass the menu item itself as the first argument, so only a page name is used.
+  const name = typeof page === 'string' ? page : 'about';
   const wc = win?.webContents;
   if (wc && !wc.isDestroyed() && ALLOWED.has(hostOf(wc.getURL()))) {
     show();
-    const ok = await wc.executeJavaScript('window.__yapnapUI ? window.__yapnapUI.open() : false', true).catch(() => false);
+    const ok = await wc.executeJavaScript(`window.__yapnapUI ? window.__yapnapUI.open(${JSON.stringify(name)}) : false`, true).catch(() => false);
     if (ok) return;
   }
   openStandalone();
@@ -558,6 +575,7 @@ function buildMenu() {
       label: APP_NAME,
       submenu: [
         { label: 'Settings', accelerator: 'Ctrl+,', click: openSettings },
+        { label: 'Marketplace', click: () => openSettings('market') },
         { label: 'Check for updates', click: updater.checkFromMenu },
         { label: 'Reload chat', accelerator: 'Ctrl+R', click: () => win?.webContents.reload() },
         { label: 'Safe mode', type: 'checkbox', checked: prefs.app.safeMode === true, accelerator: 'Ctrl+Shift+Y', click: toggleSafeMode },
@@ -583,6 +601,7 @@ function trayMenu() {
   return Menu.buildFromTemplate([
     { label: `Open ${APP_NAME}`, click: show },
     { label: 'Settings', click: openSettings },
+    { label: 'Marketplace', click: () => openSettings('market') },
     { label: 'Safe mode', type: 'checkbox', checked: prefs.app.safeMode === true, click: toggleSafeMode },
     { type: 'separator' },
     { label: `Quit ${APP_NAME}`, click: () => { quitting = true; app.quit(); } },
@@ -899,6 +918,63 @@ app.whenReady().then(() => {
     persist();
     return true;
   });
+  // Sharing mods: a file with the mods you have installed, and importing one. Every mod in a file goes through the
+  // same checks as the marketplace. Imported mods are stored switched off, so nothing turns on until you choose it.
+  ipcMain.handle('mod:market-export', async (e) => {
+    if (!fromTrusted(e)) return { ok: false, reason: 'Not allowed here.' };
+    const mods = Object.values(prefs.market);
+    if (!mods.length) return { ok: false, reason: 'You have no marketplace mods to share yet.' };
+    const { filePath, canceled } = await dialog.showSaveDialog({
+      title: 'Share your mods',
+      defaultPath: 'yapnap-mods.json',
+      filters: [{ name: 'Yapnap mods', extensions: ['json'] }],
+    });
+    if (canceled || !filePath) return { ok: false, reason: 'Cancelled.' };
+    fs.writeFileSync(filePath, JSON.stringify({ format: 'yapnap-mods', version: 1, mods }, null, 2));
+    return { ok: true, count: mods.length };
+  });
+  ipcMain.handle('mod:market-import', async (e) => {
+    if (!fromTrusted(e)) return { ok: false, reason: 'Not allowed here.' };
+    const { filePaths, canceled } = await dialog.showOpenDialog({
+      title: 'Import mods',
+      properties: ['openFile'],
+      filters: [{ name: 'Yapnap mods', extensions: ['json'] }],
+    });
+    if (canceled || !filePaths[0]) return { ok: false, reason: 'Cancelled.' };
+    if (fs.statSync(filePaths[0]).size > 2 * 1024 * 1024) return { ok: false, reason: 'That file is too large to be a mod file.' };
+    let raw;
+    try { raw = JSON.parse(fs.readFileSync(filePaths[0], 'utf8')); } catch { return { ok: false, reason: 'That file is not valid JSON.' }; }
+    if (!raw || raw.format !== 'yapnap-mods' || !Array.isArray(raw.mods)) return { ok: false, reason: 'That is not a Yapnap mod file.' };
+    let added = 0;
+    const refused = [];
+    for (const item of raw.mods.slice(0, 500)) {
+      const res = validateMod(item, null);
+      if (!res.ok) { refused.push(String(item && item.id ? item.id : '?').slice(0, 60)); continue; }
+      if (!prefs.market[res.mod.id] && Object.keys(prefs.market).length >= 2000) break;
+      prefs.market[res.mod.id] = res.mod;
+      added++;
+    }
+    persist();
+    return { ok: true, added, refused: refused.slice(0, 20) };
+  });
+
+  // Support info: what someone helping you needs to know. It has no secrets, no account details and no custom CSS text.
+  ipcMain.handle('mod:support', (e) => {
+    if (!fromTrusted(e)) return null;
+    const on = Object.entries(prefs.plugins).filter(([, p]) => p && p.on === true).map(([id]) => id);
+    return [
+      `Yapnap ${APP_VERSION}`,
+      `Platform: ${process.platform} ${process.arch}, ${os.release()}`,
+      `Electron ${process.versions.electron}, Chromium ${process.versions.chrome}`,
+      `Packaged: ${app.isPackaged ? 'yes' : 'no'}, portable: ${process.env.PORTABLE_EXECUTABLE_FILE ? 'yes' : 'no'}`,
+      `Safe mode: ${prefs.app.safeMode ? 'on' : 'off'}`,
+      `Plugins switched on (${on.length}): ${on.slice(0, 100).join(', ') || 'none'}`,
+      `Marketplace mods installed: ${Object.keys(prefs.market).length}`,
+      `Custom CSS: ${prefs.app.customCss ? 'yes' : 'no'}; theme: ${prefs.app.themeOn && prefs.app.theme ? 'on' : 'off'}`,
+      `Profiles saved: ${Object.keys(prefs.profiles).length}`,
+    ].join('\n');
+  });
+
   // Plugin profiles: a named set of switches. Saving stores every switch the page shows. Using one sets them all again.
   ipcMain.handle('mod:profile-save', (e, name, states) => {
     if (!fromTrusted(e)) return { ok: false, reason: 'Not allowed here.' };
