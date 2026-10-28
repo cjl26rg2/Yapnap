@@ -158,7 +158,9 @@ for (const p of built.problems) fail('marketplace: ' + p);
 if (!built.problems.length) {
   const bundledFile = path.join(SRC, 'market', 'bundled.json');
   const bundledNow = fs.existsSync(bundledFile) ? fs.readFileSync(bundledFile, 'utf8') : '';
-  if (bundledNow !== MB.bundledText(built.mods)) fail('src/market/bundled.json is out of date: run npm run market:build');
+  // Windows checkouts use CRLF line endings, so the comparison ignores them.
+  const eol = (text) => text.replace(/\r\n/g, '\n');
+  if (eol(bundledNow) !== eol(MB.bundledText(built.mods))) fail('src/market/bundled.json is out of date: run npm run market:build');
 }
 
 // Summary.
