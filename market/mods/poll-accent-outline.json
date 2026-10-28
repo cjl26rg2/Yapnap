@@ -1,0 +1,9 @@
+{
+  "id": "poll-accent-outline",
+  "name": "Accent poll options",
+  "desc": "Poll options get an accent outline.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".poll-opt{border-color:var(--accent)!important}"
+}

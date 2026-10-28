@@ -1,0 +1,9 @@
+{
+  "id": "thin-members-scroll",
+  "name": "Thin member scrollbar",
+  "desc": "A slimmer scrollbar in the member list.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".members-panel{scrollbar-width:thin!important}"
+}

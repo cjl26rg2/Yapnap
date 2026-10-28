@@ -1,0 +1,9 @@
+{
+  "id": "hide-members-phone",
+  "name": "Hide the phone icon",
+  "desc": "Hides the phone icon in the member list header.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".members-head-phone{display:none!important}"
+}

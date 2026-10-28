@@ -1,0 +1,9 @@
+{
+  "id": "hide-hover-times",
+  "name": "Hide hover times",
+  "desc": "Hides the small time that appears beside a message on hover.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-hover-time{display:none!important}"
+}

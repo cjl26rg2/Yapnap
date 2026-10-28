@@ -1,0 +1,9 @@
+{
+  "id": "compact-pinned",
+  "name": "Compact pinned bar",
+  "desc": "A slimmer pinned bar.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".pinned{padding:4px 10px!important}"
+}

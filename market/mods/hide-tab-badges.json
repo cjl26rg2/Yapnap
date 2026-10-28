@@ -1,0 +1,9 @@
+{
+  "id": "hide-tab-badges",
+  "name": "Hide tab counts",
+  "desc": "Hides the number badges on the tabs.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".nl-tab-badge{display:none!important}"
+}

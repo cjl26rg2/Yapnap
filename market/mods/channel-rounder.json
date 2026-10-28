@@ -1,0 +1,9 @@
+{
+  "id": "channel-rounder",
+  "name": "Rounder channel rows",
+  "desc": "Channel rows have softer corners.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row{border-radius:10px!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "hide-pinned-bar",
+  "name": "Hide the pinned bar",
+  "desc": "Hides the pinned messages bar.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".pinned{display:none!important}"
+}

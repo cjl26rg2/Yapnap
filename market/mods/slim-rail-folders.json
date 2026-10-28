@@ -1,0 +1,9 @@
+{
+  "id": "slim-rail-folders",
+  "name": "Slimmer folders",
+  "desc": "Less padding on server folders.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-folder{padding:2px!important}"
+}

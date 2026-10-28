@@ -1,0 +1,9 @@
+{
+  "id": "compact-incoming-call",
+  "name": "Compact incoming call",
+  "desc": "A tighter card for an incoming call.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".incoming-call{padding:6px!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "thin-message-scroll",
+  "name": "Thin message scrollbar",
+  "desc": "A slimmer scrollbar in the chat.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".messages{scrollbar-width:thin!important}"
+}

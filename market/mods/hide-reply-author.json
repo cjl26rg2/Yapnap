@@ -1,0 +1,9 @@
+{
+  "id": "hide-reply-author",
+  "name": "Hide reply names",
+  "desc": "Hides the name at the top of a reply preview.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reply-author{display:none!important}"
+}

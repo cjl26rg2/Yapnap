@@ -2,13 +2,6 @@
 (function (Y) {
   'use strict';
 
-  Y.add({
-    id: 'hide-server-rail',
-    name: 'Hide server list',
-    desc: 'Hides the column of server icons. Alt+1 to Alt+9 still jump between servers.',
-    category: 'Sidebar',
-    css: '.rail{display:none!important}'
-  });
 
   Y.add({
     id: 'slim-server-rail',
@@ -35,21 +28,7 @@
     css: '.server-banner{display:none!important}'
   });
 
-  Y.add({
-    id: 'hide-rail-badges',
-    name: 'Hide server badges',
-    desc: 'Hides the unread count on server icons.',
-    category: 'Sidebar',
-    css: '.rail-badge{display:none!important}'
-  });
 
-  Y.add({
-    id: 'hide-unread-dots',
-    name: 'Hide unread dots',
-    desc: 'Hides the dot that marks a channel with new messages.',
-    category: 'Sidebar',
-    css: '.unread{display:none!important}'
-  });
 
   Y.add({
     id: 'hide-status-dots',
@@ -76,13 +55,6 @@
     css: '.channel-row.active{box-shadow:inset 3px 0 0 var(--accent)}'
   });
 
-  Y.add({
-    id: 'section-labels-caps',
-    name: 'Capital section labels',
-    desc: 'Section titles in the channel list use small capitals.',
-    category: 'Sidebar',
-    css: '.section-label{text-transform:uppercase;letter-spacing:.08em;font-size:11px}'
-  });
 
   Y.add({
     id: 'hide-dm-dock',
@@ -92,13 +64,6 @@
     css: '.dm-dock{display:none!important}'
   });
 
-  Y.add({
-    id: 'hide-channel-glyphs',
-    name: 'Hide channel symbols',
-    desc: 'Removes the # and speaker symbols in front of channel names.',
-    category: 'Sidebar',
-    css: '.channel-glyph{display:none!important}'
-  });
 
   Y.add({
     id: 'compact-channel-rows',
@@ -117,28 +82,14 @@
     css: function (s) { return '.channel-row{font-size:' + s.px + 'px!important}'; }
   });
 
-  Y.add({
-    id: 'channel-hover-tint',
-    name: 'Channel hover tint',
-    desc: 'The channel under the pointer gets a background tint.',
-    category: 'Sidebar',
-    css: '.channel-row:hover{background:var(--bg-hover)}'
-  });
 
   Y.add({
     id: 'compact-top-bar',
     name: 'Top bar height',
-    desc: 'How tall the bar across the top of the window is, in pixels.',
+    desc: 'How tall the bar across the top of the chat is, in pixels. Yapper uses 26.',
     category: 'Sidebar',
-    settings: [{ key: 'px', label: 'Height', type: 'range', min: 32, max: 56, step: 2, def: 44 }],
-    css: function (s) { return ':root{--tb-h:' + s.px + 'px}'; }
+    settings: [{ key: 'px', label: 'Height', type: 'range', min: 18, max: 40, step: 2, def: 26 }],
+    css: function (s) { return '.topbar{height:' + s.px + 'px!important;min-height:0!important}'; }
   });
 
-  Y.add({
-    id: 'still-server-icons',
-    name: 'Still server icons',
-    desc: 'Server icons no longer lift or bounce under the pointer.',
-    category: 'Sidebar',
-    css: '.rail-item:hover{transform:none!important}'
-  });
 })(window.YAPNAP);

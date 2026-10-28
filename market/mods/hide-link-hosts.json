@@ -1,0 +1,9 @@
+{
+  "id": "hide-link-hosts",
+  "name": "Hide link hosts",
+  "desc": "Hides the website name on a link chip.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".link-chip-host{display:none!important}"
+}

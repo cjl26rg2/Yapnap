@@ -1,0 +1,9 @@
+{
+  "id": "reduce-motion",
+  "name": "Reduce motion",
+  "desc": "Turns off transitions and animations across the app.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}"
+}

@@ -121,6 +121,22 @@
     try { if (r.stop) r.stop(); } catch (e) { log('stop failed:', id, e); }
   }
 
+  // Marketplace mods are plugins on this page while they are installed. A mod that uses the id of a built-in plugin is
+  // refused, so a mod can never replace one of ours.
+  var marketIds = [];
+  function syncMarket(mods) {
+    marketIds.forEach(function (id) { window.YAPNAP.remove(id); });
+    marketIds = [];
+    mods.forEach(function (m) {
+      if (!m || typeof m.id !== 'string') return;
+      if (window.YAPNAP.get(m.id)) { log('mod skipped, that id is taken:', m.id); return; }
+      try {
+        window.YAPNAP.add({ id: m.id, name: m.name, desc: m.desc, category: m.category, market: true, css: m.css });
+        marketIds.push(m.id);
+      } catch (e) { log('mod skipped:', m.id, e); }
+    });
+  }
+
   function apply(state) {
     state = state || {};
     // Safe mode turns off every plugin. Yapnap's own core features (such as badges) keep running.
@@ -129,6 +145,7 @@
     var active = new Set();
 
     var safe = !!state.safe;
+    syncMarket(state.market || []);
     window.YAPNAP.all().forEach(function (p) {
       var mine = saved[p.id] || {};
       var on = p.core ? true : (!safe && (typeof mine.on === 'boolean' ? mine.on : !!p.def));
@@ -177,5 +194,5 @@
     return { active: active.size, css: css.length };
   }
 
-  window.__yapnap = { apply: apply, version: '1.0.2' };
+  window.__yapnap = { apply: apply, version: '1.1.0' };
 })();

@@ -1,0 +1,9 @@
+{
+  "id": "hide-reaction-count",
+  "name": "Hide reaction counts",
+  "desc": "Hides the number next to each reaction.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reaction-count{display:none!important}"
+}

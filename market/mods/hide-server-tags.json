@@ -1,0 +1,9 @@
+{
+  "id": "hide-server-tags",
+  "name": "Hide server tags",
+  "desc": "Hides the short tag shown next to a server name.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".server-tag{display:none!important}"
+}

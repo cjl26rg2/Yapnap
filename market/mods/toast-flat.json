@@ -1,0 +1,9 @@
+{
+  "id": "toast-flat",
+  "name": "Flat notices",
+  "desc": "Notices have no shadow.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".toast{box-shadow:none!important}"
+}

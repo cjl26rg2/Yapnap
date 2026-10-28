@@ -1,0 +1,9 @@
+{
+  "id": "hide-embed-images",
+  "name": "Hide embed pictures",
+  "desc": "Hides the picture inside a link preview or embed.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".embed-image{display:none!important}"
+}

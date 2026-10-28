@@ -1,0 +1,9 @@
+{
+  "id": "hide-link-chips",
+  "name": "Hide link chips",
+  "desc": "Hides the small website chips under a message.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".link-chip{display:none!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "hide-ping-badge",
+  "name": "Hide the ping badge",
+  "desc": "Hides the ping indicator in the chat.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ping{display:none!important}"
+}

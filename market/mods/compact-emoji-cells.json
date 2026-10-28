@@ -1,0 +1,9 @@
+{
+  "id": "compact-emoji-cells",
+  "name": "Compact emoji grid",
+  "desc": "Smaller emoji cells in the picker.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".emoji-cell{padding:2px!important}"
+}

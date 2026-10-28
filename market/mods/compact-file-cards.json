@@ -1,0 +1,9 @@
+{
+  "id": "compact-file-cards",
+  "name": "Compact file cards",
+  "desc": "Files you attach take up less room.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".file-card{padding:6px 8px!important}"
+}

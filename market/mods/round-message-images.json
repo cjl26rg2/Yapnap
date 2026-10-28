@@ -1,0 +1,9 @@
+{
+  "id": "round-message-images",
+  "name": "Rounder message pictures",
+  "desc": "Rounded corners on pictures sent in messages.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-image{border-radius:10px!important;overflow:hidden}"
+}

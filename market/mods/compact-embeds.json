@@ -1,0 +1,9 @@
+{
+  "id": "compact-embeds",
+  "name": "Compact embeds",
+  "desc": "Less space inside link embeds.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".embed{padding:6px 10px!important}"
+}

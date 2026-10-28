@@ -1,0 +1,9 @@
+{
+  "id": "hide-badge-overflow",
+  "name": "Hide the badge count",
+  "desc": "Hides the +N count after a row of badges.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".badge-more{display:none!important}"
+}

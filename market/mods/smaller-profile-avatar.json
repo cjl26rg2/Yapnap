@@ -1,0 +1,9 @@
+{
+  "id": "smaller-profile-avatar",
+  "name": "Smaller profile picture",
+  "desc": "The picture on a profile card is a little smaller.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card-avatar{transform:scale(.8)!important}"
+}

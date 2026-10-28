@@ -1,0 +1,9 @@
+{
+  "id": "hide-edit-hint",
+  "name": "Hide the edit hint",
+  "desc": "Hides the hint under a message while you edit it.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-editor-hint{display:none!important}"
+}

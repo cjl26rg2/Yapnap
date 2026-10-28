@@ -1,0 +1,9 @@
+{
+  "id": "hide-voice-dot",
+  "name": "Hide the voice dot",
+  "desc": "Hides the dot that shows you are in voice.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-chat-dot{display:none!important}"
+}

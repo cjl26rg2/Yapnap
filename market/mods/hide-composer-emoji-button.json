@@ -1,0 +1,9 @@
+{
+  "id": "hide-composer-emoji-button",
+  "name": "Hide composer emoji button",
+  "desc": "Hides the emoji button beside the text box.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".eb-button-emoji{display:none!important}"
+}

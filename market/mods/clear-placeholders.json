@@ -1,0 +1,9 @@
+{
+  "id": "clear-placeholders",
+  "name": "Clear placeholder text",
+  "desc": "The grey hint text in the composer is easier to read.",
+  "category": "Access",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".composer .input::placeholder{opacity:.85}"
+}

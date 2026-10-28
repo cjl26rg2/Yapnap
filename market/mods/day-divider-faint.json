@@ -1,0 +1,9 @@
+{
+  "id": "day-divider-faint",
+  "name": "Fainter day dividers",
+  "desc": "Day dividers are fainter.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".day-divider{opacity:.5!important}"
+}

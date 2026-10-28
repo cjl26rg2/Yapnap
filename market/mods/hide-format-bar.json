@@ -1,0 +1,9 @@
+{
+  "id": "hide-format-bar",
+  "name": "Hide the format bar",
+  "desc": "Hides the bar of bold, italic and other formatting buttons.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".fmt-bar{display:none!important}"
+}

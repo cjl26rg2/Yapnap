@@ -1,0 +1,9 @@
+{
+  "id": "tight-image-albums",
+  "name": "Tight picture groups",
+  "desc": "Less space between the pictures in a group.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-album{gap:2px!important}"
+}

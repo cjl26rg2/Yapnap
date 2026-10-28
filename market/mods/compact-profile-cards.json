@@ -1,0 +1,9 @@
+{
+  "id": "compact-profile-cards",
+  "name": "Compact profile cards",
+  "desc": "Profile cards are narrower.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card{max-width:280px!important}"
+}

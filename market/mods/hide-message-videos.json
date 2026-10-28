@@ -1,0 +1,9 @@
+{
+  "id": "hide-message-videos",
+  "name": "Hide message videos",
+  "desc": "Hides videos sent in messages.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-video-box{display:none!important}"
+}

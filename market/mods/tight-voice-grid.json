@@ -1,0 +1,9 @@
+{
+  "id": "tight-voice-grid",
+  "name": "Tight call grid",
+  "desc": "Smaller gap between the tiles in a call.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-view{gap:4px!important}"
+}

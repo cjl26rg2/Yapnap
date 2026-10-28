@@ -1,0 +1,9 @@
+{
+  "id": "flat-menus",
+  "name": "Bordered menus",
+  "desc": "Right-click and popup menus get a thin border instead of a shadow.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ctx-menu,.mini-pop{border:1px solid var(--border)!important}"
+}

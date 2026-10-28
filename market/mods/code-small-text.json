@@ -1,0 +1,9 @@
+{
+  "id": "code-small-text",
+  "name": "Smaller code text",
+  "desc": "Code in messages uses a smaller font.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".md-code{font-size:12px!important}"
+}

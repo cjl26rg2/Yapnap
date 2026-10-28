@@ -1,0 +1,9 @@
+{
+  "id": "slim-typing-line",
+  "name": "Slim typing line",
+  "desc": "The \"is typing\" line above the composer is smaller.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".typing-line{padding:0!important;font-size:12px!important}"
+}

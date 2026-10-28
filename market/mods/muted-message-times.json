@@ -1,0 +1,9 @@
+{
+  "id": "muted-message-times",
+  "name": "Muted message times",
+  "desc": "Times next to messages are dimmer, so the text stands out.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-time{opacity:.6}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "wide-chat",
+  "name": "Wide chat",
+  "desc": "The chat uses the whole width of the window.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".chat-wrap{max-width:none!important}"
+}

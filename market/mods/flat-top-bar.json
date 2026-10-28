@@ -1,0 +1,9 @@
+{
+  "id": "flat-top-bar",
+  "name": "Flat top bar",
+  "desc": "The bar across the top loses its shadow and gets a thin divider instead.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".top-bar{box-shadow:none!important;border-bottom:1px solid var(--border)!important}"
+}

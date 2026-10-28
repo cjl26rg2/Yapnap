@@ -1,0 +1,9 @@
+{
+  "id": "bold-mention-all",
+  "name": "Bold @everyone",
+  "desc": "The everyone mention is bold.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".mention-all{font-weight:800!important}"
+}

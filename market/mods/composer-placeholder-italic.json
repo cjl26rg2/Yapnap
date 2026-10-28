@@ -1,0 +1,9 @@
+{
+  "id": "composer-placeholder-italic",
+  "name": "Italic placeholder",
+  "desc": "The text box hint is in italics.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".composer ::placeholder{font-style:italic}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "modal-accent-top",
+  "name": "Accent top on dialogs",
+  "desc": "Dialogs have an accent line across the top.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".modal{border-top:3px solid var(--accent)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "link-hover-accent",
+  "name": "Accent link hover",
+  "desc": "Links turn the accent colour under the pointer.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "a:hover{color:var(--accent)!important}"
+}

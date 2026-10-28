@@ -1,0 +1,9 @@
+{
+  "id": "subtle-icon-buttons",
+  "name": "Quiet icon buttons",
+  "desc": "Small icon buttons are faint until you point at them.",
+  "category": "Access",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".icon-btn{opacity:.72;transition:opacity .12s}.icon-btn:hover{opacity:1}"
+}

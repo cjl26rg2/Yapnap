@@ -9,6 +9,7 @@ const GAMES = require('./games');
 const updater = require('./updater');
 const themeFile = require('./theme');
 const secrets = require('./secrets');
+const market = require('./market');
 const auth = require('./auth');
 
 const APP_NAME = 'Yapnap';
@@ -36,7 +37,7 @@ let notifyTimes = []; // when the page last sent a notification, for the rate li
 const ROLE_KEY_FILE = 'role-key.json';
 // Custom CSS may not load files, import other sheets, run script, or use angle brackets or backslashes.
 // Angle brackets and '>' are fine in CSS (child selectors), because the CSS is set as text, never as markup.
-const BAD_CSS = /url\s*\(|image-set\s*\(|\bimage\s*\(|\bsrc\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-binding|\\/i;
+const { BAD_CSS } = require('./market-rules'); // the same rules the marketplace uses, so custom CSS and mods agree
 const DEFAULT_TIERS = {
   owner: { label: 'Owner', color: '#e9b530' },
   'co-owner': { label: 'Co-owner', color: '#ff8c42' },
@@ -71,7 +72,7 @@ let quitting = false;
 
 // ---------- settings and badges ----------
 
-let prefs = { plugins: {}, app: { ...APP_DEFAULTS } };
+let prefs = { plugins: {}, app: { ...APP_DEFAULTS }, market: {} };
 let badges = { tiers: {}, users: {} };
 // What the website says this app's role key may do: 'owner', 'admin', or null when no key is saved or accepted.
 let roleLevel = null;
@@ -83,7 +84,7 @@ const rolesCacheFile = () => path.join(app.getPath('userData'), 'roles-cache.jso
 
 /** Keeps only well-formed saved settings. The page checks each value again against its plugin's rules. */
 function cleanPrefs(raw) {
-  const out = { plugins: {}, app: cleanApp(raw && raw.app) };
+  const out = { plugins: {}, app: cleanApp(raw && raw.app), market: market.cleanInstalled(raw && raw.market) };
   if (!raw || typeof raw !== 'object' || !raw.plugins || typeof raw.plugins !== 'object') return out;
   for (const [id, v] of Object.entries(raw.plugins).slice(0, 500)) {
     if (!ID.test(id) || !v || typeof v !== 'object') continue;
@@ -124,7 +125,7 @@ function loadPrefs() {
   try {
     prefs = cleanPrefs(JSON.parse(fs.readFileSync(prefsFile(), 'utf8')));
   } catch (err) {
-    prefs = { plugins: {}, app: { ...APP_DEFAULTS } };
+    prefs = { plugins: {}, app: { ...APP_DEFAULTS }, market: {} };
     // A settings file that exists but cannot be read is kept as a copy, so the next save never overwrites it silently.
     if (err.code !== 'ENOENT') {
       try { fs.copyFileSync(prefsFile(), `${prefsFile()}.broken`); } catch { /* nothing to keep */ }
@@ -147,13 +148,25 @@ function startRoleKey() {
   })().catch((e) => console.error('Could not read the role key:', e.message));
 }
 
+// Plugins that moved to the marketplace keep working for the people who had them. A plugin that has settings saved is
+// installed again from the copy that ships with the app. Nothing is downloaded, and nothing else changes.
+function migrateMarket() {
+  let changed = false;
+  for (const id of Object.keys(prefs.plugins)) {
+    if (prefs.market[id]) continue;
+    const mod = market.bundledMod(id);
+    if (mod) { prefs.market[id] = mod; changed = true; }
+  }
+  if (changed) savePrefs();
+}
+
 function savePrefs() {
   try {
     fs.mkdirSync(app.getPath('userData'), { recursive: true });
     const tmp = `${prefsFile()}.tmp`;
     // The role key is never written here. It is in its own encrypted file.
     const { roleKey, ...appSettings } = prefs.app;
-    fs.writeFileSync(tmp, JSON.stringify({ plugins: prefs.plugins, app: appSettings }, null, 2));
+    fs.writeFileSync(tmp, JSON.stringify({ plugins: prefs.plugins, market: prefs.market, app: appSettings }, null, 2));
     fs.renameSync(tmp, prefsFile());
   } catch (e) { console.error('Could not save settings:', e.message); }
 }
@@ -256,7 +269,7 @@ function pushUpdateState() {
 function applyToPage(wc) {
   if (!wc || wc.isDestroyed() || !pageBundle || !ALLOWED.has(hostOf(wc.getURL()))) return;
   const theme = prefs.app.themeOn && prefs.app.safeMode !== true ? prefs.app.theme : null;
-  const state = JSON.stringify({ plugins: prefs.plugins, badges, safe: prefs.app.safeMode === true, custom: prefs.app.customCss || '', theme, update: updater.updateStatus() });
+  const state = JSON.stringify({ plugins: prefs.plugins, badges, safe: prefs.app.safeMode === true, custom: prefs.app.customCss || '', theme, market: Object.values(prefs.market), update: updater.updateStatus() });
   wc.executeJavaScript(`${pageBundle}\n;window.__yapnap && window.__yapnap.apply(${state});`, true).catch(() => undefined);
 }
 
@@ -578,6 +591,7 @@ app.whenReady().then(() => {
 
   loadPrefs();
   startRoleKey();
+  migrateMarket();
   badges = loadBadges();
   try { pageBundle = readPageBundle(); } catch (e) { console.error('Could not read plugins:', e.message); }
 
@@ -667,6 +681,7 @@ app.whenReady().then(() => {
       grantable,
       info: appInfo(),
       account: auth.account(),
+      marketInstalled: Object.keys(prefs.market),
     };
   });
   ipcMain.handle('mod:set-plugin', (e, id, on) => {
@@ -701,7 +716,8 @@ app.whenReady().then(() => {
   });
   ipcMain.handle('mod:reset', (e) => {
     if (!fromTrusted(e)) return false;
-    prefs = { plugins: {}, app: prefs.app };
+    // Reset puts every plugin back to its default. Mods stay installed: only their switches and settings are reset.
+    prefs = { plugins: {}, app: prefs.app, market: prefs.market };
     persist();
     return true;
   });
@@ -768,7 +784,7 @@ app.whenReady().then(() => {
     });
     if (canceled || !filePath) return { ok: false, reason: 'Cancelled.' };
     const { roleKey, ...app } = prefs.app;
-    fs.writeFileSync(filePath, JSON.stringify({ format: 'yapnap-settings', version: 1, plugins: prefs.plugins, app }, null, 2));
+    fs.writeFileSync(filePath, JSON.stringify({ format: 'yapnap-settings', version: 1, plugins: prefs.plugins, market: prefs.market, app }, null, 2));
     return { ok: true, path: filePath };
   });
   ipcMain.handle('mod:import-settings', async (e) => {
@@ -820,6 +836,46 @@ app.whenReady().then(() => {
     } catch (err) {
       return { ok: false, reason: String(err.message || 'That theme could not be installed.').slice(0, 200) };
     }
+  });
+  // The marketplace. A mod only changes how Yapper looks, so installing one is as safe as a theme.
+  ipcMain.handle('mod:market-index', async (e, refresh) => {
+    if (!fromTrusted(e)) return null;
+    const list = refresh === true ? await market.loadIndex() : await market.index();
+    return { source: list.source, mods: list.mods, installed: Object.keys(prefs.market) };
+  });
+  ipcMain.handle('mod:market-install', async (e, id) => {
+    if (!fromTrusted(e) || typeof id !== 'string' || !/^[a-z0-9-]{1,60}$/.test(id)) return { ok: false, reason: 'Not allowed here.' };
+    if (!prefs.market[id] && Object.keys(prefs.market).length >= 2000) return { ok: false, reason: 'Too many mods are installed.' };
+    try {
+      const mod = await market.fetchMod(id, await market.index());
+      prefs.market[id] = mod;
+      prefs.plugins[id] = { ...prefs.plugins[id], on: true }; // installing a mod switches it on
+      persist();
+      return { ok: true, name: mod.name };
+    } catch (err) {
+      return { ok: false, reason: String(err.message || 'That mod could not be installed.').slice(0, 200) };
+    }
+  });
+  ipcMain.handle('mod:market-remove', (e, id) => {
+    if (!fromTrusted(e) || typeof id !== 'string' || !/^[a-z0-9-]{1,60}$/.test(id)) return false;
+    delete prefs.market[id];
+    delete prefs.plugins[id];
+    persist();
+    return true;
+  });
+  // The security tab. Every line is a fact the app can check on this computer. Nothing here is sent anywhere.
+  ipcMain.handle('mod:security', async (e) => {
+    if (!fromTrusted(e)) return null;
+    return {
+      version: APP_VERSION,
+      portable: Boolean(process.env.PORTABLE_EXECUTABLE_FILE),
+      signedIn: Boolean(auth.account()),
+      keychain: await require('electron').safeStorage.isAsyncEncryptionAvailable(),
+      roleKeySaved: Boolean(prefs.app.roleKey),
+      roleKeyEncrypted: secrets.isEncrypted(ROLE_KEY_FILE),
+      marketInstalled: Object.keys(prefs.market).length,
+      safeMode: prefs.app.safeMode === true,
+    };
   });
   ipcMain.handle('mod:remove-theme', (e) => {
     if (!fromTrusted(e)) return false;

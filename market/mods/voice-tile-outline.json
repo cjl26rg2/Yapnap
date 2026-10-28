@@ -1,0 +1,9 @@
+{
+  "id": "voice-tile-outline",
+  "name": "Accent voice tiles",
+  "desc": "Voice tiles get an accent outline.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-tile{outline:2px solid var(--accent)!important}"
+}

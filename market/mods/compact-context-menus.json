@@ -1,0 +1,9 @@
+{
+  "id": "compact-context-menus",
+  "name": "Compact right-click menus",
+  "desc": "Right-click menus have less padding.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ctx-menu{padding:4px!important}"
+}

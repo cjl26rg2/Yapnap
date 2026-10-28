@@ -1,0 +1,9 @@
+{
+  "id": "hide-message-avatars",
+  "name": "Hide message avatars",
+  "desc": "Removes the picture beside each message, for a dense IRC-style feed.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg .avatar{display:none!important}"
+}

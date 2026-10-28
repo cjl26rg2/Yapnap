@@ -1,0 +1,9 @@
+{
+  "id": "hide-voice-rec-hint",
+  "name": "Hide the recording hint",
+  "desc": "Hides the hint shown while you record a voice message.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-rec-hint{display:none!important}"
+}

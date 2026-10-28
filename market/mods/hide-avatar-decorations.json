@@ -1,0 +1,9 @@
+{
+  "id": "hide-avatar-decorations",
+  "name": "Hide avatar decorations",
+  "desc": "Hides the frames and effects drawn around profile pictures.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".avatar-deco{display:none!important}"
+}

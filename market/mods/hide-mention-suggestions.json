@@ -1,0 +1,9 @@
+{
+  "id": "hide-mention-suggestions",
+  "name": "Hide mention suggestions",
+  "desc": "Stops the name list from popping up when you type @.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".mention-menu{display:none!important}"
+}

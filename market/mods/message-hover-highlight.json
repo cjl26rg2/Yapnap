@@ -1,0 +1,9 @@
+{
+  "id": "message-hover-highlight",
+  "name": "Hover highlight",
+  "desc": "Light background on the message under the pointer.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg:hover{background:rgba(255,255,255,.035)}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "compact-topbar",
+  "name": "Compact top bar",
+  "desc": "A shorter top bar, 20 px tall instead of 26.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".topbar{height:20px!important;min-height:0!important}"
+}

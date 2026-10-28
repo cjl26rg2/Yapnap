@@ -1,0 +1,9 @@
+{
+  "id": "hide-section-labels",
+  "name": "Hide section labels",
+  "desc": "Removes the small headings above channel groups.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".section-label{display:none!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "narrow-emoji-picker",
+  "name": "Narrow emoji picker",
+  "desc": "A slimmer emoji picker that takes less of the screen.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".emoji-picker{width:280px!important;max-width:90vw!important}"
+}

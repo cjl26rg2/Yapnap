@@ -1,0 +1,9 @@
+{
+  "id": "black-call-background",
+  "name": "Black call background",
+  "desc": "The call view is pure black, which suits OLED screens.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-view{background:#000!important}"
+}

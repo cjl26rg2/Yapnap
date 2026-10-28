@@ -1,0 +1,9 @@
+{
+  "id": "hide-gift-button",
+  "name": "Hide the gift button",
+  "desc": "Hides the gift button next to the composer.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".plus-gift-btn{display:none!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "dim-reply-previews",
+  "name": "Dim reply previews",
+  "desc": "Quoted replies are shown faded so the new message stands out.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reply-text{opacity:.6}"
+}

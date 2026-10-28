@@ -1,0 +1,9 @@
+{
+  "id": "compact-modal-gap",
+  "name": "Tighter dialog gaps",
+  "desc": "Less space between the parts of a dialog.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".modal-body>*+*{margin-top:8px!important}"
+}

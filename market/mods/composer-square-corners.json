@@ -1,0 +1,9 @@
+{
+  "id": "composer-square-corners",
+  "name": "Square composer",
+  "desc": "The input box gets square corners.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".composer .input{border-radius:4px!important}"
+}

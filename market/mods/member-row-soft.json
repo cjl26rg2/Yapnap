@@ -1,0 +1,9 @@
+{
+  "id": "member-row-soft",
+  "name": "Rounder member rows",
+  "desc": "Member rows have softer corners.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".member-row{border-radius:8px!important}"
+}

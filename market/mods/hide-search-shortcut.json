@@ -1,0 +1,9 @@
+{
+  "id": "hide-search-shortcut",
+  "name": "Hide the search shortcut",
+  "desc": "Hides the keyboard hint in the search box.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".tb-kbd{display:none!important}"
+}

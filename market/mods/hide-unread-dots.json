@@ -1,0 +1,9 @@
+{
+  "id": "hide-unread-dots",
+  "name": "Hide unread dots",
+  "desc": "Hides the dot that marks a channel with new messages.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".unread{display:none!important}"
+}

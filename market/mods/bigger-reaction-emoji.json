@@ -1,0 +1,9 @@
+{
+  "id": "bigger-reaction-emoji",
+  "name": "Bigger reactions",
+  "desc": "Larger emoji on reactions.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reaction-emoji{font-size:19px!important}"
+}

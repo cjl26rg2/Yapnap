@@ -1,0 +1,9 @@
+{
+  "id": "mention-square",
+  "name": "Square mentions",
+  "desc": "Mentions have square corners.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".mention{border-radius:3px!important}"
+}

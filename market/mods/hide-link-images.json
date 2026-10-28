@@ -1,0 +1,9 @@
+{
+  "id": "hide-link-images",
+  "name": "Hide link previews",
+  "desc": "Hides the picture previews that links bring with them.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-linkimgs{display:none!important}"
+}

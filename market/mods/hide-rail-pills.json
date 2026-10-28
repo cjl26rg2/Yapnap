@@ -1,0 +1,9 @@
+{
+  "id": "hide-rail-pills",
+  "name": "Hide rail pills",
+  "desc": "Hides the small status pills on the server rail.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-pill{display:none!important}"
+}

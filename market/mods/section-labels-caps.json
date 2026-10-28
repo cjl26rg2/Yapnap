@@ -1,0 +1,9 @@
+{
+  "id": "section-labels-caps",
+  "name": "Capital section labels",
+  "desc": "Section titles in the channel list use small capitals.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".section-label{text-transform:uppercase;letter-spacing:.08em;font-size:11px}"
+}

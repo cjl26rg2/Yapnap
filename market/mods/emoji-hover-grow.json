@@ -1,0 +1,9 @@
+{
+  "id": "emoji-hover-grow",
+  "name": "Emoji grow on hover",
+  "desc": "Emoji in the picker grow a little under the pointer.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".emoji-cell:hover{transform:scale(1.15)}"
+}

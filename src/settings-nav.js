@@ -10,8 +10,8 @@
   var GROUP = 'data-yapnap-group';
   var HIDDEN = 'data-yapnap-hidden';
   var PANEL = 'data-yapnap-panel';
-  var PAGES = ['about', 'settings', 'plugins', 'themes'];
-  var TITLES = { about: 'About', settings: 'Settings', plugins: 'Plugins', themes: 'Themes' };
+  var PAGES = ['about', 'settings', 'plugins', 'themes', 'market', 'security'];
+  var TITLES = { about: 'About', settings: 'Settings', plugins: 'Plugins', themes: 'Themes', market: 'Marketplace', security: 'Security' };
 
   // The few rules the Yapnap entries need on top of Yapin's own classes: a logo in the group label, an accent bar on the
   // active entry (the same accent the panel uses for its controls), and a focus ring. Nothing else on Yapin's page changes.

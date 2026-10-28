@@ -1,0 +1,9 @@
+{
+  "id": "hide-role-chips",
+  "name": "Hide role chips",
+  "desc": "Hides the role labels under a profile name.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".role-chips{display:none!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "round-message-videos",
+  "name": "Rounder message videos",
+  "desc": "Rounded corners on videos sent in messages.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-video{border-radius:10px!important;overflow:hidden}"
+}

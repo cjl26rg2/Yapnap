@@ -1,0 +1,9 @@
+{
+  "id": "square-message-avatars",
+  "name": "Square message avatars",
+  "desc": "Avatars next to messages get square corners.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg .avatar{border-radius:4px!important}"
+}

@@ -207,13 +207,15 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
 }
 `;
 
-  var PAGES = ['about', 'settings', 'plugins', 'themes'];
-  var PAGE_TITLE = { about: 'About', settings: 'Settings', plugins: 'Plugins', themes: 'Themes' };
+  var PAGES = ['about', 'settings', 'plugins', 'themes', 'market', 'security'];
+  var PAGE_TITLE = { about: 'About', settings: 'Settings', plugins: 'Plugins', themes: 'Themes', market: 'Marketplace', security: 'Security' };
   var PAGE_LEAD = {
     about: 'What Yapnap is running, and what changed.',
     settings: 'Changes apply straight away.',
     plugins: 'Switch on the plugins you want. Each one changes one part of Yapin. A plugin with settings shows them when it is on.',
-    themes: 'Choosing a theme turns the others off.'
+    themes: 'Choosing a theme turns the others off.',
+    market: 'Mods that change how Yapper looks. Each one is checked before it is installed, and it can be removed at any time.',
+    security: 'What Yapnap does to keep you safe, and what we cannot promise.'
   };
   // The category icons come from the art pack: cat-messages, cat-composer and so on.
   var THEMES = [
@@ -228,7 +230,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
   var TIER_ORDER = ['owner', 'co-owner', 'developer', 'manager', 'admin', 'mod', 'contributor', 'advertiser', 'partner', 'sponsor', 'supporter', 'translator', 'artist', 'designer', 'tester', 'helper', 'veteran', 'friend'];
   var TIER_LABEL = { owner: 'Owner', 'co-owner': 'Co-owner', admin: 'Admin', manager: 'Manager', mod: 'Mod', contributor: 'Contributor', advertiser: 'Advertiser', partner: 'Partner', sponsor: 'Sponsor', supporter: 'Supporter', translator: 'Translator', artist: 'Artist', designer: 'Designer', developer: 'Developer', tester: 'Tester', helper: 'Helper', veteran: 'Veteran', friend: 'Friend' };
   var OWNER_ID = '879e9081-5614-436d-971a-09481669a35f';
-  var BAD_CSS = /url\s*\(|image-set\s*\(|\bimage\s*\(|\bsrc\s*\(|@import|expression\s*\(|javascript:|behavior|-moz-binding|\\/i;
+  var BAD_CSS = /url\s*\(|image-set\s*\(|\bimage\s*\(|\bsrc\s*\(|@(?!(?:media|supports|keyframes)\b)|expression\s*\(|javascript:|(?<![-\w])behavior\s*:|-moz-binding|\\/i;
   var CHANGES = [
     'Yapper’s own names stay as they are, including Yapin’ Plus.',
     '31 more plugins, 231 in all.',
@@ -277,7 +279,9 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
     var state = { plugins: {}, badges: { tiers: {}, users: {} }, app: {}, info: {} };
     var page = 'about';
     var query = '';
-    var status = 'all'; // the plugin filter: all, on, off or changed
+    var filterMode = 'all'; // the plugin filter: all, on, off or changed
+    // The marketplace: the list as the app last got it, what is installed, and the search. Kept across page changes.
+    var mk = { source: '', mods: null, installed: [], query: '', shown: 60, loading: false, failed: false, listEl: null, sourceEl: null };
     var cat = 'All';
     function isBrowser() { return !!(state.info && state.info.browser); }
 
@@ -305,9 +309,9 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       return isOn(p) !== !!p.def || Object.keys(savedOf(p).s || {}).length > 0;
     }
     function matches(p) {
-      if (status === 'on' && !isOn(p)) return false;
-      if (status === 'off' && isOn(p)) return false;
-      if (status === 'changed' && !changed(p)) return false;
+      if (filterMode === 'on' && !isOn(p)) return false;
+      if (filterMode === 'off' && isOn(p)) return false;
+      if (filterMode === 'changed' && !changed(p)) return false;
       if (!query) return true;
       return (p.name + ' ' + p.desc + ' ' + p.category).toLowerCase().indexOf(query.toLowerCase()) !== -1;
     }
@@ -1073,7 +1077,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         b.type = 'button';
         b.setAttribute('data-filter', f[0]);
         b.addEventListener('click', function () {
-          status = f[0];
+          filterMode = f[0];
           paintSeg();
           drawGroups();
         });
@@ -1081,7 +1085,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       });
       function paintSeg() {
         seg.querySelectorAll('button').forEach(function (b) {
-          b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === status));
+          b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === filterMode));
         });
       }
       paintSeg();
@@ -1122,11 +1126,11 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         var shown = Y.categories.filter(function (c) { return inCategory(c).filter(matches).length > 0; });
         if (!shown.length) {
           var empty = el('div', 'ym-empty');
-          empty.appendChild(el('p', null, 'No plugin matches' + (query ? ' "' + query + '"' : '') + (status !== 'all' ? ' with this filter' : '') + '.'));
+          empty.appendChild(el('p', null, 'No plugin matches' + (query ? ' "' + query + '"' : '') + (filterMode !== 'all' ? ' with this filter' : '') + '.'));
           var showAll = button('Show all plugins', 'ghost', null);
           showAll.addEventListener('click', function () {
             query = '';
-            status = 'all';
+            filterMode = 'all';
             search.value = '';
             paintSeg();
             drawGroups();
@@ -1366,6 +1370,195 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       startPage();
     }
 
+    // ----- Marketplace -----
+    function marketSourceText() {
+      if (mk.source === 'web') return 'The list is up to date, from the Yapnap website. Every mod is checked before it is installed.';
+      if (mk.source === 'cache') return 'You are offline, so this is the last list the website sent. Every mod is still checked before it is installed.';
+      if (mk.source === 'bundled') return 'You are offline, so this is the list that ships with Yapnap. Every mod is still checked before it is installed.';
+      return mk.failed ? 'The list could not be loaded. Try Refresh list.' : 'Loading the list…';
+    }
+    function renderMarket() {
+      if (typeof bridge.marketIndex !== 'function') {
+        view.appendChild(pageHead('Marketplace', []));
+        var only = el('div', 'ym-notice');
+        only.appendChild(art('ui-warning', 15));
+        only.appendChild(el('span', null, 'The marketplace is part of the desktop app.'));
+        view.appendChild(only);
+        startPage();
+        return;
+      }
+      var refreshBtn = button('Refresh list', 'ghost', 'ui-reset');
+      refreshBtn.addEventListener('click', function () { loadMarket(true); });
+      view.appendChild(pageHead('Marketplace', [refreshBtn]));
+      var sourceLine = el('div', 'ym-notice');
+      sourceLine.appendChild(art('ui-saved', 15));
+      mk.sourceEl = el('span', null, marketSourceText());
+      sourceLine.appendChild(mk.sourceEl);
+      view.appendChild(sourceLine);
+      var tools = el('div', 'ym-search-row');
+      var box = el('label', 'ym-search');
+      box.appendChild(art('ui-search', 15));
+      var search = el('input');
+      search.type = 'search';
+      search.placeholder = 'Search the marketplace';
+      search.value = mk.query;
+      search.setAttribute('aria-label', 'Search the marketplace');
+      box.appendChild(search);
+      tools.appendChild(box);
+      view.appendChild(tools);
+      mk.listEl = el('div', 'ym-market-list');
+      view.appendChild(mk.listEl);
+      var timer = null;
+      search.addEventListener('input', function () {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          mk.query = search.value.trim();
+          mk.shown = 60;
+          drawMarket();
+        }, 90);
+      });
+      if (mk.mods === null) loadMarket(false);
+      else drawMarket();
+      startPage();
+    }
+    function loadMarket(refreshList) {
+      if (mk.loading) return;
+      mk.loading = true;
+      if (mk.listEl) {
+        mk.listEl.textContent = '';
+        mk.listEl.appendChild(el('p', 'ym-empty', 'Loading the marketplace…'));
+      }
+      call(bridge.marketIndex(refreshList === true)).then(function (res) {
+        mk.loading = false;
+        if (!res || !Array.isArray(res.mods)) {
+          mk.failed = true;
+          mk.mods = mk.mods || [];
+        } else {
+          mk.failed = false;
+          mk.source = res.source;
+          mk.mods = res.mods;
+          mk.installed = res.installed || [];
+          if (refreshList === true) toast('market-list', 'The marketplace list is updated.', 'ok');
+        }
+        drawMarket();
+        return null;
+      });
+    }
+    function drawMarket() {
+      if (mk.sourceEl) mk.sourceEl.textContent = marketSourceText();
+      var list = mk.listEl;
+      if (!list) return;
+      list.textContent = '';
+      var mods = mk.mods || [];
+      var q = mk.query.toLowerCase();
+      var found = q ? mods.filter(function (m) {
+        return (m.name + ' ' + m.desc + ' ' + m.category + ' ' + m.author).toLowerCase().indexOf(q) !== -1;
+      }) : mods;
+      list.appendChild(el('p', 'ym-row-desc', found.length + ' of ' + mods.length + ' mods'));
+      found.slice(0, mk.shown).forEach(function (m) { list.appendChild(marketCard(m)); });
+      if (found.length > mk.shown) {
+        var more = button('Show more', 'ghost', null);
+        more.addEventListener('click', function () { mk.shown += 60; drawMarket(); });
+        list.appendChild(more);
+      }
+      if (!found.length) list.appendChild(el('p', 'ym-empty', mods.length ? 'No mod matches that search.' : 'There are no mods to show yet.'));
+    }
+    function marketCard(m) {
+      var card = el('div', 'ym-plugin');
+      var text = el('div', 'ym-row-text');
+      text.appendChild(el('div', 'ym-row-name', m.name));
+      text.appendChild(el('div', 'ym-row-desc', m.desc));
+      text.appendChild(el('div', 'ym-row-desc', m.category + ' · ' + m.author + ' · version ' + m.version));
+      var ctl = el('div', 'ym-plugin-ctl');
+      if (mk.installed.indexOf(m.id) !== -1) {
+        ctl.appendChild(chip('Installed', 'accent'));
+        var remove = button('Remove', 'danger ghost small', 'ui-trash');
+        remove.addEventListener('click', function () { removeMod(m, remove); });
+        ctl.appendChild(remove);
+      } else {
+        var install = button('Install', 'primary small', 'ui-plus');
+        install.addEventListener('click', function () { installMod(m, install); });
+        ctl.appendChild(install);
+      }
+      card.appendChild(text);
+      card.appendChild(ctl);
+      return card;
+    }
+    function installMod(m, btn) {
+      setBusy(btn, true);
+      call(bridge.marketInstall(m.id)).then(function (res) {
+        setBusy(btn, false);
+        if (!res || res.ok !== true) {
+          toast('market-install', (res && res.reason) || 'That mod could not be installed.', 'bad');
+          return null;
+        }
+        mk.installed.push(m.id);
+        toast('market-install', 'Installed ' + m.name + '. It is switched on.', 'ok');
+        return refresh(false).then(drawMarket);
+      });
+    }
+    function removeMod(m, btn) {
+      confirmDialog({ title: 'Remove ' + m.name + '?', body: 'The mod is removed and its switch is cleared. You can install it again later.', confirm: 'Remove mod', danger: true }).then(function (yes) {
+        if (!yes) return null;
+        setBusy(btn, true);
+        return call(bridge.marketRemove(m.id)).then(function (ok) {
+          setBusy(btn, false);
+          if (ok === false) return toast('market-remove', 'Could not remove that mod.', 'bad');
+          mk.installed = mk.installed.filter(function (id) { return id !== m.id; });
+          toast('market-remove', 'Removed ' + m.name + '.', 'ok');
+          return refresh(false).then(drawMarket);
+        });
+      });
+    }
+
+    // ----- Security -----
+    // Every line is read from this computer when the page opens, or it is a fixed fact about how the app is built.
+    function renderSecurity() {
+      view.appendChild(pageHead('Security', []));
+      var box = el('div', 'ym-security');
+      view.appendChild(box);
+      function line(title, desc, ok, label) {
+        box.appendChild(row(title, desc, status(ok, label), null));
+      }
+      if (typeof bridge.security !== 'function') {
+        box.appendChild(el('p', 'ym-empty', 'The security details are part of the desktop app.'));
+        startPage();
+        return;
+      }
+      box.appendChild(sectionTitle('What we check'));
+      line('Mods are data only', 'A mod is a name, a description and CSS. It cannot run code, read the page, load a file or reach the network. The app and the website use the same rules.', true, 'Enforced');
+      line('Mod downloads are checked', 'Each mod must match the fingerprint in the marketplace list before it is kept. The list only comes from yapnap.pages.dev over HTTPS, and redirects are refused.', true, 'Enforced');
+      line('The page is sandboxed', 'Yapnap runs in a sandbox with its own context. Node.js is not reachable from the page, and only the settings bridge is open to it.', true, 'On');
+      line('Changes that matter need a click', 'Installing a mod, changing roles or the role key, sign-out, and importing files cannot be done by a script on the page alone.', true, 'On');
+      line('Safe mode', 'Turns off every plugin, mod, theme and custom CSS at once, if something looks wrong. It is in the app menu and the tray.', true, 'Available');
+      box.appendChild(sectionTitle('This computer'));
+      var sec = el('div', null);
+      box.appendChild(sec);
+      box.appendChild(sectionTitle('What we cannot promise'));
+      var rows = [
+        ['Your account and role key', 'The role key is kept with the system keychain when there is one. Your sign-in is checked with Yapper each time Yapnap starts.'],
+        ['Code signing', 'The Windows app is not code-signed yet, so Windows may warn before it runs. Compare the file’s SHA-256 with the one on the release page.'],
+        ['Independent audit', 'Nobody outside the project has audited Yapnap yet. Every check on this page is our own.'],
+        ['Yapper’s own website', 'Yapnap runs inside Yapper’s website. If that site were compromised, Yapnap could not protect you from it.'],
+      ];
+      rows.forEach(function (r) { box.appendChild(row(r[0], r[1], status(false, 'Not promised'), null)); });
+      call(bridge.security()).then(function (f) {
+        if (!f) return null;
+        var here = el('div', null);
+        here.appendChild(row('Version', 'The version of Yapnap you are running.', status(true, f.version), null));
+        here.appendChild(row('Sign-in', f.signedIn ? 'You are signed in to Yapnap.' : 'You are not signed in.', status(f.signedIn, f.signedIn ? 'Signed in' : 'Not signed in'), null));
+        here.appendChild(row('System keychain', f.keychain ? 'The system keychain can encrypt your secrets.' : 'No keychain is available here, so secrets are only protected by your account folder.', status(f.keychain, f.keychain ? 'Available' : 'Not available'), null));
+        var roleText = !f.roleKeySaved ? 'No role key is saved.' : (f.roleKeyEncrypted ? 'Saved and encrypted on this computer.' : 'Saved, but not encrypted. A keychain would encrypt it.');
+        here.appendChild(row('Role key', roleText, status(!f.roleKeySaved || f.roleKeyEncrypted, !f.roleKeySaved ? 'None' : (f.roleKeyEncrypted ? 'Encrypted' : 'Plain')), null));
+        here.appendChild(row('Marketplace mods', f.marketInstalled + ' installed. They are data only.', status(true, 'Data only'), null));
+        here.appendChild(row('Updates', f.portable ? 'The portable copy tells you when a new version is out. Its zip is checked against GitHub’s checksum.' : 'Updates come from GitHub releases. Each file is checked against its checksum.', status(true, 'Checked'), null));
+        here.appendChild(row('Safe mode', f.safeMode ? 'On: plugins, mods, themes and custom CSS are all off.' : 'Off.', status(true, f.safeMode ? 'On' : 'Off'), null));
+        sec.appendChild(here);
+        return null;
+      });
+      startPage();
+    }
+
     // ----- routing and refresh -----
     function show(name) {
       if (PAGES.indexOf(name) === -1) name = 'about';
@@ -1374,6 +1567,8 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       if (page === 'about') renderAbout();
       else if (page === 'settings') renderSettings();
       else if (page === 'plugins') renderPlugins();
+      else if (page === 'market') renderMarket();
+      else if (page === 'security') renderSecurity();
       else renderThemes();
       return page;
     }
@@ -1397,7 +1592,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
 
   root.YAPNAP_PANEL = {
     mount: mount,
-    pages: ['about', 'settings', 'plugins', 'themes'],
-    titles: { about: 'About', settings: 'Settings', plugins: 'Plugins', themes: 'Themes' }
+    pages: ['about', 'settings', 'plugins', 'themes', 'market', 'security'],
+    titles: { about: 'About', settings: 'Settings', plugins: 'Plugins', themes: 'Themes', market: 'Marketplace', security: 'Security' }
   };
 })();

@@ -1,0 +1,9 @@
+{
+  "id": "channel-hover-tint",
+  "name": "Channel hover tint",
+  "desc": "The channel under the pointer gets a background tint.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row:hover{background:var(--bg-hover)}"
+}

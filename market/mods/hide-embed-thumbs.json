@@ -1,0 +1,9 @@
+{
+  "id": "hide-embed-thumbs",
+  "name": "Hide embed thumbnails",
+  "desc": "Hides the small picture beside a link embed.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".embed-thumb{display:none!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "hide-active-now",
+  "name": "Hide active now",
+  "desc": "Hides the Active now card in the sidebar.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".nl-active-now{display:none!important}"
+}

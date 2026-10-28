@@ -1,0 +1,9 @@
+{
+  "id": "hide-message-authors",
+  "name": "Hide message names",
+  "desc": "Hides the name above each message. Good for a clean read-only feed.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-author{display:none!important}"
+}

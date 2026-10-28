@@ -1,0 +1,9 @@
+{
+  "id": "typing-line-small",
+  "name": "Small typing line",
+  "desc": "The typing line is smaller.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".typing-line{font-size:11px!important}"
+}

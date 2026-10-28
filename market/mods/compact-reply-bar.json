@@ -1,0 +1,9 @@
+{
+  "id": "compact-reply-bar",
+  "name": "Compact reply bar",
+  "desc": "A tighter reply bar.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reply-bar{padding:4px 8px!important}"
+}

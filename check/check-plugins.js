@@ -11,7 +11,7 @@ const vm = require('node:vm');
 const ROOT = path.join(__dirname, '..');
 const SRC = path.join(ROOT, 'src');
 const PLUGIN_DIR = path.join(SRC, 'plugins');
-const EXPECTED = 231; // toggleable plugins; the core badge module is not listed
+const EXPECTED = 60; // built-in plugins; the marketplace mods are checked in section 7, and their count is not fixed
 const ALLOW_CLICK = new Set(['behaviour.js']); // alt-server-jump presses a server icon for the user
 
 const problems = [];
@@ -131,10 +131,41 @@ if (badges) {
   }
 }
 
+// 7. Marketplace mods: every file is a valid, data-only mod, named after its id, and no id is used twice or built in.
+const R = require(path.join(ROOT, 'market-rules.js'));
+const MARKET = path.join(ROOT, 'market', 'mods');
+const marketFiles = fs.existsSync(MARKET) ? fs.readdirSync(MARKET).filter((f) => f.endsWith('.json')).sort() : [];
+const builtInIds = new Set(plugins.map((p) => p.id));
+const marketIds = new Set();
+for (const f of marketFiles) {
+  let raw = null;
+  try { raw = JSON.parse(fs.readFileSync(path.join(MARKET, f), 'utf8')); } catch (e) { fail(`market/mods/${f} is not JSON: ${e.message}`); continue; }
+  const res = R.validateMod(raw, siteClasses);
+  if (!res.ok) { for (const pr of res.problems) fail(`market/mods/${f}: ${pr}`); continue; }
+  if (f !== res.mod.id + '.json') fail(`market/mods/${f} should be named ${res.mod.id}.json`);
+  if (builtInIds.has(res.mod.id) || marketIds.has(res.mod.id)) fail(`market/mods/${f}: the id "${res.mod.id}" is used twice`);
+  marketIds.add(res.mod.id);
+}
+
+// 8. The custom CSS rule in the settings panel must be the same as the marketplace rule. main.js imports it directly.
+const panelSource = fs.readFileSync(path.join(SRC, 'panel.js'), 'utf8');
+if (!panelSource.includes(`var BAD_CSS = /${R.BAD_CSS.source}/i;`)) fail('src/panel.js BAD_CSS is not the same as market-rules.js');
+
+// 9. The copy the app ships with must match the marketplace files. After a change, run npm run market:build.
+const MB = require(path.join(ROOT, 'tools', 'market-build.js'));
+const built = MB.loadMods();
+for (const p of built.problems) fail('marketplace: ' + p);
+if (!built.problems.length) {
+  const bundledFile = path.join(SRC, 'market', 'bundled.json');
+  const bundledNow = fs.existsSync(bundledFile) ? fs.readFileSync(bundledFile, 'utf8') : '';
+  if (bundledNow !== MB.bundledText(built.mods)) fail('src/market/bundled.json is out of date: run npm run market:build');
+}
+
 // Summary.
 const cssCount = plugins.filter((p) => p.css).length;
 console.log(`Plugins: ${plugins.length} (${cssCount} with CSS, ${jsPlugins.length} with JavaScript)`);
 console.log(`Categories: ${Y.categories.map((c) => `${c} ${plugins.filter((p) => p.category === c).length}`).join(', ')}`);
+console.log(`Marketplace: ${marketFiles.length} mods, each checked against the same rules as the app`);
 console.log(`Chat-site classes checked against ${siteClasses.size} names from the site's CSS`);
 if (problems.length) {
   console.log(`\n${problems.length} problem(s):`);

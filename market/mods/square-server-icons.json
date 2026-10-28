@@ -1,0 +1,9 @@
+{
+  "id": "square-server-icons",
+  "name": "Square-ish server icons",
+  "desc": "Server icons have softer square corners.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-item{border-radius:8px!important}"
+}

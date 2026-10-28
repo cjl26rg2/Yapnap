@@ -1,0 +1,9 @@
+{
+  "id": "hide-stream-border",
+  "name": "Borderless screen share",
+  "desc": "Removes the frame around a shared screen.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ss-stage{border:0!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "reaction-pill-small",
+  "name": "Smaller reaction pills",
+  "desc": "Reactions are shorter pills.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reaction{height:22px!important;padding:0 6px!important}"
+}

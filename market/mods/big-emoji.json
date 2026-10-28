@@ -1,0 +1,9 @@
+{
+  "id": "big-emoji",
+  "name": "Bigger emoji in messages",
+  "desc": "Emoji inside message text are drawn larger.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-text .emoji{font-size:1.5em}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "square-member-avatars",
+  "name": "Square member avatars",
+  "desc": "Pictures in the member list get rounded square corners.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".members-panel .avatar{border-radius:6px!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "hide-mention-role-dots",
+  "name": "Hide mention role dots",
+  "desc": "Hides the coloured dots by roles in mention suggestions.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".mention-role-dot{display:none!important}"
+}

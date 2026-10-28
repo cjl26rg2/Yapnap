@@ -1,0 +1,9 @@
+{
+  "id": "hide-embed-fields",
+  "name": "Hide embed fields",
+  "desc": "Hides the extra fields under an embed.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".embed-fields{display:none!important}"
+}

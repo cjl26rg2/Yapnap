@@ -1,0 +1,9 @@
+{
+  "id": "hide-channel-glyphs",
+  "name": "Hide channel symbols",
+  "desc": "Removes the # and speaker symbols in front of channel names.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-glyph{display:none!important}"
+}

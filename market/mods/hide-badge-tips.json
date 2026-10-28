@@ -1,0 +1,9 @@
+{
+  "id": "hide-badge-tips",
+  "name": "Hide badge tips",
+  "desc": "Hides the small tip that appears over a badge.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".badge-tip{display:none!important}"
+}

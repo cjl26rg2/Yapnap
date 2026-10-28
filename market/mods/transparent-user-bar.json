@@ -1,0 +1,9 @@
+{
+  "id": "transparent-user-bar",
+  "name": "Clear user bar",
+  "desc": "The bar with your name has no background.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".user-bar{background:transparent!important}"
+}

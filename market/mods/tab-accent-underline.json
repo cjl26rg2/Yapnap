@@ -1,0 +1,9 @@
+{
+  "id": "tab-accent-underline",
+  "name": "Accent tab underline",
+  "desc": "The open tab has an accent underline.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".nl-tab.active{box-shadow:inset 0 -2px 0 var(--accent)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "call-controls-pill",
+  "name": "Pill call controls",
+  "desc": "The call controls are a pill shape.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".call-controls{border-radius:999px!important}"
+}

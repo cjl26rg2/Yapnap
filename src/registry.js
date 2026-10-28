@@ -25,6 +25,8 @@
     fail: function (id, reason) { failures.set(id, String(reason || 'It could not start.').slice(0, 160)); },
     clearFail: function (id) { failures.delete(id); },
     failure: function (id) { return failures.get(id) || null; },
+    // Forgets a plugin, used when a marketplace mod is removed.
+    remove: function (id) { plugins.delete(id); failures.delete(id); },
     defaults: function (p) {
       var out = {};
       (p.settings || []).forEach(function (s) { out[s.key] = s.def; });

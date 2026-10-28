@@ -1,0 +1,9 @@
+{
+  "id": "menu-softer",
+  "name": "Rounder menus",
+  "desc": "Right-click menus have softer corners.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ctx-menu{border-radius:12px!important}"
+}

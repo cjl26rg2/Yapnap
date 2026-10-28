@@ -1,0 +1,9 @@
+{
+  "id": "tight-modal-body",
+  "name": "Tighter dialogs",
+  "desc": "Less space inside dialogs.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".modal-body{padding:12px 16px!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "hide-edited-label",
+  "name": "Hide edited label",
+  "desc": "Removes the \"edited\" tag from changed messages.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-edited{display:none!important}"
+}

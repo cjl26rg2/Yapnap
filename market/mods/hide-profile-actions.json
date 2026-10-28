@@ -1,0 +1,9 @@
+{
+  "id": "hide-profile-actions",
+  "name": "Hide profile card actions",
+  "desc": "Hides the buttons at the bottom of a profile card.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card-actions{display:none!important}"
+}

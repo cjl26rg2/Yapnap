@@ -1,0 +1,9 @@
+{
+  "id": "compact-modal-foot",
+  "name": "Compact dialog footer",
+  "desc": "A slimmer footer on dialogs.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".modal-foot{padding:8px 14px!important}"
+}

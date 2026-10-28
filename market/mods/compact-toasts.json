@@ -1,0 +1,9 @@
+{
+  "id": "compact-toasts",
+  "name": "Compact pop-up messages",
+  "desc": "Smaller pop-up messages in the corner of the window.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".toast{padding:6px 10px!important;font-size:12px!important}"
+}

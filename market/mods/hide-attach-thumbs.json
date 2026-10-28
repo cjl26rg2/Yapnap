@@ -1,0 +1,9 @@
+{
+  "id": "hide-attach-thumbs",
+  "name": "Hide attachment thumbnails",
+  "desc": "Hides the small picture on a file attachment.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".attach-thumb{display:none!important}"
+}

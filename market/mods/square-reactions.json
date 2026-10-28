@@ -1,0 +1,9 @@
+{
+  "id": "square-reactions",
+  "name": "Square reactions",
+  "desc": "Reaction chips get square corners.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reaction{border-radius:4px!important}"
+}

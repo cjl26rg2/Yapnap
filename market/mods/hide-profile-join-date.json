@@ -1,0 +1,9 @@
+{
+  "id": "hide-profile-join-date",
+  "name": "Hide profile join date",
+  "desc": "Hides the date someone joined on a full profile card.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".pc2-since{display:none!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "hide-send-button",
+  "name": "Hide send button",
+  "desc": "Hides the send button. Enter still sends.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".send-btn{display:none!important}"
+}

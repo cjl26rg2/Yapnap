@@ -1,0 +1,9 @@
+{
+  "id": "monospace-messages",
+  "name": "Monospace messages",
+  "desc": "Message text in a fixed-width font.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-text{font-family:ui-monospace,Menlo,Consolas,monospace!important}"
+}

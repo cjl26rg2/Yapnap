@@ -1,0 +1,9 @@
+{
+  "id": "hide-popout-mutuals",
+  "name": "Hide popout mutuals",
+  "desc": "Hides the mutual friends list in a profile popout.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".mini-mutuals{display:none!important}"
+}

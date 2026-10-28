@@ -1,0 +1,9 @@
+{
+  "id": "thick-reply-bar",
+  "name": "Thick reply bar",
+  "desc": "A thicker line at the side of a reply.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reply-bar{border-left-width:4px!important}"
+}

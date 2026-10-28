@@ -1,0 +1,9 @@
+{
+  "id": "in-call-accent",
+  "name": "Accent in-call text",
+  "desc": "The in-call label uses the accent colour.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".in-call{color:var(--accent)!important}"
+}

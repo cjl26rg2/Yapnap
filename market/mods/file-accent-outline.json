@@ -1,0 +1,9 @@
+{
+  "id": "file-accent-outline",
+  "name": "Accent file cards",
+  "desc": "File cards get an accent outline.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".file-card{border-color:var(--accent)!important}"
+}

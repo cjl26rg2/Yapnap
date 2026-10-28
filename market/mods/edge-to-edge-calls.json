@@ -1,0 +1,9 @@
+{
+  "id": "edge-to-edge-calls",
+  "name": "Edge-to-edge calls",
+  "desc": "The call grid runs right to the edges of its panel.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-view{padding:0!important}"
+}

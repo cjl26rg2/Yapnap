@@ -1,0 +1,9 @@
+{
+  "id": "spaced-messages-bottom",
+  "name": "Space above the composer",
+  "desc": "More room between the last message and the composer.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".messages-inner{padding-bottom:24px!important}"
+}

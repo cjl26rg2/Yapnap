@@ -1,0 +1,9 @@
+{
+  "id": "bigger-badges",
+  "name": "Bigger badges",
+  "desc": "Badge icons are a little larger.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".badge img{width:18px!important;height:18px!important}"
+}

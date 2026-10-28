@@ -1,0 +1,9 @@
+{
+  "id": "stronger-borders",
+  "name": "Stronger borders",
+  "desc": "Panel edges and dividers are easier to see.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--border:rgba(255,255,255,.22)!important}"
+}

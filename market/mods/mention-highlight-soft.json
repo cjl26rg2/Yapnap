@@ -1,0 +1,9 @@
+{
+  "id": "mention-highlight-soft",
+  "name": "Warm mention tint",
+  "desc": "Messages that mention you get a faint warm background.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".mention{background:rgba(255,107,74,.08)!important}"
+}

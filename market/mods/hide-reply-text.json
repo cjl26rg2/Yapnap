@@ -1,0 +1,9 @@
+{
+  "id": "hide-reply-text",
+  "name": "Hide reply text",
+  "desc": "Hides the message text inside a reply preview.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reply-text{display:none!important}"
+}

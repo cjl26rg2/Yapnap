@@ -1,0 +1,9 @@
+{
+  "id": "small-message-times",
+  "name": "Small message times",
+  "desc": "Smaller, fainter times.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-time{font-size:11px!important;opacity:.7!important}"
+}

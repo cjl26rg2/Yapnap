@@ -1,0 +1,9 @@
+{
+  "id": "hide-voice-tile-borders",
+  "name": "Borderless call tiles",
+  "desc": "Removes the outline around each person in a call.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-tile{border:0!important}"
+}

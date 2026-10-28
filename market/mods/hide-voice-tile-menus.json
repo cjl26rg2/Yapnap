@@ -1,0 +1,9 @@
+{
+  "id": "hide-voice-tile-menus",
+  "name": "Hide voice tile menus",
+  "desc": "Hides the menu button on each person in a voice call.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-tile-menu{display:none!important}"
+}

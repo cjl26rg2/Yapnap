@@ -102,14 +102,6 @@
     css: function (s) { return ':root:root:root:root,.app.app.app.app{--radius:' + s.px + 'px!important;--card-r:' + s.px + 'px!important}'; }
   });
 
-  Y.add({
-    id: 'reduce-motion',
-    name: 'Reduce motion',
-    desc: 'Turns off transitions and animations across the app.',
-    category: 'Look',
-    css: '*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;' +
-      'transition-duration:.001ms!important;scroll-behavior:auto!important}'
-  });
 
   Y.add({
     id: 'no-blur',
@@ -145,13 +137,6 @@
     css: 'body,.app{font-family:system-ui,"Segoe UI",sans-serif!important}'
   });
 
-  Y.add({
-    id: 'serif-messages',
-    name: 'Serif messages',
-    desc: 'Message text in a book-style serif font.',
-    category: 'Look',
-    css: '.msg-text{font-family:Georgia,"Times New Roman",serif!important}'
-  });
 
   Y.add({
     id: 'high-contrast-text',
@@ -161,13 +146,6 @@
     css: ':root:root:root:root,.app.app.app.app{--text:#ffffff!important;--text-muted:#cfd2d9!important;--text-faint:#aeb2bb!important}'
   });
 
-  Y.add({
-    id: 'stronger-borders',
-    name: 'Stronger borders',
-    desc: 'Panel edges and dividers are easier to see.',
-    category: 'Look',
-    css: ':root:root:root:root,.app.app.app.app{--border:rgba(255,255,255,.22)!important}'
-  });
 
   Y.add({
     id: 'ui-scale',
@@ -178,13 +156,6 @@
     css: function (s) { return 'html{zoom:' + (s.pct / 100).toFixed(2) + '}'; }
   });
 
-  Y.add({
-    id: 'brighter-links',
-    name: 'Brighter links',
-    desc: 'Links in messages use a lighter blue that reads better on dark backgrounds.',
-    category: 'Look',
-    css: '.msg-text a{color:#8fd3ff!important}'
-  });
 
   Y.add({
     id: 'flat-backgrounds',
@@ -202,12 +173,5 @@
     css: '.avatar,.msg .avatar{border-radius:50%!important}'
   });
 
-  Y.add({
-    id: 'flat-menus',
-    name: 'Bordered menus',
-    desc: 'Right-click and popup menus get a thin border instead of a shadow.',
-    category: 'Look',
-    css: '.ctx-menu,.mini-pop{border:1px solid var(--border)!important}'
-  });
 
 })(window.YAPNAP);

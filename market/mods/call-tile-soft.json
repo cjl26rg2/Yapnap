@@ -1,0 +1,9 @@
+{
+  "id": "call-tile-soft",
+  "name": "Soft call tiles",
+  "desc": "Call tiles have softer corners.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".dm-call-tile{border-radius:14px!important}"
+}

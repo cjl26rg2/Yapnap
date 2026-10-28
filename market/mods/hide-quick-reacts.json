@@ -1,0 +1,9 @@
+{
+  "id": "hide-quick-reacts",
+  "name": "Hide quick reactions",
+  "desc": "Hides the row of quick reactions that shows over a message.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".quick-react{display:none!important}"
+}

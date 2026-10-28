@@ -1,0 +1,9 @@
+{
+  "id": "hide-rail-separators",
+  "name": "Hide server list lines",
+  "desc": "Hides the lines between groups in the server list.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-sep{display:none!important}"
+}

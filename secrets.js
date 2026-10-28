@@ -43,4 +43,13 @@ async function loadSecret(name) {
   }
 }
 
-module.exports = { saveSecret, loadSecret };
+/** Whether a saved secret is encrypted on disk. False when there is none. */
+function isEncrypted(name) {
+  try {
+    return JSON.parse(fs.readFileSync(fileFor(name), 'utf8')).enc === true;
+  } catch {
+    return false;
+  }
+}
+
+module.exports = { saveSecret, loadSecret, isEncrypted };

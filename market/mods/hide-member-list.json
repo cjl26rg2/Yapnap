@@ -1,0 +1,9 @@
+{
+  "id": "hide-member-list",
+  "name": "Hide member list",
+  "desc": "Hides the list of people on the right of a server.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".members-panel{display:none!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "rounded-channel-rows",
+  "name": "Rounded channel rows",
+  "desc": "Channels in the sidebar have rounded highlights.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row{border-radius:8px!important}"
+}

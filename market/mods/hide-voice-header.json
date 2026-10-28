@@ -1,0 +1,9 @@
+{
+  "id": "hide-voice-header",
+  "name": "Hide the voice header",
+  "desc": "Hides the header of the voice panel.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-chat-head{display:none!important}"
+}

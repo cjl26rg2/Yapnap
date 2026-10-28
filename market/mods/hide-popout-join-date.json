@@ -1,0 +1,9 @@
+{
+  "id": "hide-popout-join-date",
+  "name": "Hide popout join date",
+  "desc": "Hides the date someone joined in a profile popout.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".mini-since{display:none!important}"
+}

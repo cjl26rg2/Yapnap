@@ -1,0 +1,9 @@
+{
+  "id": "message-dividers",
+  "name": "Message dividers",
+  "desc": "A thin line between messages.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg + .msg{border-top:1px solid var(--border)}"
+}

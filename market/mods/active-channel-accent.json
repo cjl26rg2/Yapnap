@@ -1,0 +1,9 @@
+{
+  "id": "active-channel-accent",
+  "name": "Accent active channel",
+  "desc": "The open channel is written in the accent colour.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row.active{color:var(--accent)!important}"
+}

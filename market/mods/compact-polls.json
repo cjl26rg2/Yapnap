@@ -1,0 +1,9 @@
+{
+  "id": "compact-polls",
+  "name": "Compact polls",
+  "desc": "Tighter poll options.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".poll-opt{padding:4px 8px!important}"
+}

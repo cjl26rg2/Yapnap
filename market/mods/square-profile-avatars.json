@@ -1,0 +1,9 @@
+{
+  "id": "square-profile-avatars",
+  "name": "Square profile avatars",
+  "desc": "The large picture on a profile card gets rounded square corners.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card-avatar{border-radius:8px!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "striped-messages",
+  "name": "Striped messages",
+  "desc": "Every other message gets a slightly lighter background.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg:nth-child(even){background:rgba(255,255,255,.025)}"
+}

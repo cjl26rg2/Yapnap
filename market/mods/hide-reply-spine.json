@@ -1,0 +1,9 @@
+{
+  "id": "hide-reply-spine",
+  "name": "Hide the reply line",
+  "desc": "Hides the line that joins a reply to its message.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reply-spine{display:none!important}"
+}

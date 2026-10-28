@@ -1,0 +1,9 @@
+{
+  "id": "compact-user-bar",
+  "name": "Compact user bar",
+  "desc": "A tighter bar with your name at the bottom.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".user-bar{padding:4px 8px!important}"
+}

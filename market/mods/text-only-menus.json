@@ -1,0 +1,9 @@
+{
+  "id": "text-only-menus",
+  "name": "Text-only menus",
+  "desc": "Right-click menus show words only, without icons.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ctx-menu svg{display:none!important}"
+}

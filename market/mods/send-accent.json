@@ -1,0 +1,9 @@
+{
+  "id": "send-accent",
+  "name": "Accent send button",
+  "desc": "The send button uses the accent colour.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".send-btn{background:var(--accent)!important}"
+}

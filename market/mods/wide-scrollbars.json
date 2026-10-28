@@ -1,0 +1,9 @@
+{
+  "id": "wide-scrollbars",
+  "name": "Wide scrollbars",
+  "desc": "Scrollbars are wide enough to grab with a mouse or touchpad.",
+  "category": "Access",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "::-webkit-scrollbar{width:12px;height:12px}"
+}

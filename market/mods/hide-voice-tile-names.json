@@ -1,0 +1,9 @@
+{
+  "id": "hide-voice-tile-names",
+  "name": "Hide voice tile names",
+  "desc": "Hides the name on each person in a voice call.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-tile-name{display:none!important}"
+}

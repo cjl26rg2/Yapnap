@@ -1,0 +1,9 @@
+{
+  "id": "flat-profile-sections",
+  "name": "Flat profile sections",
+  "desc": "Sections inside a profile card lose their boxes and shadows.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card-section{background:transparent!important;box-shadow:none!important}"
+}

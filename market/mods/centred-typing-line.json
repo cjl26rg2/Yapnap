@@ -1,0 +1,9 @@
+{
+  "id": "centred-typing-line",
+  "name": "Centred typing line",
+  "desc": "The \"is typing\" line sits in the middle.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".typing-line{text-align:center!important}"
+}

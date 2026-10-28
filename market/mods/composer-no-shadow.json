@@ -1,0 +1,9 @@
+{
+  "id": "composer-no-shadow",
+  "name": "Flat composer",
+  "desc": "Removes the shadow under the composer.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".composer{box-shadow:none!important}"
+}

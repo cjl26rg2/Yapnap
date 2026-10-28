@@ -1,0 +1,9 @@
+{
+  "id": "topbar-accent-line",
+  "name": "Accent line under the top bar",
+  "desc": "A thin accent line runs under the top bar.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".topbar{border-bottom:1px solid var(--accent)!important}"
+}

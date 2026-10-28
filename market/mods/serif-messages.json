@@ -1,0 +1,9 @@
+{
+  "id": "serif-messages",
+  "name": "Serif messages",
+  "desc": "Message text in a book-style serif font.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-text{font-family:Georgia,\"Times New Roman\",serif!important}"
+}

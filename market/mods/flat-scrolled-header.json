@@ -1,0 +1,9 @@
+{
+  "id": "flat-scrolled-header",
+  "name": "Flat header when scrolled",
+  "desc": "No shadow under the top bar when you scroll.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".scrolled{box-shadow:none!important}"
+}

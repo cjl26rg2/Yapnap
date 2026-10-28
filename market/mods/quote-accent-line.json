@@ -1,0 +1,9 @@
+{
+  "id": "quote-accent-line",
+  "name": "Accent line on quotes",
+  "desc": "A line in the accent colour runs beside quoted text.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".md-quote{border-left:3px solid var(--accent)!important}"
+}

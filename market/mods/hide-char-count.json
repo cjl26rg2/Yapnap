@@ -1,0 +1,9 @@
+{
+  "id": "hide-char-count",
+  "name": "Hide the character count",
+  "desc": "Hides the count of characters under the composer.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".char-count{display:none!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "hide-rail-labels",
+  "name": "Hide server labels",
+  "desc": "Hides the names under the server icons.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-label-text{display:none!important}"
+}

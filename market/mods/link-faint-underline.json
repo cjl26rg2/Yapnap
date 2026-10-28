@@ -1,0 +1,9 @@
+{
+  "id": "link-faint-underline",
+  "name": "Fainter link underlines",
+  "desc": "Links keep a faint underline.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-link{text-decoration-color:rgba(255,255,255,.3)!important}"
+}

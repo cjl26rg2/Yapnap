@@ -1,0 +1,9 @@
+{
+  "id": "hide-voice-button",
+  "name": "Hide the voice button",
+  "desc": "Hides the voice chat button.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-chat-btn{display:none!important}"
+}

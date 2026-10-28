@@ -1,0 +1,9 @@
+{
+  "id": "hide-chat-start",
+  "name": "Hide the chat start",
+  "desc": "Hides the intro at the top of a channel with no older messages.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".chat-start{display:none!important}"
+}

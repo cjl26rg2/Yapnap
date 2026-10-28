@@ -1,0 +1,9 @@
+{
+  "id": "composer-monospace",
+  "name": "Monospace composer",
+  "desc": "Type in a fixed-width font. Handy for code and commands.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".composer .input{font-family:ui-monospace,Menlo,Consolas,monospace!important}"
+}

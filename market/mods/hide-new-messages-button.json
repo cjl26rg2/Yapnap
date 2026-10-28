@@ -1,0 +1,9 @@
+{
+  "id": "hide-new-messages-button",
+  "name": "Hide the new messages button",
+  "desc": "Hides the button that jumps to new messages.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".new-below-wrap{display:none!important}"
+}

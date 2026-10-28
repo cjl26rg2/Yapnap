@@ -1,0 +1,9 @@
+{
+  "id": "roomy-composer-input",
+  "name": "Roomier composer",
+  "desc": "More space inside the text box you type in.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".composer .input{padding:10px 14px!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "gif-soft-corners",
+  "name": "Soft GIF corners",
+  "desc": "GIFs in the picker have softer corners.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".gif-tile{border-radius:12px!important}"
+}

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Yapnap (unofficial)
 // @namespace    https://yapnap.pages.dev
-// @version      1.0.2
+// @version      1.1.0
 // @description  Unofficial Yapnap tools for Yapper: an optional menu toggle to hide the top brand. Off by default.
 // @author       Yapnap
 // @match        https://www.yapper.website/*

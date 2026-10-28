@@ -1,0 +1,9 @@
+{
+  "id": "full-width-messages",
+  "name": "Full-width messages",
+  "desc": "Lets message bodies use the whole chat width.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-body{max-width:none!important}"
+}

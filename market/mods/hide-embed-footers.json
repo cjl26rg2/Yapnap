@@ -1,0 +1,9 @@
+{
+  "id": "hide-embed-footers",
+  "name": "Hide embed footers",
+  "desc": "Hides the small footer line under a link embed.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".embed-footer{display:none!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "high-contrast-selection",
+  "name": "High contrast selection",
+  "desc": "Selected text uses the accent colour, so it is easy to see.",
+  "category": "Access",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "::selection{background:var(--accent)!important;color:var(--on-accent)!important}"
+}

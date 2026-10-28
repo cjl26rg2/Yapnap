@@ -1,0 +1,9 @@
+{
+  "id": "thin-sidebar-scroll",
+  "name": "Thin sidebar scrollbar",
+  "desc": "A slimmer scrollbar in the sidebar.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".sidebar-scroll{scrollbar-width:thin!important}"
+}

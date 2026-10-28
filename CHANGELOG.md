@@ -2,6 +2,17 @@
 
 What changed in each Yapnap release, newest first.
 
+## 1.1.0 (2026-10-28)
+
+- Marketplace: 208 mods to browse and install. Each one is checked before it is kept. Installing switches it on, and removing clears it.
+- 60 plugins are built in. The rest moved to the marketplace, and any plugin you had on keeps working.
+- Compact top bar makes the bar shorter (20 px). The top bar height setting works from 18 to 40 px, with 26 as the default.
+- A Security page in the settings explains what Yapnap checks, what it cannot promise, and the state of this computer.
+- Custom CSS and mods follow the same rules. @media, @supports and @keyframes are allowed; url(), imports and image-set() are not.
+- Packaged builds use hardened Electron settings: they cannot run as a Node tool, and they only load code from their own archive.
+- The marketplace list and the mods come only from yapnap.pages.dev over HTTPS, and redirects are refused.
+- Fixed settings-panel errors that appeared with the plugin filter, such as in the custom CSS and role messages.
+
 ## 1.0.2 (2026-10-27)
 
 - 31 more plugins, 231 in all: embeds, link chips, polls, the GIF picker, the server rail, profile cards, calls and dialogs. Each one is off until you switch it on.

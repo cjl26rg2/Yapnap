@@ -1,0 +1,9 @@
+{
+  "id": "round-gif-picker",
+  "name": "Round GIF picker",
+  "desc": "Rounded corners on the GIF picker.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".gif-picker{border-radius:14px!important;overflow:hidden}"
+}
