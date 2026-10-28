@@ -39,6 +39,8 @@
       "auth.js",
       "secrets.js",
       "theme.js",
+      "market.js",
+      "market-rules.js",
       "updater.js",
       "zipfile.js",
       "src/**/*",
