@@ -13,7 +13,7 @@ const LATEST_API = 'https://api.github.com/repos/cjl26rg2/Yapnap/releases/latest
 
 const RELEASES_URL = 'https://github.com/cjl26rg2/Yapnap/releases/latest';
 const FIRST_CHECK_MS = 15_000;
-const EVERY_MS = 4 * 60 * 60 * 1000;
+const EVERY_MS = 30 * 60 * 1000; // a check for a new version every 30 minutes
 
 const portable = process.platform === 'win32' && Boolean(process.env.PORTABLE_EXECUTABLE_FILE);
 let manualCheck = false;

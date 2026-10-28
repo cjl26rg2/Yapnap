@@ -12,6 +12,7 @@ What changed in each Yapnap release, newest first.
 - Marketplace is in the app menu and the tray, and opens its page directly.
 - Copy support info on the Security page: the version, the platform, and what is switched on. It has no account details and no custom CSS text.
 - A settings backup is kept each day for the last seven days. Settings, then Load settings, can use one to put things back.
+- Yapnap checks for a new version every 30 minutes, up from every 4 hours. The marketplace list is also fetched every 30 minutes.
 - 60 plugins are built in. The rest moved to the marketplace, and any plugin you had on keeps working.
 - Compact top bar makes the bar shorter (20 px). The top bar height setting works from 18 to 40 px, with 26 as the default.
 - A Security page in the settings explains what Yapnap checks, what it cannot promise, and the state of this computer.

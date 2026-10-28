@@ -30,6 +30,7 @@ const OWNER_ID = '879e9081-5614-436d-971a-09481669a35f';
 // YAPNAP_ROLES_URL points the app at a local test server (see the testing notes). Normally this is the site.
 const ROLES_URL = process.env.YAPNAP_ROLES_URL || 'https://yapnap.pages.dev';
 const ROLES_EVERY = 10 * 60 * 1000;
+const MARKET_EVERY_MS = 30 * 60 * 1000; // the marketplace list is fetched this often, so new mods show up without a restart
 const APP_DEFAULTS = { trayOnClose: true, notifications: true, flashOnMention: true, safeMode: false, zoom: 100, myId: '', roleKey: '', customCss: '', themeOn: false, theme: null };
 const CUSTOM_CSS_MAX = 20000;
 const SETTINGS_FILE_MAX = 8 * 1024 * 1024; // a settings file may hold a theme picture, so it is larger than a theme file
@@ -1042,6 +1043,9 @@ app.whenReady().then(() => {
   // The shared role list: read now, then every 10 minutes, so role changes reach everyone without an update.
   void refreshRoles();
   setInterval(() => { void refreshRoles(); }, ROLES_EVERY);
+  // The marketplace list is fetched now and then every 30 minutes. The page reads the copy in memory, so it is quick.
+  void market.loadIndex();
+  setInterval(() => { void market.loadIndex(); }, MARKET_EVERY_MS);
 });
 
 // "Playing X": every 20 s look at the running programs for a known game (games.js) and tell the page.
