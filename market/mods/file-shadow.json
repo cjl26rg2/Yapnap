@@ -1,0 +1,9 @@
+{
+  "id": "file-shadow",
+  "name": "Lifted file cards",
+  "desc": "File cards cast a soft shadow.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".file-card{box-shadow:0 2px 8px rgba(0,0,0,.25)!important}"
+}

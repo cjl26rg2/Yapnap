@@ -1,0 +1,9 @@
+{
+  "id": "online-green",
+  "name": "Green online dots",
+  "desc": "Online dots are green.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".online{background:#3fcf82!important}"
+}

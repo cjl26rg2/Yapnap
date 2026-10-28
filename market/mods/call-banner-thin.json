@@ -1,0 +1,9 @@
+{
+  "id": "call-banner-thin",
+  "name": "Thin call banner",
+  "desc": "The banner at the top of a call is thinner.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".call-banner{padding:4px 10px!important}"
+}

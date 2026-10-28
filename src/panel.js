@@ -281,7 +281,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
     var query = '';
     var filterMode = 'all'; // the plugin filter: all, on, off or changed
     // The marketplace: the list as the app last got it, what is installed, and the search. Kept across page changes.
-    var mk = { source: '', mods: null, installed: [], query: '', shown: 60, loading: false, failed: false, listEl: null, sourceEl: null };
+    var mk = { source: '', mods: null, installed: [], versions: {}, category: 'All', query: '', shown: 60, loading: false, failed: false, listEl: null, sourceEl: null };
     var cat = 'All';
     function isBrowser() { return !!(state.info && state.info.browser); }
 
@@ -1015,6 +1015,66 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         r._collapse.firstElementChild.inert = !on;
       }
     }
+    // Profiles: a named set of switches. Saving stores every switch the page shows, and using one sets them all again.
+    function profilesBlock() {
+      var wrap = el('div', 'ym-profiles');
+      wrap.appendChild(sectionTitle('Profiles', 'Save the switches you have now, then use them again later.'));
+      var bar = el('div', 'ym-search-row');
+      var input = el('input', 'ym-input');
+      input.type = 'text';
+      input.maxLength = 30;
+      input.placeholder = 'Name this profile';
+      input.setAttribute('aria-label', 'Profile name');
+      var save = button('Save profile', 'primary small', 'ui-plus');
+      save.addEventListener('click', function () {
+        var name = input.value.trim();
+        if (!name) { toast('profile', 'Give the profile a name first.', 'bad'); return; }
+        var states = {};
+        Y.list().forEach(function (p) { states[p.id] = isOn(p); });
+        setBusy(save, true);
+        call(bridge.profileSave(name, states)).then(function (res) {
+          setBusy(save, false);
+          if (!res || res.ok !== true) { toast('profile', (res && res.reason) || 'That profile could not be saved.', 'bad'); return null; }
+          input.value = '';
+          toast('profile', 'Saved the profile "' + res.name + '".', 'ok');
+          return refresh();
+        });
+      });
+      bar.appendChild(input);
+      bar.appendChild(save);
+      wrap.appendChild(bar);
+      var names = state.profiles || [];
+      if (!names.length) wrap.appendChild(el('p', 'ym-row-desc', 'No profiles yet.'));
+      names.forEach(function (name) {
+        var item = el('div', 'ym-plugin');
+        item.appendChild(el('div', 'ym-row-name', name));
+        var ctl = el('div', 'ym-plugin-ctl');
+        var use = button('Use', 'ghost small', 'ui-saved');
+        use.addEventListener('click', function () {
+          call(bridge.profileUse(name)).then(function (ok) {
+            if (ok === false) return toast('profile', 'Could not use that profile.', 'bad');
+            toast('profile', 'Using "' + name + '".', 'ok');
+            return refresh();
+          });
+        });
+        var del = button('Delete', 'danger ghost small', 'ui-trash');
+        del.addEventListener('click', function () {
+          confirmDialog({ title: 'Delete "' + name + '"?', body: 'The saved switches are removed. Your plugins stay as they are now.', confirm: 'Delete profile', danger: true }).then(function (yes) {
+            if (!yes) return null;
+            return call(bridge.profileDelete(name)).then(function (ok) {
+              if (ok === false) return toast('profile', 'Could not delete that profile.', 'bad');
+              toast('profile', 'Deleted "' + name + '".', 'ok');
+              return refresh();
+            });
+          });
+        });
+        ctl.appendChild(use);
+        ctl.appendChild(del);
+        item.appendChild(ctl);
+        wrap.appendChild(item);
+      });
+      return wrap;
+    }
     function renderPlugins() {
       var all = Y.list();
       var reset = button('Reset plugins', 'danger ghost', 'ui-reset');
@@ -1038,6 +1098,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         note.appendChild(el('span', null, 'Safe mode is on, so no plugin runs right now. The switches show what will run when it is off.'));
         view.appendChild(note);
       }
+      if (typeof bridge.profileSave === 'function') view.appendChild(profilesBlock());
       // A plugin that is on but could not start on this page. It is named here, with a way to switch it off.
       var failing = all.filter(function (p) { return isOn(p) && Y.failure(p.id); });
       if (failing.length) {
@@ -1406,6 +1467,28 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       box.appendChild(search);
       tools.appendChild(box);
       view.appendChild(tools);
+      var cats = el('div', 'ym-seg');
+      cats.setAttribute('role', 'group');
+      cats.setAttribute('aria-label', 'Category');
+      ['All'].concat(Y.categories).forEach(function (c) {
+        var b = el('button', null, c);
+        b.type = 'button';
+        b.setAttribute('data-cat', c);
+        b.addEventListener('click', function () {
+          mk.category = c;
+          mk.shown = 60;
+          paintCats();
+          drawMarket();
+        });
+        cats.appendChild(b);
+      });
+      function paintCats() {
+        cats.querySelectorAll('button').forEach(function (b) {
+          b.setAttribute('aria-pressed', String(b.getAttribute('data-cat') === mk.category));
+        });
+      }
+      paintCats();
+      view.appendChild(cats);
       mk.listEl = el('div', 'ym-market-list');
       view.appendChild(mk.listEl);
       var timer = null;
@@ -1438,6 +1521,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
           mk.source = res.source;
           mk.mods = res.mods;
           mk.installed = res.installed || [];
+          mk.versions = res.versions || {};
           if (refreshList === true) toast('market-list', 'The marketplace list is updated.', 'ok');
         }
         drawMarket();
@@ -1451,9 +1535,10 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       list.textContent = '';
       var mods = mk.mods || [];
       var q = mk.query.toLowerCase();
-      var found = q ? mods.filter(function (m) {
+      var pool = mk.category === 'All' ? mods : mods.filter(function (m) { return m.category === mk.category; });
+      var found = q ? pool.filter(function (m) {
         return (m.name + ' ' + m.desc + ' ' + m.category + ' ' + m.author).toLowerCase().indexOf(q) !== -1;
-      }) : mods;
+      }) : pool;
       list.appendChild(el('p', 'ym-row-desc', found.length + ' of ' + mods.length + ' mods'));
       found.slice(0, mk.shown).forEach(function (m) { list.appendChild(marketCard(m)); });
       if (found.length > mk.shown) {
@@ -1471,7 +1556,13 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       text.appendChild(el('div', 'ym-row-desc', m.category + ' · ' + m.author + ' · version ' + m.version));
       var ctl = el('div', 'ym-plugin-ctl');
       if (mk.installed.indexOf(m.id) !== -1) {
-        ctl.appendChild(chip('Installed', 'accent'));
+        var have = mk.versions[m.id] || 0;
+        ctl.appendChild(chip(have < m.version ? 'Update ready' : 'Installed', 'accent'));
+        if (have < m.version) {
+          var update = button('Update', 'primary small', 'ui-reset');
+          update.addEventListener('click', function () { installMod(m, update); });
+          ctl.appendChild(update);
+        }
         var remove = button('Remove', 'danger ghost small', 'ui-trash');
         remove.addEventListener('click', function () { removeMod(m, remove); });
         ctl.appendChild(remove);
@@ -1492,8 +1583,9 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
           toast('market-install', (res && res.reason) || 'That mod could not be installed.', 'bad');
           return null;
         }
-        mk.installed.push(m.id);
-        toast('market-install', 'Installed ' + m.name + '. It is switched on.', 'ok');
+        if (mk.installed.indexOf(m.id) === -1) mk.installed.push(m.id);
+        mk.versions[m.id] = m.version;
+        toast('market-install', 'Installed ' + m.name + ' (version ' + m.version + ').', 'ok');
         return refresh(false).then(drawMarket);
       });
     }

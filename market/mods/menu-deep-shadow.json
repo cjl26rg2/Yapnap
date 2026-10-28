@@ -1,0 +1,9 @@
+{
+  "id": "menu-deep-shadow",
+  "name": "Deep menu shadow",
+  "desc": "Right-click menus cast a deep shadow.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ctx-menu{box-shadow:0 14px 32px rgba(0,0,0,.45)!important}"
+}

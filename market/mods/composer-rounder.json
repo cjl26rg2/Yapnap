@@ -1,0 +1,9 @@
+{
+  "id": "composer-rounder",
+  "name": "Rounder text box",
+  "desc": "The message box has softer, larger corners.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".composer{border-radius:14px!important}"
+}

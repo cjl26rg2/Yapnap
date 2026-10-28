@@ -1,0 +1,9 @@
+{
+  "id": "profile-lift",
+  "name": "Lifted profile cards",
+  "desc": "Profile cards cast a deep shadow.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card{box-shadow:0 12px 30px rgba(0,0,0,.4)!important}"
+}

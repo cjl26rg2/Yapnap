@@ -1,0 +1,9 @@
+{
+  "id": "scroll-track-clear",
+  "name": "Clear scrollbar track",
+  "desc": "The scrollbar track has no background.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "::-webkit-scrollbar-track{background:transparent!important}"
+}

@@ -4,7 +4,10 @@ What changed in each Yapnap release, newest first.
 
 ## 1.1.0 (2026-10-28)
 
-- Marketplace: 208 mods to browse and install. Each one is checked before it is kept. Installing switches it on, and removing clears it.
+- Marketplace: 238 mods to browse and install, with category tabs. Each one is checked before it is kept. Installing switches it on, and removing clears it.
+- Installed mods show when a newer version is out, and Update installs it and keeps its switch.
+- Plugin profiles: save the switches you have now, then use them again from the Plugins page. Up to 20 profiles.
+- The website has a Marketplace page and a Security page, and its homepage counts the built-in plugins and the marketplace mods.
 - 60 plugins are built in. The rest moved to the marketplace, and any plugin you had on keeps working.
 - Compact top bar makes the bar shorter (20 px). The top bar height setting works from 18 to 40 px, with 26 as the default.
 - A Security page in the settings explains what Yapnap checks, what it cannot promise, and the state of this computer.

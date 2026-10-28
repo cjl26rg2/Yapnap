@@ -1,0 +1,9 @@
+{
+  "id": "dialog-deep-shadow",
+  "name": "Deep dialog shadow",
+  "desc": "Dialogs cast a deep shadow.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".modal{box-shadow:0 24px 60px rgba(0,0,0,.5)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "author-caps",
+  "name": "Names in capitals",
+  "desc": "Author names in messages are in capitals.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-author{text-transform:uppercase!important;letter-spacing:.04em!important}"
+}

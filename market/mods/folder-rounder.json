@@ -1,0 +1,9 @@
+{
+  "id": "folder-rounder",
+  "name": "Rounder server folders",
+  "desc": "Server folders have softer corners.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-folder{border-radius:12px!important}"
+}

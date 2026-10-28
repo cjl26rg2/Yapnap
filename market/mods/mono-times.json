@@ -1,0 +1,9 @@
+{
+  "id": "mono-times",
+  "name": "Monospace times",
+  "desc": "Message times use a monospace font.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-time{font-family:ui-monospace,Consolas,monospace!important}"
+}

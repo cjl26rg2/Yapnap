@@ -1,0 +1,9 @@
+{
+  "id": "in-call-bold",
+  "name": "Bold in-call label",
+  "desc": "The in-call label is bold.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".in-call{font-weight:700!important}"
+}

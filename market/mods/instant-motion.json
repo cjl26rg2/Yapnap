@@ -1,0 +1,9 @@
+{
+  "id": "instant-motion",
+  "name": "No animation time",
+  "desc": "Animations and transitions happen at once.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "*,*::before,*::after{transition-duration:0s!important;animation-duration:0s!important}"
+}

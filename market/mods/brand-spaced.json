@@ -1,0 +1,9 @@
+{
+  "id": "brand-spaced",
+  "name": "Spaced brand name",
+  "desc": "The name at the top has wide letter spacing.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".topbar-brand{letter-spacing:.08em!important}"
+}

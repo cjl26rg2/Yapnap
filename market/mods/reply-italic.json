@@ -1,0 +1,9 @@
+{
+  "id": "reply-italic",
+  "name": "Italic reply text",
+  "desc": "Reply previews are in italics.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reply-text{font-style:italic!important}"
+}

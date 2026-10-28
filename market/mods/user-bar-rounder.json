@@ -1,0 +1,9 @@
+{
+  "id": "user-bar-rounder",
+  "name": "Rounder name bar",
+  "desc": "The bar with your name has softer corners.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".user-bar{border-radius:12px!important}"
+}

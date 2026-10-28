@@ -1,0 +1,9 @@
+{
+  "id": "quote-italic",
+  "name": "Italic quotes",
+  "desc": "Quoted text is in italics.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".md-quote{font-style:italic!important}"
+}

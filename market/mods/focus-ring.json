@@ -1,0 +1,9 @@
+{
+  "id": "focus-ring",
+  "name": "Clear focus ring",
+  "desc": "Keyboard focus has a clear accent ring.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":focus-visible{outline:2px solid var(--accent)!important;outline-offset:2px}"
+}

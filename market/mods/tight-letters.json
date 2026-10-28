@@ -1,0 +1,9 @@
+{
+  "id": "tight-letters",
+  "name": "Tighter letters",
+  "desc": "Text is set a little closer together.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "body{letter-spacing:-.01em!important}"
+}

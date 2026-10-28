@@ -1,0 +1,9 @@
+{
+  "id": "code-outline",
+  "name": "Outlined code blocks",
+  "desc": "Code blocks have a thin outline.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".md-code{border:1px solid var(--border)!important}"
+}

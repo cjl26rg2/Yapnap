@@ -26,6 +26,10 @@ contextBridge.exposeInMainWorld('yapnap', {
   marketInstall: withClick(NEEDS_CLICK, (id) => ipcRenderer.invoke('mod:market-install', String(id))),
   marketRemove: withClick(false, (id) => ipcRenderer.invoke('mod:market-remove', String(id))),
   security: () => ipcRenderer.invoke('mod:security'),
+  // Plugin profiles: saving and using a set of switches. They change only switches, so they need no click.
+  profileSave: (name, states) => ipcRenderer.invoke('mod:profile-save', String(name), states),
+  profileUse: (name) => ipcRenderer.invoke('mod:profile-use', String(name)),
+  profileDelete: (name) => ipcRenderer.invoke('mod:profile-delete', String(name)),
   // Only changing the role key needs a click. The other settings change without one.
   setApp: (key, value) => (String(key) === 'roleKey' && !clicked() ? Promise.resolve(false) : ipcRenderer.invoke('mod:set-app', String(key), value)),
   grant: withClick(NEEDS_CLICK, (userId, tier) => ipcRenderer.invoke('mod:grant', String(userId), tier === null ? null : String(tier))),

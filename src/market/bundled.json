@@ -32,6 +32,16 @@
       "sha256": "8172e1e5ed19df7df7e383457fbfeafa7ef74f564b9437a8e2d590d60903dd63"
     },
     {
+      "id": "author-caps",
+      "name": "Names in capitals",
+      "desc": "Author names in messages are in capitals.",
+      "category": "Messages",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".msg-author{text-transform:uppercase!important;letter-spacing:.04em!important}",
+      "sha256": "af2d6415ce28a5da23d12b56d348e29d45864816d6f785b7f32b77585726c203"
+    },
+    {
       "id": "avatar-outline",
       "name": "Avatar outline",
       "desc": "A thin outline around avatars.",
@@ -40,6 +50,16 @@
       "author": "Yapnap",
       "css": ".avatar{outline:1px solid rgba(255,255,255,.12)!important;outline-offset:1px}",
       "sha256": "f0ab5d6ea22e59a089303f2daf3d4108fa33cacbbc0d282514512902b63c6d3f"
+    },
+    {
+      "id": "avatar-soft-corners",
+      "name": "Soft-cornered avatars",
+      "desc": "Avatars are rounded squares.",
+      "category": "Members",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".avatar{border-radius:10px!important}",
+      "sha256": "f9d87b0a3acb8349a8e9b40db4276e7d6a4284b2cf4a28dff367b3dc95d8b00c"
     },
     {
       "id": "avatar-soft-ring",
@@ -102,6 +122,16 @@
       "sha256": "1fed50bbd2db7086b8578972be34c652d9d8b85dd5f4ab8cb512e17b8c6b43f3"
     },
     {
+      "id": "brand-spaced",
+      "name": "Spaced brand name",
+      "desc": "The name at the top has wide letter spacing.",
+      "category": "Look",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".topbar-brand{letter-spacing:.08em!important}",
+      "sha256": "b5dc650505202b6ce3484f301e0c445ab027cc4211ebd8487acbbdd8042f5384"
+    },
+    {
       "id": "brighter-links",
       "name": "Brighter links",
       "desc": "Links in messages use a lighter blue that reads better on dark backgrounds.",
@@ -110,6 +140,16 @@
       "author": "Yapnap",
       "css": ".msg-text a{color:#8fd3ff!important}",
       "sha256": "0b2e5079fe826c6f74514e772366f47d57170a6a7d931106e58a271018c086dc"
+    },
+    {
+      "id": "call-banner-thin",
+      "name": "Thin call banner",
+      "desc": "The banner at the top of a call is thinner.",
+      "category": "Voice",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".call-banner{padding:4px 10px!important}",
+      "sha256": "037e8720e27871dd14f0d9fc7817f9e2ecd5b867ac63bc6f37b9226848c83d2e"
     },
     {
       "id": "call-controls-pill",
@@ -152,6 +192,16 @@
       "sha256": "8d3d626065d16208e8c99ab2dcd087cb2a6ccd607c93cbeaf9760a4dca761335"
     },
     {
+      "id": "channel-indent",
+      "name": "Indented channels",
+      "desc": "Channel rows are indented a little.",
+      "category": "Sidebar",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".channel-row{padding-left:14px!important}",
+      "sha256": "718d724d47e8f6b3f43d075e3748c854afbfa66b79cc231d4fba4a868962f14c"
+    },
+    {
       "id": "channel-rounder",
       "name": "Rounder channel rows",
       "desc": "Channel rows have softer corners.",
@@ -190,6 +240,16 @@
       "author": "Yapnap",
       "css": ".md-code{border-radius:10px!important}",
       "sha256": "7346d6025becb01d6be7d90e0eb846d5e97a8e9f1ac659635124f1761b2ed55d"
+    },
+    {
+      "id": "code-outline",
+      "name": "Outlined code blocks",
+      "desc": "Code blocks have a thin outline.",
+      "category": "Messages",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".md-code{border:1px solid var(--border)!important}",
+      "sha256": "03e946577135e8a0f8189de5b1ebbfa6ab3757eab26a32a56e6e314a82ab8295"
     },
     {
       "id": "code-small-text",
@@ -402,6 +462,16 @@
       "sha256": "072514661f6be5d98099314285bf134be702716287ed3f8443ac7b543c4200e5"
     },
     {
+      "id": "composer-rounder",
+      "name": "Rounder text box",
+      "desc": "The message box has softer, larger corners.",
+      "category": "Composer",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".composer{border-radius:14px!important}",
+      "sha256": "f72c231a582e85b188587f24b9ed7c5de066d3635debad3f5f0e16858d39f6f3"
+    },
+    {
       "id": "composer-square-corners",
       "name": "Square composer",
       "desc": "The input box gets square corners.",
@@ -420,6 +490,16 @@
       "author": "Yapnap",
       "css": ".day-divider{opacity:.5!important}",
       "sha256": "464e12e5d490b36fded22f33fa4a0e69d870dc32fc54ffb378fbd326ba1f3fab"
+    },
+    {
+      "id": "dialog-deep-shadow",
+      "name": "Deep dialog shadow",
+      "desc": "Dialogs cast a deep shadow.",
+      "category": "Look",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".modal{box-shadow:0 24px 60px rgba(0,0,0,.5)!important}",
+      "sha256": "1ecc5841739d211105e19230bbb896aebb57aaed48d004670f00f8af171e5f76"
     },
     {
       "id": "dim-reply-previews",
@@ -462,6 +542,16 @@
       "sha256": "a17ebc38ea83b43c93b7feeeaad43975d463a8433119743d68c08f76c794e1be"
     },
     {
+      "id": "emoji-picker-rounder",
+      "name": "Rounder emoji picker",
+      "desc": "The emoji picker has softer corners.",
+      "category": "Composer",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".emoji-picker{border-radius:14px!important}",
+      "sha256": "429e930d1fa6806ce9617202e301662e8978bfe6de3fc04682f53f2f407cbca0"
+    },
+    {
       "id": "file-accent-outline",
       "name": "Accent file cards",
       "desc": "File cards get an accent outline.",
@@ -470,6 +560,16 @@
       "author": "Yapnap",
       "css": ".file-card{border-color:var(--accent)!important}",
       "sha256": "0bba6fd7494d2e15d7456de1b46f1013390abff75ddb26978f383121c2b374c3"
+    },
+    {
+      "id": "file-shadow",
+      "name": "Lifted file cards",
+      "desc": "File cards cast a soft shadow.",
+      "category": "Messages",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".file-card{box-shadow:0 2px 8px rgba(0,0,0,.25)!important}",
+      "sha256": "7cd102d916bb6a13f6b1835dac6e6e33d3e61c722cd6961b72e6fb8a11ec4bca"
     },
     {
       "id": "flat-menus",
@@ -522,6 +622,26 @@
       "sha256": "6d1c69a73941c9947a0082a1f5a4bdec0a6cba4361abe5ae53287976647ae200"
     },
     {
+      "id": "focus-ring",
+      "name": "Clear focus ring",
+      "desc": "Keyboard focus has a clear accent ring.",
+      "category": "Look",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ":focus-visible{outline:2px solid var(--accent)!important;outline-offset:2px}",
+      "sha256": "a9962e378690cfcb13c7acc983bb9b1e2addfbaf223d14a93c269211e50eedc9"
+    },
+    {
+      "id": "folder-rounder",
+      "name": "Rounder server folders",
+      "desc": "Server folders have softer corners.",
+      "category": "Sidebar",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".rail-folder{border-radius:12px!important}",
+      "sha256": "efcd1bba844f483a5f4c93afb2c83bdf8c11112817f68741fc67d3ee81285a59"
+    },
+    {
       "id": "full-width-messages",
       "name": "Full-width messages",
       "desc": "Lets message bodies use the whole chat width.",
@@ -532,6 +652,16 @@
       "sha256": "5329c910a926b9561eb8ef99024cc97c4848a1125ce9d83c59abd5bc32126a92"
     },
     {
+      "id": "gif-picker-rounder",
+      "name": "Rounder GIF picker",
+      "desc": "The GIF picker has softer corners.",
+      "category": "Composer",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".gif-picker{border-radius:14px!important}",
+      "sha256": "3da3bf6ded4f6064371695b041bb3f036a6a2ddb234691fca62e2d672c8e0f15"
+    },
+    {
       "id": "gif-soft-corners",
       "name": "Soft GIF corners",
       "desc": "GIFs in the picker have softer corners.",
@@ -540,6 +670,16 @@
       "author": "Yapnap",
       "css": ".gif-tile{border-radius:12px!important}",
       "sha256": "d9b3bc5771a41331e2ba51adbbd4efec0896e2bfcf4cf440e8d24e17b7bc4be2"
+    },
+    {
+      "id": "gif-tile-outline",
+      "name": "Outlined GIF tiles",
+      "desc": "GIF tiles get a thin outline.",
+      "category": "Composer",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".gif-tile{outline:1px solid var(--border)!important}",
+      "sha256": "d23a1bb01281e90344a8b8c9685e7be8269f08b357b0844493d46f789d2b3200"
     },
     {
       "id": "hide-active-now",
@@ -1312,6 +1452,16 @@
       "sha256": "4672d6cda4aafa7f0d66f0fdfd297b2eda0b7eeff1358602eea367384c43eff6"
     },
     {
+      "id": "icon-hover-accent",
+      "name": "Accent icon hover",
+      "desc": "Icon buttons turn the accent colour under the pointer.",
+      "category": "Look",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".icon-btn:hover{color:var(--accent)!important}",
+      "sha256": "2003f77efcea900e1e941f695e707e7b2316d082fdd13fd01fa000ab1a679ff4"
+    },
+    {
       "id": "in-call-accent",
       "name": "Accent in-call text",
       "desc": "The in-call label uses the accent colour.",
@@ -1322,6 +1472,26 @@
       "sha256": "78fb1977ec09f40010a587d0568ed6fdcb5960587ee718621a9607996636f137"
     },
     {
+      "id": "in-call-bold",
+      "name": "Bold in-call label",
+      "desc": "The in-call label is bold.",
+      "category": "Voice",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".in-call{font-weight:700!important}",
+      "sha256": "2abda696b60bcb68d74e4df3f1bff60996694a5aaa8149e476107bc9468629de"
+    },
+    {
+      "id": "instant-motion",
+      "name": "No animation time",
+      "desc": "Animations and transitions happen at once.",
+      "category": "Look",
+      "version": 1,
+      "author": "Yapnap",
+      "css": "*,*::before,*::after{transition-duration:0s!important;animation-duration:0s!important}",
+      "sha256": "659db66d087d5ba5f407dac9c2f329209e604110689199250b876b5d4622cf0b"
+    },
+    {
       "id": "italic-edited-label",
       "name": "Italic edited label",
       "desc": "The \"edited\" tag on a changed message is italic.",
@@ -1330,6 +1500,16 @@
       "author": "Yapnap",
       "css": ".msg-edited{font-style:italic}",
       "sha256": "2c5b19159a4ed70b2fad50b25f5c30e7fc5c4eda673c4fb6d62da7a0642f0905"
+    },
+    {
+      "id": "justified-messages",
+      "name": "Justified messages",
+      "desc": "Message text lines up on both edges.",
+      "category": "Messages",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".msg-text{text-align:justify!important}",
+      "sha256": "0c42229fc5c3f751103329e7072e11b4ae71c7f7f37b9d50fb8c9493f61504a8"
     },
     {
       "id": "large-click-targets",
@@ -1392,6 +1572,16 @@
       "sha256": "21d3401a07a1a28a4840aff8d0091701e2d6e4015b566f03193eb5a8e0403531"
     },
     {
+      "id": "menu-deep-shadow",
+      "name": "Deep menu shadow",
+      "desc": "Right-click menus cast a deep shadow.",
+      "category": "Look",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".ctx-menu{box-shadow:0 14px 32px rgba(0,0,0,.45)!important}",
+      "sha256": "ab459642d811ca90f66483c938fcccbdf70a945aa62618f22112edb79249916f"
+    },
+    {
       "id": "menu-softer",
       "name": "Rounder menus",
       "desc": "Right-click menus have softer corners.",
@@ -1412,6 +1602,16 @@
       "sha256": "fe6b547d8a6a6364d498cc70279d01ea4ac646594cf2e0f4d477f6c08ce52335"
     },
     {
+      "id": "message-gradient",
+      "name": "Soft message shade",
+      "desc": "Each message has a faint shade from left to right.",
+      "category": "Messages",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".msg-body{background:linear-gradient(90deg,rgba(255,255,255,.04),transparent)!important}",
+      "sha256": "4643228a0154415f7d16cafb9a182b446d1d0bb45138f7ab57407f79d1c425a3"
+    },
+    {
       "id": "message-hover-highlight",
       "name": "Hover highlight",
       "desc": "Light background on the message under the pointer.",
@@ -1430,6 +1630,16 @@
       "author": "Yapnap",
       "css": ".modal{border-top:3px solid var(--accent)!important}",
       "sha256": "fa90bb9c92f7871363b8b9bd4c969e106a08071334b1d46735aadedcd7e86d1a"
+    },
+    {
+      "id": "mono-times",
+      "name": "Monospace times",
+      "desc": "Message times use a monospace font.",
+      "category": "Messages",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".msg-time{font-family:ui-monospace,Consolas,monospace!important}",
+      "sha256": "8fd5588d1d09d60c534485d2ec7a451ebe4dc1b2ca88a9227b98abd72630f09e"
     },
     {
       "id": "monospace-messages",
@@ -1502,6 +1712,16 @@
       "sha256": "5333d45aa0d602c600eb57a4aa1ce4528165db2deb9e4801a4bade5fe6cc241e"
     },
     {
+      "id": "online-green",
+      "name": "Green online dots",
+      "desc": "Online dots are green.",
+      "category": "Members",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".online{background:#3fcf82!important}",
+      "sha256": "5a32884e1bbcd85da7cae6050c3540fa821471f62d7e08b5301a3cff6c09ea01"
+    },
+    {
       "id": "poll-accent-outline",
       "name": "Accent poll options",
       "desc": "Poll options get an accent outline.",
@@ -1522,6 +1742,16 @@
       "sha256": "8512613d741ba48b3aed52c0a0864f51e90416906fd0404320660f583f0ec966"
     },
     {
+      "id": "profile-lift",
+      "name": "Lifted profile cards",
+      "desc": "Profile cards cast a deep shadow.",
+      "category": "Members",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".profile-card{box-shadow:0 12px 30px rgba(0,0,0,.4)!important}",
+      "sha256": "ad11b3749121b89f35de56b875b727346e657f7d004b1c5f4d1d995b180f7d50"
+    },
+    {
       "id": "quote-accent-line",
       "name": "Accent line on quotes",
       "desc": "A line in the accent colour runs beside quoted text.",
@@ -1530,6 +1760,16 @@
       "author": "Yapnap",
       "css": ".md-quote{border-left:3px solid var(--accent)!important}",
       "sha256": "037ef46a4dc89232bbe59c94de0fc8ed650fd5ba58d1304f01fa946346f37f1a"
+    },
+    {
+      "id": "quote-italic",
+      "name": "Italic quotes",
+      "desc": "Quoted text is in italics.",
+      "category": "Messages",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".md-quote{font-style:italic!important}",
+      "sha256": "a90d95c6ba1a04a6b23c58eb6c9f6423b2c90ea266f141dcfae41ecd6d23725d"
     },
     {
       "id": "reaction-pill-small",
@@ -1570,6 +1810,16 @@
       "author": "Yapnap",
       "css": ".reply-bar{border-left-style:dashed!important}",
       "sha256": "0b6c3b018159645b6bf173e15f8c5a7a9450335b47ba9a4c6ed06bc5b29026ed"
+    },
+    {
+      "id": "reply-italic",
+      "name": "Italic reply text",
+      "desc": "Reply previews are in italics.",
+      "category": "Messages",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".reply-text{font-style:italic!important}",
+      "sha256": "3d3c4f37c2edb51a75451c046e88b593dfea77c607b66e028d80644d4779798e"
     },
     {
       "id": "role-chip-faint",
@@ -1670,6 +1920,16 @@
       "author": "Yapnap",
       "css": "::-webkit-scrollbar-thumb{background:var(--accent)!important}",
       "sha256": "31886a2108da38680f135d4315228c1277199a405fbd8cbd7e1443dd3344dbc7"
+    },
+    {
+      "id": "scroll-track-clear",
+      "name": "Clear scrollbar track",
+      "desc": "The scrollbar track has no background.",
+      "category": "Look",
+      "version": 1,
+      "author": "Yapnap",
+      "css": "::-webkit-scrollbar-track{background:transparent!important}",
+      "sha256": "2e8466e652774b131a97bcdbff91c236bcfd15b9e49bc07966318a997569dc25"
     },
     {
       "id": "section-labels-caps",
@@ -1872,6 +2132,16 @@
       "sha256": "e4275f584ea5a27f36e10d69550028fe86e852424334c1760bbdcafc0f226f70"
     },
     {
+      "id": "tabs-pill",
+      "name": "Pill tabs",
+      "desc": "Tabs are rounded like pills.",
+      "category": "Sidebar",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".nl-tab{border-radius:999px!important}",
+      "sha256": "0b4f42938c43ebe6dbf774d72256d5fdcd1e379bda047938c88aeb919ed07d22"
+    },
+    {
       "id": "tabular-numbers",
       "name": "Even numbers",
       "desc": "Numbers line up in columns, so counts and times are easier to compare.",
@@ -1962,6 +2232,16 @@
       "sha256": "aa1c68efc1846d1f4210ab96f8a4d68b60c648f4ac95b4e38e4a038a24d3077e"
     },
     {
+      "id": "tight-letters",
+      "name": "Tighter letters",
+      "desc": "Text is set a little closer together.",
+      "category": "Look",
+      "version": 1,
+      "author": "Yapnap",
+      "css": "body{letter-spacing:-.01em!important}",
+      "sha256": "8bc63c60cd2578db80ba347dea407adcaf38ffe617339575fcb6c89dfcd20df8"
+    },
+    {
       "id": "tight-modal-body",
       "name": "Tighter dialogs",
       "desc": "Less space inside dialogs.",
@@ -1980,6 +2260,16 @@
       "author": "Yapnap",
       "css": ".voice-view{gap:4px!important}",
       "sha256": "20729c59a1ee5b44cc09c7fc8b3847a0c62dc8157194243abd4fb41875396049"
+    },
+    {
+      "id": "toast-accent-edge",
+      "name": "Accent edge on notices",
+      "desc": "Notices have an accent line on the left.",
+      "category": "Look",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".toast{border-left:3px solid var(--accent)!important}",
+      "sha256": "55c437d298967e78647f550dd260d6e41802bc36a580747da4c9294825866af6"
     },
     {
       "id": "toast-flat",
@@ -2030,6 +2320,16 @@
       "author": "Yapnap",
       "css": ".user-bar{border-top:1px solid var(--border)!important}",
       "sha256": "e0b63c5e095285954feb4b70bdb6c3991a13530e9875dd93654408967b1ae1e1"
+    },
+    {
+      "id": "user-bar-rounder",
+      "name": "Rounder name bar",
+      "desc": "The bar with your name has softer corners.",
+      "category": "Sidebar",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".user-bar{border-radius:12px!important}",
+      "sha256": "cb25e93c1ca2158c20b593934996b14715011311ae2736ae0debf198828c1b43"
     },
     {
       "id": "visible-focus",

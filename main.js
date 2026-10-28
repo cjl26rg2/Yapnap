@@ -72,7 +72,7 @@ let quitting = false;
 
 // ---------- settings and badges ----------
 
-let prefs = { plugins: {}, app: { ...APP_DEFAULTS }, market: {} };
+let prefs = { plugins: {}, app: { ...APP_DEFAULTS }, market: {}, profiles: {} };
 let badges = { tiers: {}, users: {} };
 // What the website says this app's role key may do: 'owner', 'admin', or null when no key is saved or accepted.
 let roleLevel = null;
@@ -83,8 +83,40 @@ const prefsFile = () => path.join(app.getPath('userData'), 'yapnap-settings.json
 const rolesCacheFile = () => path.join(app.getPath('userData'), 'roles-cache.json');
 
 /** Keeps only well-formed saved settings. The page checks each value again against its plugin's rules. */
+/** A profile name: 1 to 30 characters, with no control characters. */
+function cleanProfileName(name) {
+  if (typeof name !== 'string') return null;
+  const text = name.trim();
+  return text.length >= 1 && text.length <= 30 && !/[\u0000-\u001f]/.test(text) ? text : null;
+}
+
+/** A set of switches: plugin id to on or off. Returns null when anything in it is not well formed. */
+function cleanStates(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const entries = Object.entries(raw);
+  if (entries.length > 1000) return null;
+  const out = {};
+  for (const [id, on] of entries) {
+    if (!ID.test(id) || typeof on !== 'boolean') return null;
+    out[id] = on;
+  }
+  return out;
+}
+
+/** Saved profiles, at most twenty, each with a clean name and clean switches. */
+function cleanProfiles(raw) {
+  const out = {};
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
+  for (const [name, states] of Object.entries(raw).slice(0, 20)) {
+    const key = cleanProfileName(name);
+    const clean = cleanStates(states);
+    if (key && clean) out[key] = clean;
+  }
+  return out;
+}
+
 function cleanPrefs(raw) {
-  const out = { plugins: {}, app: cleanApp(raw && raw.app), market: market.cleanInstalled(raw && raw.market) };
+  const out = { plugins: {}, app: cleanApp(raw && raw.app), market: market.cleanInstalled(raw && raw.market), profiles: cleanProfiles(raw && raw.profiles) };
   if (!raw || typeof raw !== 'object' || !raw.plugins || typeof raw.plugins !== 'object') return out;
   for (const [id, v] of Object.entries(raw.plugins).slice(0, 500)) {
     if (!ID.test(id) || !v || typeof v !== 'object') continue;
@@ -125,7 +157,7 @@ function loadPrefs() {
   try {
     prefs = cleanPrefs(JSON.parse(fs.readFileSync(prefsFile(), 'utf8')));
   } catch (err) {
-    prefs = { plugins: {}, app: { ...APP_DEFAULTS }, market: {} };
+    prefs = { plugins: {}, app: { ...APP_DEFAULTS }, market: {}, profiles: {} };
     // A settings file that exists but cannot be read is kept as a copy, so the next save never overwrites it silently.
     if (err.code !== 'ENOENT') {
       try { fs.copyFileSync(prefsFile(), `${prefsFile()}.broken`); } catch { /* nothing to keep */ }
@@ -166,7 +198,7 @@ function savePrefs() {
     const tmp = `${prefsFile()}.tmp`;
     // The role key is never written here. It is in its own encrypted file.
     const { roleKey, ...appSettings } = prefs.app;
-    fs.writeFileSync(tmp, JSON.stringify({ plugins: prefs.plugins, market: prefs.market, app: appSettings }, null, 2));
+    fs.writeFileSync(tmp, JSON.stringify({ plugins: prefs.plugins, market: prefs.market, profiles: prefs.profiles, app: appSettings }, null, 2));
     fs.renameSync(tmp, prefsFile());
   } catch (e) { console.error('Could not save settings:', e.message); }
 }
@@ -682,6 +714,7 @@ app.whenReady().then(() => {
       info: appInfo(),
       account: auth.account(),
       marketInstalled: Object.keys(prefs.market),
+      profiles: Object.keys(prefs.profiles),
     };
   });
   ipcMain.handle('mod:set-plugin', (e, id, on) => {
@@ -717,7 +750,7 @@ app.whenReady().then(() => {
   ipcMain.handle('mod:reset', (e) => {
     if (!fromTrusted(e)) return false;
     // Reset puts every plugin back to its default. Mods stay installed: only their switches and settings are reset.
-    prefs = { plugins: {}, app: prefs.app, market: prefs.market };
+    prefs = { plugins: {}, app: prefs.app, market: prefs.market, profiles: prefs.profiles };
     persist();
     return true;
   });
@@ -784,7 +817,7 @@ app.whenReady().then(() => {
     });
     if (canceled || !filePath) return { ok: false, reason: 'Cancelled.' };
     const { roleKey, ...app } = prefs.app;
-    fs.writeFileSync(filePath, JSON.stringify({ format: 'yapnap-settings', version: 1, plugins: prefs.plugins, market: prefs.market, app }, null, 2));
+    fs.writeFileSync(filePath, JSON.stringify({ format: 'yapnap-settings', version: 1, plugins: prefs.plugins, market: prefs.market, profiles: prefs.profiles, app }, null, 2));
     return { ok: true, path: filePath };
   });
   ipcMain.handle('mod:import-settings', async (e) => {
@@ -841,15 +874,18 @@ app.whenReady().then(() => {
   ipcMain.handle('mod:market-index', async (e, refresh) => {
     if (!fromTrusted(e)) return null;
     const list = refresh === true ? await market.loadIndex() : await market.index();
-    return { source: list.source, mods: list.mods, installed: Object.keys(prefs.market) };
+    const versions = Object.fromEntries(Object.entries(prefs.market).map(([id, mod]) => [id, mod.version]));
+    return { source: list.source, mods: list.mods, installed: Object.keys(prefs.market), versions };
   });
   ipcMain.handle('mod:market-install', async (e, id) => {
     if (!fromTrusted(e) || typeof id !== 'string' || !/^[a-z0-9-]{1,60}$/.test(id)) return { ok: false, reason: 'Not allowed here.' };
     if (!prefs.market[id] && Object.keys(prefs.market).length >= 2000) return { ok: false, reason: 'Too many mods are installed.' };
     try {
       const mod = await market.fetchMod(id, await market.index());
+      const isNew = !prefs.market[id];
       prefs.market[id] = mod;
-      prefs.plugins[id] = { ...prefs.plugins[id], on: true }; // installing a mod switches it on
+      // A new install switches the mod on. An update keeps whatever switch it had.
+      if (isNew) prefs.plugins[id] = { ...prefs.plugins[id], on: true };
       persist();
       return { ok: true, name: mod.name };
     } catch (err) {
@@ -863,6 +899,35 @@ app.whenReady().then(() => {
     persist();
     return true;
   });
+  // Plugin profiles: a named set of switches. Saving stores every switch the page shows. Using one sets them all again.
+  ipcMain.handle('mod:profile-save', (e, name, states) => {
+    if (!fromTrusted(e)) return { ok: false, reason: 'Not allowed here.' };
+    const key = cleanProfileName(name);
+    const clean = cleanStates(states);
+    if (!key || !clean) return { ok: false, reason: 'That profile could not be saved.' };
+    if (!prefs.profiles[key] && Object.keys(prefs.profiles).length >= 20) return { ok: false, reason: 'You can keep up to 20 profiles.' };
+    prefs.profiles[key] = clean;
+    persist();
+    return { ok: true, name: key };
+  });
+  ipcMain.handle('mod:profile-use', (e, name) => {
+    if (!fromTrusted(e)) return false;
+    const key = cleanProfileName(name);
+    const saved = key ? prefs.profiles[key] : null;
+    if (!saved) return false;
+    for (const [id, on] of Object.entries(saved)) prefs.plugins[id] = { ...prefs.plugins[id], on };
+    persist();
+    return true;
+  });
+  ipcMain.handle('mod:profile-delete', (e, name) => {
+    if (!fromTrusted(e)) return false;
+    const key = cleanProfileName(name);
+    if (!key) return false;
+    delete prefs.profiles[key];
+    persist();
+    return true;
+  });
+
   // The security tab. Every line is a fact the app can check on this computer. Nothing here is sent anywhere.
   ipcMain.handle('mod:security', async (e) => {
     if (!fromTrusted(e)) return null;

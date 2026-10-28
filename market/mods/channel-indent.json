@@ -1,0 +1,9 @@
+{
+  "id": "channel-indent",
+  "name": "Indented channels",
+  "desc": "Channel rows are indented a little.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row{padding-left:14px!important}"
+}

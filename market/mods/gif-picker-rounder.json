@@ -1,0 +1,9 @@
+{
+  "id": "gif-picker-rounder",
+  "name": "Rounder GIF picker",
+  "desc": "The GIF picker has softer corners.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".gif-picker{border-radius:14px!important}"
+}

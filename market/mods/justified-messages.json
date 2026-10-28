@@ -1,0 +1,9 @@
+{
+  "id": "justified-messages",
+  "name": "Justified messages",
+  "desc": "Message text lines up on both edges.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-text{text-align:justify!important}"
+}

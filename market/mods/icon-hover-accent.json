@@ -1,0 +1,9 @@
+{
+  "id": "icon-hover-accent",
+  "name": "Accent icon hover",
+  "desc": "Icon buttons turn the accent colour under the pointer.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".icon-btn:hover{color:var(--accent)!important}"
+}
