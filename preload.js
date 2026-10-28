@@ -10,7 +10,7 @@ const withClick = (fail, call) => (...args) => (clicked() ? call(...args) : Prom
 const NEEDS_CLICK = { ok: false, reason: 'Click the button again to do that.' };
 
 contextBridge.exposeInMainWorld('yapnap', {
-  version: '1.1.0',
+  version: '1.1.1',
   state: () => ipcRenderer.invoke('mod:state'),
   setPlugin: (id, on) => ipcRenderer.invoke('mod:set-plugin', String(id), on === true),
   setSetting: (id, key, value) => ipcRenderer.invoke('mod:set-setting', String(id), String(key), value),
@@ -42,7 +42,7 @@ contextBridge.exposeInMainWorld('yapnap', {
 });
 
 contextBridge.exposeInMainWorld('yapperDesktop', {
-  version: '1.1.0',
+  version: '1.1.1',
   platform: process.platform,
   /** Unread count for the taskbar/dock. */
   setBadge: (count) => ipcRenderer.send('yapper:badge', Number(count) || 0),

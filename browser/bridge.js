@@ -6,7 +6,7 @@
   'use strict';
 
   var api = typeof browser !== 'undefined' ? browser : chrome;
-  var VERSION = '1.1.0';
+  var VERSION = '1.1.1';
   var BUILT = '__BUILT__';
   var BUNDLED_BADGES = __BADGES__;
   var KEY = 'yapnap';

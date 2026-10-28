@@ -194,5 +194,5 @@
     return { active: active.size, css: css.length };
   }
 
-  window.__yapnap = { apply: apply, version: '1.1.0' };
+  window.__yapnap = { apply: apply, version: '1.1.1' };
 })();

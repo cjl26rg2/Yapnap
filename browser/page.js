@@ -53,7 +53,7 @@
   }
 
   window.yapnap = {
-    version: '1.1.0',
+    version: '1.1.1',
     state: function () { return call('state', []); },
     setPlugin: function (id, on) { return mutate('setPlugin', [String(id), on === true]); },
     setSetting: function (id, key, value) { return mutate('setSetting', [String(id), String(key), value]); },

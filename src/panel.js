@@ -178,6 +178,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
 
 /* Roles: a small list of who holds what. Nobody sees account IDs here. */
 .ym-roles-line{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px}
+.ym-user-results{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .ym-member{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--border,#ffffff12);font-size:13.5px}
 .ym-member:last-child{border-bottom:0}
 .ym-member-name{display:flex;align-items:center;gap:9px;min-width:0;font-weight:600}
@@ -838,19 +839,37 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       if (can.length) {
         var form = el('div', 'ym-actions');
         form.style.marginTop = '14px';
-        var person = el('select', 'ym-input');
-        person.style.width = '240px';
-        person.setAttribute('aria-label', 'Person');
-        var blank = el('option', null, 'Choose a person');
-        blank.value = '';
-        person.appendChild(blank);
-        Object.keys(seen).filter(function (id) { return id !== root.__yapnapMe; })
-          .sort(function (a, b) { return String(seen[a]).localeCompare(String(seen[b])); })
-          .forEach(function (id) {
-            var o = el('option', null, seen[id]);
-            o.value = id;
-            person.appendChild(o);
+        // Search user: type part of a name, pick the person from the results, then give or remove a role.
+        // The account ID is kept here and never shown.
+        var selected = null;
+        var searchIn = el('input', 'ym-input');
+        searchIn.type = 'search';
+        searchIn.placeholder = 'Search user';
+        searchIn.setAttribute('aria-label', 'Search user');
+        searchIn.style.width = '240px';
+        var picked = el('p', 'ym-row-desc');
+        var results = el('div', 'ym-user-results');
+        function drawResults() {
+          results.textContent = '';
+          var q = searchIn.value.trim().toLowerCase();
+          if (!q) return;
+          var hits = Object.keys(seen)
+            .filter(function (id) { return id !== root.__yapnapMe && String(seen[id]).toLowerCase().indexOf(q) !== -1; })
+            .sort(function (a, b) { return String(seen[a]).localeCompare(String(seen[b])); })
+            .slice(0, 12);
+          if (!hits.length) results.appendChild(el('p', 'ym-row-desc', 'No one matches. A person shows up here after they post in chat while Yapnap is open.'));
+          hits.forEach(function (id) {
+            var pick = button(seen[id], 'ghost small', null);
+            pick.addEventListener('click', function () {
+              selected = { id: id, name: seen[id] };
+              picked.textContent = 'Selected: ' + seen[id];
+              searchIn.value = '';
+              results.textContent = '';
+            });
+            results.appendChild(pick);
           });
+        }
+        searchIn.addEventListener('input', drawResults);
         var roleSel = el('select', 'ym-input');
         roleSel.style.width = '170px';
         roleSel.setAttribute('aria-label', 'Role');
@@ -860,9 +879,9 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         can.forEach(function (t) { var o = el('option', null, TIER_LABEL[t]); o.value = t; roleSel.appendChild(o); });
         var apply = button('Apply', 'primary', 'ui-plus');
         apply.addEventListener('click', function () {
-          var id = person.value;
+          var id = selected ? selected.id : '';
           slot.textContent = '';
-          if (!id) { slot.appendChild(status(false, 'Choose a person first.')); return; }
+          if (!id) { slot.appendChild(status(false, 'Search for a person and pick them first.')); return; }
           var tier = roleSel.value || null;
           setBusy(apply, true);
           call(bridge.grant(id, tier)).then(function (res) {
@@ -875,10 +894,12 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
             return null;
           });
         });
-        form.appendChild(person);
+        form.appendChild(searchIn);
         form.appendChild(roleSel);
         form.appendChild(apply);
         box.appendChild(form);
+        box.appendChild(results);
+        box.appendChild(picked);
         box.appendChild(slot);
       }
 

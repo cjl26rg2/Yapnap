@@ -2,6 +2,12 @@
 
 What changed in each Yapnap release, newest first.
 
+## 1.1.1 (2026-10-28)
+
+- Roles: Search user. Type part of a name, pick the person from the results, then give or remove a role. The account ID is never shown.
+- The Windows build check no longer fails on Windows line endings, so the Windows installer and portable exe build on every release.
+- This is the first 1.1 release with every file attached: installer, portable exe and zip, AppImage and its zip.
+
 ## 1.1.0 (2026-10-28)
 
 - Marketplace: 238 mods to browse and install, with category tabs. Each one is checked before it is kept. Installing switches it on, and removing clears it.
