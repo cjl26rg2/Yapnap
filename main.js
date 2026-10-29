@@ -919,6 +919,28 @@ app.whenReady().then(() => {
     persist();
     return true;
   });
+  // Updating several mods at once. Each one is fetched and checked the same way as an install. One save at the end.
+  ipcMain.handle('mod:market-install-many', async (e, ids) => {
+    if (!fromTrusted(e) || !Array.isArray(ids) || ids.length > 200) return { ok: false, reason: 'Not allowed here.' };
+    const list = await market.index();
+    let updated = 0;
+    const failed = [];
+    for (const id of ids) {
+      if (typeof id !== 'string' || !/^[a-z0-9-]{1,60}$/.test(id)) { failed.push('?'); continue; }
+      try {
+        const mod = await market.fetchMod(id, list);
+        const isNew = !prefs.market[id];
+        prefs.market[id] = mod;
+        if (isNew) prefs.plugins[id] = { ...prefs.plugins[id], on: true };
+        updated++;
+      } catch {
+        failed.push(id.slice(0, 60));
+      }
+    }
+    persist();
+    return { ok: true, updated, failed: failed.slice(0, 20) };
+  });
+
   // Sharing mods: a file with the mods you have installed, and importing one. Every mod in a file goes through the
   // same checks as the marketplace. Imported mods are stored switched off, so nothing turns on until you choose it.
   ipcMain.handle('mod:market-export', async (e) => {

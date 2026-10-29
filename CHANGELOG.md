@@ -2,6 +2,13 @@
 
 What changed in each Yapnap release, newest first.
 
+## 1.1.2 (2026-10-29)
+
+- Undo for mass changes. Turning a whole category on or off has an Undo button in its message, and removing a marketplace mod can be undone by putting it back.
+- Marketplace filters: Everything, Installed, and Updates. Update all installs every mod with a newer version in one go.
+- Plugins that come from the marketplace are labelled, so they are easy to tell apart from the built-in ones.
+- About opens with a short Get started section, with buttons to the plugins, the marketplace and the security page.
+
 ## 1.1.1 (2026-10-28)
 
 - Roles: Search user. Type part of a name, pick the person from the results, then give or remove a role. The account ID is never shown.

@@ -282,7 +282,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
     var query = '';
     var filterMode = 'all'; // the plugin filter: all, on, off or changed
     // The marketplace: the list as the app last got it, what is installed, and the search. Kept across page changes.
-    var mk = { source: '', mods: null, installed: [], versions: {}, category: 'All', query: '', shown: 60, loading: false, failed: false, listEl: null, sourceEl: null };
+    var mk = { source: '', mods: null, installed: [], versions: {}, category: 'All', filter: 'all', query: '', shown: 60, loading: false, failed: false, listEl: null, sourceEl: null };
     var cat = 'All';
     function isBrowser() { return !!(state.info && state.info.browser); }
 
@@ -389,6 +389,15 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       });
     }
     // Back to the default: the plugin's own switch and settings are removed.
+    // Puts the switches back the way they were before a change. Used by the Undo button.
+    function undoSwitches(before, label) {
+      if (typeof bridge.setPlugins !== 'function') return Promise.resolve(false);
+      return call(bridge.setPlugins(before)).then(function (ok) {
+        if (ok === false) { toast('undo', 'Could not undo that.', 'bad'); return refresh(); }
+        toast('undo', label || 'Put back as it was.', 'ok');
+        return refresh();
+      });
+    }
     function resetOne(p) {
       call(bridge.resetPlugin(p.id)).then(function (ok) {
         if (ok === false) return toast('plugin-reset', 'Could not reset ' + p.name + '.', 'bad');
@@ -480,7 +489,8 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
     }
 
     // Toasts for outcomes that are not visible where they happened. The same message never stacks: it updates.
-    function toast(key, text, tone) {
+    // A short message. An optional action (such as Undo) is a button inside the message; it stays for longer.
+    function toast(key, text, tone, action) {
       if (!toastBox) {
         toastBox = el('div', 'ym-toasts');
         toastBox.setAttribute('role', 'status');
@@ -496,11 +506,19 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         toastBox.appendChild(item);
         toasts[key] = item;
       } else {
-        item.lastChild.textContent = text;
+        item.querySelector('span').textContent = text;
+        var previous = item.querySelector('.ym-toast-action');
+        if (previous) previous.remove();
+      }
+      if (action) {
+        var undoBtn = button(action.label, 'ghost small', 'ui-reset');
+        undoBtn.classList.add('ym-toast-action');
+        undoBtn.addEventListener('click', function () { dismiss(key); action.run(); });
+        item.appendChild(undoBtn);
       }
       item.className = 'ym-toast' + (tone === 'bad' ? ' bad' : '');
       clearTimeout(item.timer);
-      item.timer = setTimeout(function () { dismiss(key); }, tone === 'bad' ? 4800 : 2600);
+      item.timer = setTimeout(function () { dismiss(key); }, action ? 9000 : (tone === 'bad' ? 4800 : 2600));
       while (toastBox.children.length > 3) dismiss(toastBox.firstElementChild.key);
     }
     function dismiss(key) {
@@ -538,6 +556,23 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
     }
 
     // ----- About -----
+    // A short start for someone new: what to do first, with a button to each place.
+    function getStartedBlock() {
+      var box = el('div', 'ym-notice');
+      box.appendChild(art('ui-saved', 15));
+      var text = el('div', null);
+      text.appendChild(el('strong', null, 'New here? Start with these.'));
+      text.appendChild(el('p', 'ym-row-desc', 'Turn on the plugins you want, save the set as a profile, and browse the marketplace for more.'));
+      var go = el('div', 'ym-actions');
+      [['Choose plugins', 'plugins'], ['Browse the marketplace', 'market'], ['Check security', 'security']].forEach(function (pair) {
+        var b = button(pair[0], 'ghost small', null);
+        b.addEventListener('click', function () { show(pair[1]); });
+        go.appendChild(b);
+      });
+      text.appendChild(go);
+      box.appendChild(text);
+      return box;
+    }
     function renderAbout() {
       var info = state.info || {};
       var ver = state.version || (bridge && bridge.version) || '';
@@ -556,6 +591,7 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         actions.push(folder);
       }
       view.appendChild(pageHead('About', actions));
+      view.appendChild(getStartedBlock());
 
       var id = el('div', 'ym-identity');
       id.appendChild(art('yapnap-logo', 46));
@@ -980,7 +1016,9 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       var r = el('div', 'ym-plugin');
       r.setAttribute('data-id', p.id);
       var text = el('div', 'ym-row-text');
-      text.appendChild(el('div', 'ym-row-name', p.name));
+      var nameLine = el('div', 'ym-row-name', p.name);
+      if (p.market) nameLine.appendChild(chip('Marketplace'));
+      text.appendChild(nameLine);
       text.appendChild(el('div', 'ym-row-desc', p.desc));
       var failLine = el('div', 'ym-fail');
       failLine.hidden = true;
@@ -1243,10 +1281,18 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         });
       }
       function bulkIn(list, on, c) {
+        var before = {};
+        list.forEach(function (p) { before[p.id] = isOn(p); });
         setMany(list, on).then(function (n) {
           if (n < 0) return null;
-          if (n === 0) toast('bulk', 'Every plugin in ' + c + ' is already ' + (on ? 'on' : 'off') + '.', 'ok');
-          else toast('bulk', (on ? 'Turned on ' : 'Turned off ') + n + (n === 1 ? ' plugin' : ' plugins') + ' in ' + c + '.', 'ok');
+          if (n === 0) {
+            toast('bulk', 'Every plugin in ' + c + ' is already ' + (on ? 'on' : 'off') + '.', 'ok');
+            return null;
+          }
+          toast('bulk', (on ? 'Turned on ' : 'Turned off ') + n + (n === 1 ? ' plugin' : ' plugins') + ' in ' + c + '.', 'ok', {
+            label: 'Undo',
+            run: function () { undoSwitches(before, 'Put back the plugins in ' + c + '.'); }
+          });
           counts();
           drawGroups();
           return null;
@@ -1540,6 +1586,29 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       }
       paintCats();
       view.appendChild(cats);
+      // Everything, installed, or only the ones with an update ready.
+      var filters = el('div', 'ym-seg');
+      filters.setAttribute('role', 'group');
+      filters.setAttribute('aria-label', 'Show mods');
+      [['all', 'Everything'], ['installed', 'Installed'], ['updates', 'Updates']].forEach(function (f) {
+        var b = el('button', null, f[1]);
+        b.type = 'button';
+        b.setAttribute('data-filter', f[0]);
+        b.addEventListener('click', function () {
+          mk.filter = f[0];
+          mk.shown = 60;
+          paintFilters();
+          drawMarket();
+        });
+        filters.appendChild(b);
+      });
+      function paintFilters() {
+        filters.querySelectorAll('button').forEach(function (b) {
+          b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === mk.filter));
+        });
+      }
+      paintFilters();
+      view.appendChild(filters);
       mk.listEl = el('div', 'ym-market-list');
       view.appendChild(mk.listEl);
       var timer = null;
@@ -1579,6 +1648,21 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
         return null;
       });
     }
+    // A mod is installed here and has a newer version in the list.
+    function isUpdate(m) {
+      return mk.installed.indexOf(m.id) !== -1 && (mk.versions[m.id] || 0) < m.version;
+    }
+    // Updates every installed mod that has a newer version, in one batch.
+    function updateAll() {
+      var ids = (mk.mods || []).filter(isUpdate).map(function (m) { return m.id; });
+      if (!ids.length) return;
+      call(bridge.marketUpdateMany(ids)).then(function (res) {
+        if (!res || res.ok !== true) { toast('market-update', 'Could not update the mods.', 'bad'); return null; }
+        var failedCount = res.failed ? res.failed.length : 0;
+        toast('market-update', res.updated + (res.updated === 1 ? ' mod' : ' mods') + ' updated' + (failedCount ? ', ' + failedCount + ' failed.' : '.'), failedCount ? 'bad' : 'ok');
+        return loadMarket(false);
+      });
+    }
     function drawMarket() {
       if (mk.sourceEl) mk.sourceEl.textContent = marketSourceText();
       var list = mk.listEl;
@@ -1587,17 +1671,31 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       var mods = mk.mods || [];
       var q = mk.query.toLowerCase();
       var pool = mk.category === 'All' ? mods : mods.filter(function (m) { return m.category === mk.category; });
+      if (mk.filter === 'installed') pool = pool.filter(function (m) { return mk.installed.indexOf(m.id) !== -1; });
+      if (mk.filter === 'updates') pool = pool.filter(isUpdate);
       var found = q ? pool.filter(function (m) {
         return (m.name + ' ' + m.desc + ' ' + m.category + ' ' + m.author).toLowerCase().indexOf(q) !== -1;
       }) : pool;
       list.appendChild(el('p', 'ym-row-desc', found.length + ' of ' + mods.length + ' mods'));
+      var ready = mods.filter(isUpdate).length;
+      if (ready && typeof bridge.marketUpdateMany === 'function') {
+        var upAll = button('Update all (' + ready + ')', 'primary small', 'ui-reset');
+        upAll.addEventListener('click', updateAll);
+        list.appendChild(upAll);
+      }
       found.slice(0, mk.shown).forEach(function (m) { list.appendChild(marketCard(m)); });
       if (found.length > mk.shown) {
         var more = button('Show more', 'ghost', null);
         more.addEventListener('click', function () { mk.shown += 60; drawMarket(); });
         list.appendChild(more);
       }
-      if (!found.length) list.appendChild(el('p', 'ym-empty', mods.length ? 'No mod matches that search.' : 'There are no mods to show yet.'));
+      if (!found.length) {
+        var none = !mods.length ? 'There are no mods to show yet.'
+          : mk.filter === 'installed' ? 'You have not installed a mod yet. Switch to Everything and pick one.'
+          : mk.filter === 'updates' ? 'Every installed mod is up to date.'
+          : 'No mod matches that search.';
+        list.appendChild(el('p', 'ym-empty', none));
+      }
     }
     function marketCard(m) {
       var card = el('div', 'ym-plugin');
@@ -1648,7 +1746,15 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
           setBusy(btn, false);
           if (ok === false) return toast('market-remove', 'Could not remove that mod.', 'bad');
           mk.installed = mk.installed.filter(function (id) { return id !== m.id; });
-          toast('market-remove', 'Removed ' + m.name + '.', 'ok');
+          toast('market-remove', 'Removed ' + m.name + '.', 'ok', {
+            label: 'Undo',
+            run: function () {
+              call(bridge.marketInstall(m.id)).then(function (res) {
+                toast('market-install', res && res.ok ? 'Put back ' + m.name + '.' : 'Could not put that mod back.', res && res.ok ? 'ok' : 'bad');
+                return loadMarket(false);
+              });
+            }
+          });
           return refresh(false).then(drawMarket);
         });
       });

@@ -10,7 +10,7 @@ const withClick = (fail, call) => (...args) => (clicked() ? call(...args) : Prom
 const NEEDS_CLICK = { ok: false, reason: 'Click the button again to do that.' };
 
 contextBridge.exposeInMainWorld('yapnap', {
-  version: '1.1.1',
+  version: '1.1.2',
   state: () => ipcRenderer.invoke('mod:state'),
   setPlugin: (id, on) => ipcRenderer.invoke('mod:set-plugin', String(id), on === true),
   setSetting: (id, key, value) => ipcRenderer.invoke('mod:set-setting', String(id), String(key), value),
@@ -32,6 +32,7 @@ contextBridge.exposeInMainWorld('yapnap', {
   profileDelete: (name) => ipcRenderer.invoke('mod:profile-delete', String(name)),
   // Sharing mods means reading or writing a file, so it needs a click. Support info has nothing private in it.
   marketExport: withClick(NEEDS_CLICK, () => ipcRenderer.invoke('mod:market-export')),
+  marketUpdateMany: withClick(NEEDS_CLICK, (ids) => ipcRenderer.invoke('mod:market-install-many', Array.isArray(ids) ? ids.map(String) : [])),
   marketImport: withClick(NEEDS_CLICK, () => ipcRenderer.invoke('mod:market-import')),
   supportInfo: () => ipcRenderer.invoke('mod:support'),
   // Only changing the role key needs a click. The other settings change without one.
@@ -42,7 +43,7 @@ contextBridge.exposeInMainWorld('yapnap', {
 });
 
 contextBridge.exposeInMainWorld('yapperDesktop', {
-  version: '1.1.1',
+  version: '1.1.2',
   platform: process.platform,
   /** Unread count for the taskbar/dock. */
   setBadge: (count) => ipcRenderer.send('yapper:badge', Number(count) || 0),
