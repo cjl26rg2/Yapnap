@@ -1,0 +1,9 @@
+{
+  "id": "tight-reaction-gap",
+  "name": "Tight reaction gap",
+  "desc": "Less space between reactions.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reaction-wrap{gap:4px!important}"
+}

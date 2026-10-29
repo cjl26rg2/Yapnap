@@ -389,6 +389,22 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       });
     }
     // Back to the default: the plugin's own switch and settings are removed.
+    // A small set that suits most people. Setting it up only turns these on; every other switch stays as it is.
+    var RECOMMENDED = ['compact-messages', 'round-avatars', 'hide-typing-dots', 'hide-day-dividers', 'compact-channel-rows', 'hide-status-dots', 'no-shadows', 'thin-scrollbars', 'readable-line-length', 'wrap-code-blocks'];
+    function recommendedSetup() {
+      var list = RECOMMENDED.map(function (id) { return byId(id); }).filter(Boolean);
+      var before = {};
+      list.forEach(function (p) { before[p.id] = isOn(p); });
+      return setMany(list, true).then(function (n) {
+        if (n < 0) return null;
+        if (n === 0) toast('recommended', 'The recommended plugins are already on.', 'ok');
+        else toast('recommended', 'Recommended setup is on: ' + n + ' plugins.', 'ok', {
+          label: 'Undo',
+          run: function () { undoSwitches(before, 'Put your plugins back.'); }
+        });
+        return refresh();
+      });
+    }
     // Puts the switches back the way they were before a change. Used by the Undo button.
     function undoSwitches(before, label) {
       if (typeof bridge.setPlugins !== 'function') return Promise.resolve(false);
@@ -564,6 +580,10 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       text.appendChild(el('strong', null, 'New here? Start with these.'));
       text.appendChild(el('p', 'ym-row-desc', 'Turn on the plugins you want, save the set as a profile, and browse the marketplace for more.'));
       var go = el('div', 'ym-actions');
+      var quick = button('Set up for me', 'primary small', 'ui-saved');
+      quick.title = 'Turns on ten plugins that suit most people. Nothing else changes, and you can undo it.';
+      quick.addEventListener('click', function () { recommendedSetup(); });
+      go.appendChild(quick);
       [['Choose plugins', 'plugins'], ['Browse the marketplace', 'market'], ['Check security', 'security']].forEach(function (pair) {
         var b = button(pair[0], 'ghost small', null);
         b.addEventListener('click', function () { show(pair[1]); });

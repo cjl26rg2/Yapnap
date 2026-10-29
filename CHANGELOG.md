@@ -8,6 +8,8 @@ What changed in each Yapnap release, newest first.
 - Marketplace filters: Everything, Installed, and Updates. Update all installs every mod with a newer version in one go.
 - Plugins that come from the marketplace are labelled, so they are easy to tell apart from the built-in ones.
 - About opens with a short Get started section, with buttons to the plugins, the marketplace and the security page.
+- One-click setup: Get started has a Set up for me button. It turns on ten plugins that suit most people, and Undo puts them back.
+- Three more marketplace mods, 241 in all: bold link embed titles, tighter reaction spacing, and links without underlines.
 
 ## 1.1.1 (2026-10-28)
 

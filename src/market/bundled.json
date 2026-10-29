@@ -532,6 +532,16 @@
       "sha256": "d7e14a52032c06db182e51006bfd20ee06d11157ea1a6a51d8f14947d51939ec"
     },
     {
+      "id": "embed-title-bold",
+      "name": "Bold embed titles",
+      "desc": "Link embed titles are bold.",
+      "category": "Messages",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".embed-title{font-weight:800!important}",
+      "sha256": "ccbfffba1e1b5ce236bce3831b128eaaeab4f664cae677554ebdb5f5e76babbf"
+    },
+    {
       "id": "emoji-hover-grow",
       "name": "Emoji grow on hover",
       "desc": "Emoji in the picker grow a little under the pointer.",
@@ -1722,6 +1732,16 @@
       "sha256": "5a32884e1bbcd85da7cae6050c3540fa821471f62d7e08b5301a3cff6c09ea01"
     },
     {
+      "id": "plain-message-links",
+      "name": "Plain message links",
+      "desc": "Links in messages have no underline.",
+      "category": "Messages",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".msg-link{text-decoration:none!important}",
+      "sha256": "85d90c342e4c746493f753879261f0cb032b66957850c7a49c89ff370056a097"
+    },
+    {
       "id": "poll-accent-outline",
       "name": "Accent poll options",
       "desc": "Poll options get an accent outline.",
@@ -2250,6 +2270,16 @@
       "author": "Yapnap",
       "css": ".modal-body{padding:12px 16px!important}",
       "sha256": "0cb05a02f702edd73aaf9920c3b6304f27af1a03ba14610ba93069ec735c470d"
+    },
+    {
+      "id": "tight-reaction-gap",
+      "name": "Tight reaction gap",
+      "desc": "Less space between reactions.",
+      "category": "Messages",
+      "version": 1,
+      "author": "Yapnap",
+      "css": ".reaction-wrap{gap:4px!important}",
+      "sha256": "cf8be12676a1b9ef38922509c3f41907c638ae571170f433446ec0d389d198ef"
     },
     {
       "id": "tight-voice-grid",
