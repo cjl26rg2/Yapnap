@@ -1,0 +1,9 @@
+{
+  "id": "reply-author-accent",
+  "name": "Accent reply names",
+  "desc": "Names in reply previews use the accent colour.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reply-author{color:var(--accent)!important}"
+}

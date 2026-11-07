@@ -1,0 +1,9 @@
+{
+  "id": "composer-hint-dim",
+  "name": "Dimmer text box hint",
+  "desc": "The hint inside the text box is dimmer.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".composer ::placeholder{opacity:.5}"
+}

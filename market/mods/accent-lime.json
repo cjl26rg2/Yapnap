@@ -1,0 +1,9 @@
+{
+  "id": "accent-lime",
+  "name": "Lime accent",
+  "desc": "A bright lime accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#8fd14f!important;--accent-hover:#a3dc6a!important;--accent-soft:rgba(143,209,79,.16)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "mention-menu-round",
+  "name": "Rounder mention menu",
+  "desc": "Mention suggestions have rounder corners.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".mention-menu{border-radius:12px!important}"
+}

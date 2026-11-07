@@ -1,0 +1,9 @@
+{
+  "id": "profile-roomy",
+  "name": "Roomy profile cards",
+  "desc": "Profile cards have more padding.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card{padding:14px!important}"
+}

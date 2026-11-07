@@ -1,0 +1,9 @@
+{
+  "id": "reaction-lift",
+  "name": "Lifted reactions",
+  "desc": "Reactions cast a small shadow.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reaction{box-shadow:0 1px 3px rgba(0,0,0,.3)!important}"
+}

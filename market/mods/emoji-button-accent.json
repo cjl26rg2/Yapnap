@@ -1,0 +1,9 @@
+{
+  "id": "emoji-button-accent",
+  "name": "Accent emoji button",
+  "desc": "The emoji button uses the accent colour.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".eb-button{color:var(--accent)!important}"
+}

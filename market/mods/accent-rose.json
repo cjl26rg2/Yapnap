@@ -1,0 +1,9 @@
+{
+  "id": "accent-rose",
+  "name": "Rose accent",
+  "desc": "A rose pink accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#ff6b9a!important;--accent-hover:#ff83ab!important;--accent-soft:rgba(255,107,154,.16)!important}"
+}

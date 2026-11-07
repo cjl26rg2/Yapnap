@@ -1,0 +1,9 @@
+{
+  "id": "reply-bar-accent",
+  "name": "Accent reply line",
+  "desc": "The line beside a reply uses the accent colour.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reply-bar{border-left-color:var(--accent)!important}"
+}

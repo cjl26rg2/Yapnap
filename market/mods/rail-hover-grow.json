@@ -1,0 +1,9 @@
+{
+  "id": "rail-hover-grow",
+  "name": "Server icons grow",
+  "desc": "Server icons grow a little under the pointer.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-item:hover{transform:scale(1.06)}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "profile-outlined",
+  "name": "Outlined profile cards",
+  "desc": "Profile cards have a thin outline.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card{border:1px solid var(--border)!important}"
+}

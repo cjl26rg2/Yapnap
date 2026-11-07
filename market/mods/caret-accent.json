@@ -1,0 +1,9 @@
+{
+  "id": "caret-accent",
+  "name": "Accent text cursor",
+  "desc": "The blinking text cursor uses the accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "input,textarea{caret-color:var(--accent)!important}"
+}

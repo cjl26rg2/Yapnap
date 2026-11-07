@@ -1,0 +1,9 @@
+{
+  "id": "modal-head-caps",
+  "name": "Capital dialog titles",
+  "desc": "Dialog titles are in capitals.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".modal-head{text-transform:uppercase;letter-spacing:.08em!important}"
+}

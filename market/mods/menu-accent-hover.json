@@ -1,0 +1,9 @@
+{
+  "id": "menu-accent-hover",
+  "name": "Accent menu hover",
+  "desc": "Menu items turn the accent colour under the pointer.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ctx-menu button:hover{color:var(--accent)!important}"
+}

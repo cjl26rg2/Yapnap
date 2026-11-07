@@ -1,0 +1,9 @@
+{
+  "id": "gif-picker-solid",
+  "name": "Solid GIF picker",
+  "desc": "The GIF picker has a solid background.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".gif-picker{background:var(--bg-elev)!important}"
+}

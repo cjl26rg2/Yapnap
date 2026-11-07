@@ -1,0 +1,9 @@
+{
+  "id": "embed-footer-caps",
+  "name": "Small embed footers",
+  "desc": "Embed footers are small capitals.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".embed-footer{text-transform:uppercase;font-size:10px!important}"
+}

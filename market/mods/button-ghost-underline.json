@@ -1,0 +1,9 @@
+{
+  "id": "button-ghost-underline",
+  "name": "Underline ghost buttons on hover",
+  "desc": "Ghost buttons underline when you point at them.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".btn.ghost:hover{text-decoration:underline}"
+}

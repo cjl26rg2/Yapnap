@@ -1,0 +1,9 @@
+{
+  "id": "member-spaced",
+  "name": "Spaced member rows",
+  "desc": "Member rows have a little space between them.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".member-row{margin:2px 0!important}"
+}

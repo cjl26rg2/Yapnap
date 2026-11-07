@@ -1,0 +1,9 @@
+{
+  "id": "emoji-cell-tint",
+  "name": "Tinted emoji hover",
+  "desc": "Emoji cells get a tint under the pointer.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".emoji-cell:hover{background:var(--bg-hover)!important}"
+}

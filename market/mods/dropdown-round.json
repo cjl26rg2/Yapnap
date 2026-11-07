@@ -1,0 +1,9 @@
+{
+  "id": "dropdown-round",
+  "name": "Rounder dropdowns",
+  "desc": "Dropdown menus have rounder corners.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "select{border-radius:10px!important}"
+}

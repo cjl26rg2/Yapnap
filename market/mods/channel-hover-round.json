@@ -1,0 +1,9 @@
+{
+  "id": "channel-hover-round",
+  "name": "Rounded channel hover",
+  "desc": "The channel under the pointer has round corners.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row:hover{border-radius:8px!important}"
+}

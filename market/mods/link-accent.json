@@ -1,0 +1,9 @@
+{
+  "id": "link-accent",
+  "name": "Accent links",
+  "desc": "Links use the accent colour.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-link{color:var(--accent)!important}"
+}

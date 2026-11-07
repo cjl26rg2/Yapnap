@@ -1,0 +1,9 @@
+{
+  "id": "focus-dashed",
+  "name": "Dashed focus outline",
+  "desc": "Keyboard focus uses a dashed outline.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":focus-visible{outline-style:dashed!important}"
+}

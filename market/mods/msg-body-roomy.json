@@ -1,0 +1,9 @@
+{
+  "id": "msg-body-roomy",
+  "name": "Roomy message padding",
+  "desc": "Messages have more room inside them.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-body{padding:10px 14px!important}"
+}

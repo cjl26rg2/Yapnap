@@ -1,0 +1,9 @@
+{
+  "id": "scroll-thumb-round",
+  "name": "Rounded scrollbar handles",
+  "desc": "Scrollbar handles have rounded ends.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "::-webkit-scrollbar-thumb{border-radius:8px!important}"
+}

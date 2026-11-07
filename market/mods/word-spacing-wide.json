@@ -1,0 +1,9 @@
+{
+  "id": "word-spacing-wide",
+  "name": "Wider word spacing",
+  "desc": "Words are spaced a little wider apart.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "body{word-spacing:.05em!important}"
+}

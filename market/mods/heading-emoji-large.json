@@ -1,0 +1,9 @@
+{
+  "id": "heading-emoji-large",
+  "name": "Large heading emoji",
+  "desc": "Emoji in headings are bigger.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".md-h-emoji{font-size:1.3em!important}"
+}

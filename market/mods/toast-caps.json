@@ -1,0 +1,9 @@
+{
+  "id": "toast-caps",
+  "name": "Small capital notices",
+  "desc": "Notices are small capitals.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".toast{text-transform:uppercase;font-size:11px;letter-spacing:.06em!important}"
+}

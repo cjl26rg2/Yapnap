@@ -1,0 +1,9 @@
+{
+  "id": "chat-loading-center",
+  "name": "Centred loading text",
+  "desc": "The chat loading text sits in the middle.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".chat-loading{text-align:center!important}"
+}

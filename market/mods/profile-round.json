@@ -1,0 +1,9 @@
+{
+  "id": "profile-round",
+  "name": "Rounder profile cards",
+  "desc": "Profile cards have large round corners.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card{border-radius:18px!important}"
+}

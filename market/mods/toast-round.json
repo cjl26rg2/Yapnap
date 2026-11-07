@@ -1,0 +1,9 @@
+{
+  "id": "toast-round",
+  "name": "Rounder notices",
+  "desc": "Notices have rounder corners.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".toast{border-radius:14px!important}"
+}

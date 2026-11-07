@@ -1,0 +1,9 @@
+{
+  "id": "modal-foot-centred",
+  "name": "Centred dialog buttons",
+  "desc": "Buttons in a dialog footer sit in the middle.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".modal-foot{justify-content:center!important}"
+}

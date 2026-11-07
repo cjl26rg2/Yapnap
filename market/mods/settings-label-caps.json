@@ -1,0 +1,9 @@
+{
+  "id": "settings-label-caps",
+  "name": "Settings labels in capitals",
+  "desc": "The group labels in settings are in capitals.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".settings-nav-label{text-transform:uppercase;letter-spacing:.08em!important}"
+}

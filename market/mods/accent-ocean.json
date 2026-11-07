@@ -1,0 +1,9 @@
+{
+  "id": "accent-ocean",
+  "name": "Ocean accent",
+  "desc": "A calm ocean blue accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#3fb6d8!important;--accent-hover:#5cc4e2!important;--accent-soft:rgba(63,182,216,.16)!important}"
+}

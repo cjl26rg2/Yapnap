@@ -1,0 +1,9 @@
+{
+  "id": "member-round",
+  "name": "Rounder member rows",
+  "desc": "Member rows have round corners.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".member-row{border-radius:10px!important}"
+}

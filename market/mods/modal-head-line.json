@@ -1,0 +1,9 @@
+{
+  "id": "modal-head-line",
+  "name": "Line under dialog titles",
+  "desc": "A thin line sits under the title of a dialog.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".modal-head{border-bottom:1px solid var(--border)!important}"
+}

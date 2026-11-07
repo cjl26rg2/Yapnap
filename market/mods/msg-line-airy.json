@@ -1,0 +1,9 @@
+{
+  "id": "msg-line-airy",
+  "name": "Airy message lines",
+  "desc": "Messages have more space between lines.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-text{line-height:1.6!important}"
+}

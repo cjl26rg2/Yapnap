@@ -1,0 +1,9 @@
+{
+  "id": "rail-badge-pill",
+  "name": "Pill server badges",
+  "desc": "Badges on servers are pills.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-badge{border-radius:999px!important}"
+}

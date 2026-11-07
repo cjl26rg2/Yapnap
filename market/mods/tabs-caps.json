@@ -1,0 +1,9 @@
+{
+  "id": "tabs-caps",
+  "name": "Small capital tabs",
+  "desc": "Tabs are small capitals.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".nl-tab{text-transform:uppercase;letter-spacing:.06em;font-size:11px!important}"
+}

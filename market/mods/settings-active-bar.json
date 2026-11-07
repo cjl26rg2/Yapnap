@@ -1,0 +1,9 @@
+{
+  "id": "settings-active-bar",
+  "name": "Bar on the open settings page",
+  "desc": "The open settings page has an accent bar on its left.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".settings-nav .active{box-shadow:inset 3px 0 0 var(--accent)!important}"
+}

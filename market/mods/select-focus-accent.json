@@ -1,0 +1,9 @@
+{
+  "id": "select-focus-accent",
+  "name": "Accent dropdown focus",
+  "desc": "Dropdowns get an accent border when you use them.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "select:focus{border-color:var(--accent)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "quote-tint",
+  "name": "Tinted quotes",
+  "desc": "Quoted text has a faint tint.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".md-quote{background:rgba(255,255,255,.04)!important}"
+}

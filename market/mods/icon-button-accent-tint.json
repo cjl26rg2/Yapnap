@@ -1,0 +1,9 @@
+{
+  "id": "icon-button-accent-tint",
+  "name": "Accent icon button hover",
+  "desc": "Icon buttons get an accent tint under the pointer.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".icon-btn:hover{background:var(--accent-soft)!important}"
+}

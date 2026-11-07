@@ -1,0 +1,9 @@
+{
+  "id": "online-dot-small",
+  "name": "Small online dots",
+  "desc": "Online dots are smaller.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".online{width:8px!important;height:8px!important}"
+}

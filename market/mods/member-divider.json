@@ -1,0 +1,9 @@
+{
+  "id": "member-divider",
+  "name": "Member row dividers",
+  "desc": "A thin line separates member rows.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".member-row{border-bottom:1px solid var(--border)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "accent-mono",
+  "name": "Mono accent",
+  "desc": "A plain white accent, for a quiet look.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#e6e6e6!important;--accent-hover:#ffffff!important;--accent-soft:rgba(230,230,230,.14)!important;--on-accent:#000000!important}"
+}

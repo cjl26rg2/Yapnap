@@ -1,0 +1,9 @@
+{
+  "id": "christmas-theme",
+  "name": "Christmas theme",
+  "desc": "Red and green accents, like a Christmas tree.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#d33a3a!important;--accent-hover:#e54d4d!important;--accent-soft:rgba(211,58,58,.18)!important;--on-accent:#ffffff!important;--border:rgba(90,200,140,.22)!important}"
+}

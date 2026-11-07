@@ -1,0 +1,9 @@
+{
+  "id": "typing-line-accent",
+  "name": "Accent typing line",
+  "desc": "The typing line is in the accent colour.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".typing-line{color:var(--accent)!important}"
+}

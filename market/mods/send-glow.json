@@ -1,0 +1,9 @@
+{
+  "id": "send-glow",
+  "name": "Glowing send button",
+  "desc": "The send button has a faint glow.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".send-btn{box-shadow:0 0 12px var(--accent-soft)!important}"
+}

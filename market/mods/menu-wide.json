@@ -1,0 +1,9 @@
+{
+  "id": "menu-wide",
+  "name": "Wider right-click menus",
+  "desc": "Right-click menus are wider.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ctx-menu{min-width:200px!important}"
+}

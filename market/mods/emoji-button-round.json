@@ -1,0 +1,9 @@
+{
+  "id": "emoji-button-round",
+  "name": "Round emoji button",
+  "desc": "The emoji button is a circle.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".eb-button{border-radius:50%!important}"
+}

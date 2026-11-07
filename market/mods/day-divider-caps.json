@@ -1,0 +1,9 @@
+{
+  "id": "day-divider-caps",
+  "name": "Day dividers in capitals",
+  "desc": "Day dividers are in small capitals.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".day-divider{text-transform:uppercase;letter-spacing:.12em!important}"
+}

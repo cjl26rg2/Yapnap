@@ -1,0 +1,9 @@
+{
+  "id": "input-round",
+  "name": "Rounder text inputs",
+  "desc": "Text inputs have rounder corners.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".input{border-radius:12px!important}"
+}

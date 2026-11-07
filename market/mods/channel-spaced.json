@@ -1,0 +1,9 @@
+{
+  "id": "channel-spaced",
+  "name": "Spaced channel rows",
+  "desc": "More space between the channel rows.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row{margin:2px 6px!important}"
+}

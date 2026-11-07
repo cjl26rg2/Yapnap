@@ -1,0 +1,9 @@
+{
+  "id": "spoiler-solid-bar",
+  "name": "Solid spoiler bars",
+  "desc": "Spoilers show as solid bars.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".md-spoiler{background:var(--bg-hover)!important}"
+}

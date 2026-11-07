@@ -1,0 +1,9 @@
+{
+  "id": "attach-button-round",
+  "name": "Round attach button",
+  "desc": "The attach button is a circle.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".upload-btn{border-radius:50%!important}"
+}

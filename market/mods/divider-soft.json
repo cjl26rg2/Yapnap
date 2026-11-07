@@ -1,0 +1,9 @@
+{
+  "id": "divider-soft",
+  "name": "Softer dividers",
+  "desc": "Dividing lines are softer.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "hr{border-color:var(--border)!important}"
+}

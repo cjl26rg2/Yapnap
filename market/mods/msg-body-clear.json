@@ -1,0 +1,9 @@
+{
+  "id": "msg-body-clear",
+  "name": "Clear message background",
+  "desc": "Messages have no background of their own.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-body{background:transparent!important}"
+}

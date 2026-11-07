@@ -1,0 +1,9 @@
+{
+  "id": "embed-author-bold",
+  "name": "Bold embed authors",
+  "desc": "The author line on an embed is bold.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".embed-author{font-weight:700!important}"
+}

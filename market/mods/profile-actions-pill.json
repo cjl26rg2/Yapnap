@@ -1,0 +1,9 @@
+{
+  "id": "profile-actions-pill",
+  "name": "Pill profile buttons",
+  "desc": "Buttons on profile cards are pills.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card-actions button{border-radius:999px!important}"
+}

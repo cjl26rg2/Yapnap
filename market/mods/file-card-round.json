@@ -1,0 +1,9 @@
+{
+  "id": "file-card-round",
+  "name": "Rounder file cards",
+  "desc": "File cards have large round corners.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".file-card{border-radius:14px!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "emoji-picker-lift",
+  "name": "Deep emoji picker shadow",
+  "desc": "The emoji picker casts a deep shadow.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".emoji-picker{box-shadow:0 16px 40px rgba(0,0,0,.4)!important}"
+}

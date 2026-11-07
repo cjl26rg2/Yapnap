@@ -1,0 +1,9 @@
+{
+  "id": "button-primary-accent",
+  "name": "Accent primary buttons",
+  "desc": "Primary buttons use the accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".btn.primary{background:var(--accent)!important}"
+}

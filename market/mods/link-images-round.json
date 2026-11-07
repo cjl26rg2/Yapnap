@@ -1,0 +1,9 @@
+{
+  "id": "link-images-round",
+  "name": "Rounder linked pictures",
+  "desc": "Pictures from links have rounded corners.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-linkimgs{border-radius:10px!important}"
+}

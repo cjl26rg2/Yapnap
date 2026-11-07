@@ -1,0 +1,9 @@
+{
+  "id": "in-call-caps",
+  "name": "In-call label in capitals",
+  "desc": "The in-call label is in capitals.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".in-call{text-transform:uppercase;letter-spacing:.06em!important}"
+}

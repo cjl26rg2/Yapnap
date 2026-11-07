@@ -1,0 +1,9 @@
+{
+  "id": "call-button-hover",
+  "name": "Accent call button hover",
+  "desc": "Call buttons turn the accent colour under the pointer.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".call-btn:hover{background:var(--accent)!important}"
+}

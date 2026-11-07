@@ -1,0 +1,9 @@
+{
+  "id": "settings-menu-tight",
+  "name": "Tight settings menu",
+  "desc": "The settings menu items sit closer together.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".settings-nav{gap:4px!important}"
+}

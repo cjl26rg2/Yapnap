@@ -1,0 +1,9 @@
+{
+  "id": "accent-warm-brown",
+  "name": "Warm brown accent",
+  "desc": "A warm brown accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#c98a4b!important;--accent-hover:#d99b5c!important;--accent-soft:rgba(201,138,75,.16)!important}"
+}

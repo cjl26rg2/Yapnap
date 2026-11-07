@@ -1,0 +1,9 @@
+{
+  "id": "input-focus-accent",
+  "name": "Accent input focus",
+  "desc": "Text inputs get an accent border when you use them.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".input:focus{border-color:var(--accent)!important}"
+}

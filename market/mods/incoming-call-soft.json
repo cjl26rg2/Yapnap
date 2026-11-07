@@ -1,0 +1,9 @@
+{
+  "id": "incoming-call-soft",
+  "name": "Soft incoming call card",
+  "desc": "The incoming call card has softer corners.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".incoming-call{border-radius:16px!important}"
+}

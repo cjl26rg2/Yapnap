@@ -1,0 +1,9 @@
+{
+  "id": "msg-body-tight",
+  "name": "Tight message padding",
+  "desc": "Messages sit closer to their edges.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-body{padding:4px 8px!important}"
+}

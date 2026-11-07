@@ -1,0 +1,9 @@
+{
+  "id": "scroll-track-outline",
+  "name": "Outlined scrollbar track",
+  "desc": "The scrollbar track has a thin outline.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "::-webkit-scrollbar-track{box-shadow:inset 0 0 0 1px var(--border)}"
+}

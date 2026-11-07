@@ -1,0 +1,9 @@
+{
+  "id": "rail-separator-faint",
+  "name": "Faint server separators",
+  "desc": "Lines between servers are faint.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-sep{opacity:.3!important}"
+}

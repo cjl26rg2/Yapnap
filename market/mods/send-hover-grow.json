@@ -1,0 +1,9 @@
+{
+  "id": "send-hover-grow",
+  "name": "Send button grows",
+  "desc": "The send button grows a little on hover.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".send-btn:hover{transform:scale(1.06)}"
+}

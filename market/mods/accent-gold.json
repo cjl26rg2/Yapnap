@@ -1,0 +1,9 @@
+{
+  "id": "accent-gold",
+  "name": "Gold accent",
+  "desc": "A gold accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#e5b93a!important;--accent-hover:#ecc75a!important;--accent-soft:rgba(229,185,58,.16)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "images-muted",
+  "name": "Muted pictures",
+  "desc": "Pictures are a little less saturated.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "img{filter:saturate(.8)}"
+}

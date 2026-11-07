@@ -1,0 +1,9 @@
+{
+  "id": "settings-menu-tint",
+  "name": "Tinted settings menu",
+  "desc": "The settings menu has a faint background.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".settings-nav{background:var(--bg-elev)!important}"
+}

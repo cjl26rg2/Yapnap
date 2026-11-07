@@ -1,0 +1,9 @@
+{
+  "id": "embed-lift",
+  "name": "Lifted link embeds",
+  "desc": "Link embeds cast a soft shadow.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".embed{box-shadow:0 4px 14px rgba(0,0,0,.25)!important}"
+}

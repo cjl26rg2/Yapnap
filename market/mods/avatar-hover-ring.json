@@ -1,0 +1,9 @@
+{
+  "id": "avatar-hover-ring",
+  "name": "Avatar ring on hover",
+  "desc": "Avatars get an accent ring under the pointer.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".avatar:hover{box-shadow:0 0 0 2px var(--accent)!important}"
+}

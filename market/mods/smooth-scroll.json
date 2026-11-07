@@ -1,0 +1,9 @@
+{
+  "id": "smooth-scroll",
+  "name": "Smooth scrolling",
+  "desc": "Scrolling eases instead of jumping.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "html{scroll-behavior:smooth}"
+}

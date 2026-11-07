@@ -1,0 +1,9 @@
+{
+  "id": "emoji-cell-round",
+  "name": "Rounder emoji cells",
+  "desc": "Emoji cells have rounded corners.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".emoji-cell{border-radius:10px!important}"
+}

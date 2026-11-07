@@ -1,0 +1,9 @@
+{
+  "id": "channel-hover-edge",
+  "name": "Channel hover edge",
+  "desc": "A thin accent edge appears on the channel under the pointer.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row:hover{box-shadow:inset 3px 0 0 var(--accent)!important}"
+}

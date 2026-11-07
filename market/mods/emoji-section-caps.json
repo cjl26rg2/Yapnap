@@ -1,0 +1,9 @@
+{
+  "id": "emoji-section-caps",
+  "name": "Emoji titles in capitals",
+  "desc": "Section titles in the emoji picker are in capitals.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".emoji-section{text-transform:uppercase;letter-spacing:.08em!important}"
+}

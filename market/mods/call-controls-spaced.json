@@ -1,0 +1,9 @@
+{
+  "id": "call-controls-spaced",
+  "name": "Spaced call controls",
+  "desc": "The call controls have more space between them.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".call-controls{gap:10px!important}"
+}

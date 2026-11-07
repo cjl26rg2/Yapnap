@@ -1,0 +1,9 @@
+{
+  "id": "pinned-accent-edge",
+  "name": "Accent pinned message",
+  "desc": "The pinned bar has an accent line on the left.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".pinned{border-left:3px solid var(--accent)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "messages-row-gap",
+  "name": "Gap between messages",
+  "desc": "Messages have a little space between them.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".messages-inner{row-gap:6px!important}"
+}

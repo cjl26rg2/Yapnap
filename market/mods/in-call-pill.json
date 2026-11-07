@@ -1,0 +1,9 @@
+{
+  "id": "in-call-pill",
+  "name": "Pill in-call label",
+  "desc": "The in-call label is a pill.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".in-call{border-radius:999px;padding:2px 10px!important}"
+}

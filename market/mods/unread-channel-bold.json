@@ -1,0 +1,9 @@
+{
+  "id": "unread-channel-bold",
+  "name": "Bold unread channels",
+  "desc": "Channels with new messages are extra bold.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row.unread{font-weight:800!important}"
+}

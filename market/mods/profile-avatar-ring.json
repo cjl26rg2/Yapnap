@@ -1,0 +1,9 @@
+{
+  "id": "profile-avatar-ring",
+  "name": "Ring on profile picture",
+  "desc": "The picture on a profile card has a ring.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card-avatar{box-shadow:0 0 0 3px var(--bg-elev)!important}"
+}

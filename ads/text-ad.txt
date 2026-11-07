@@ -11,7 +11,7 @@ Yapnap.
 Free, unofficial app for Yapin'.
 
 60 built-in plugins.
-241 marketplace mods.
+402 marketplace mods.
 Themes, profiles, undo.
 
 Join: https://yapin.gg/invite/yapnap
@@ -21,7 +21,7 @@ Yapnap.
 
 A free, open-source desktop app for Yapin' (unofficial).
 
-60 built-in plugins and 241 marketplace mods.
+60 built-in plugins and 402 marketplace mods.
 Themes, saved profiles, and one-click setup.
 Every mod is checked. Mods can't run code.
 

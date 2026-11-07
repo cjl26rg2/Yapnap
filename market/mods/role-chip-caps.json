@@ -1,0 +1,9 @@
+{
+  "id": "role-chip-caps",
+  "name": "Small capital role chips",
+  "desc": "Role chips are small capitals.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".role-chip{text-transform:uppercase;font-size:10px!important}"
+}

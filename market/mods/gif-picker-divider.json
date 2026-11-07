@@ -1,0 +1,9 @@
+{
+  "id": "gif-picker-divider",
+  "name": "Line under GIF search",
+  "desc": "A thin line sits under the GIF search.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".gif-picker-top{border-bottom:1px solid var(--border)!important}"
+}

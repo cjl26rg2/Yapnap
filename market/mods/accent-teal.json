@@ -1,0 +1,9 @@
+{
+  "id": "accent-teal",
+  "name": "Teal accent",
+  "desc": "A teal accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#2fb8a6!important;--accent-hover:#4cc8b7!important;--accent-soft:rgba(47,184,166,.16)!important}"
+}

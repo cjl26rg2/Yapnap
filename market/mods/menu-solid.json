@@ -1,0 +1,9 @@
+{
+  "id": "menu-solid",
+  "name": "Solid right-click menus",
+  "desc": "Right-click menus have a solid background.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ctx-menu{background:var(--bg-float)!important}"
+}

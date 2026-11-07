@@ -1,0 +1,9 @@
+{
+  "id": "link-dotted",
+  "name": "Dotted links",
+  "desc": "Links are underlined with a dotted line.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "a{text-decoration-style:dotted!important}"
+}

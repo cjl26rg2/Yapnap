@@ -1,0 +1,9 @@
+{
+  "id": "topbar-lift",
+  "name": "Lifted top bar",
+  "desc": "The top bar casts a soft shadow.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".topbar{box-shadow:0 2px 12px rgba(0,0,0,.25)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "call-controls-lift",
+  "name": "Lifted call controls",
+  "desc": "The call controls cast a shadow.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".call-controls{box-shadow:0 10px 24px rgba(0,0,0,.35)!important}"
+}

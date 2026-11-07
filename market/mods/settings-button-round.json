@@ -1,0 +1,9 @@
+{
+  "id": "settings-button-round",
+  "name": "Rounder settings buttons",
+  "desc": "Buttons in the settings menu have rounder corners.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".settings-nav button{border-radius:10px!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "voice-tile-round",
+  "name": "Rounder voice tiles",
+  "desc": "Voice tiles have softer corners.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-tile{border-radius:16px!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "attach-card-hover",
+  "name": "Accent attachment hover",
+  "desc": "Attachment cards light up when you point at them.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".attach-card:hover{border-color:var(--accent)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "link-chip-pill",
+  "name": "Pill link chips",
+  "desc": "Link chips are pills.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".link-chip{border-radius:999px!important}"
+}

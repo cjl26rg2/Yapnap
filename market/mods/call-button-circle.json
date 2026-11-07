@@ -1,0 +1,9 @@
+{
+  "id": "call-button-circle",
+  "name": "Round call buttons",
+  "desc": "Call buttons are circles.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".call-btn{border-radius:50%!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "modal-very-round",
+  "name": "Very round dialogs",
+  "desc": "Dialogs have very round corners.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".modal{border-radius:24px!important}"
+}

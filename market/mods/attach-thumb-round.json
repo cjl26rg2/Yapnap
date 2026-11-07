@@ -1,0 +1,9 @@
+{
+  "id": "attach-thumb-round",
+  "name": "Rounder attachment thumbnails",
+  "desc": "Attachment thumbnails have rounded corners.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".attach-thumb{border-radius:10px!important}"
+}

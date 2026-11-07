@@ -1,0 +1,9 @@
+{
+  "id": "accent-violet",
+  "name": "Violet accent",
+  "desc": "A soft violet accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#9b6bff!important;--accent-hover:#ad83ff!important;--accent-soft:rgba(155,107,255,.16)!important}"
+}

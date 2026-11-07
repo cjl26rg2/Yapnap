@@ -1,0 +1,9 @@
+{
+  "id": "rail-active-ring",
+  "name": "Ring on active server",
+  "desc": "The open server has an accent ring.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-item.active{box-shadow:0 0 0 2px var(--accent)!important}"
+}

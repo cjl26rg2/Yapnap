@@ -1,0 +1,9 @@
+{
+  "id": "member-hover-tint",
+  "name": "Member hover tint",
+  "desc": "Member rows get a tint when you point at them.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".member-row:hover{background:var(--bg-hover)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "dm-call-people-spaced",
+  "name": "Spaced call people",
+  "desc": "People in a direct call have more space between them.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".dm-call-people{gap:6px!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "profile-name-large",
+  "name": "Larger profile names",
+  "desc": "Names on profile cards are bigger.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card-name{font-size:18px!important}"
+}

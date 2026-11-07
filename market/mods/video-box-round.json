@@ -1,0 +1,9 @@
+{
+  "id": "video-box-round",
+  "name": "Rounder videos",
+  "desc": "Videos in messages have rounded corners.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-video-box{border-radius:14px!important;overflow:hidden}"
+}

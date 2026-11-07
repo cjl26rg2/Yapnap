@@ -1,0 +1,9 @@
+{
+  "id": "mention-all-caps",
+  "name": "Capital everyone mention",
+  "desc": "The everyone mention is in capitals.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".mention-all{text-transform:uppercase;letter-spacing:.04em!important}"
+}

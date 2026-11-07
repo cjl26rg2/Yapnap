@@ -2,6 +2,16 @@
 
 What changed in each Yapnap release, newest first.
 
+## 2.0.0 (2026-11-07)
+
+- Marketplace: 402 mods, up from 241. Includes a Christmas theme and falling snow, both optional.
+- Snowfall: light snow drifts over the app while you chat. It never blocks a click.
+- Seven new accent colours (warm brown, ocean, lime, violet, rose, gold and teal), plus a plain mono one.
+- Plugins and mods show where they came from, and big changes can be undone.
+- Everything from 1.1.x is in 2.0.0: profiles, mod updates, sharing mods, one-click setup, search for users when giving roles, support info, daily settings backups, update checks every 30 minutes, and the Security page.
+- Mods can be submitted by pull request, and the same checks run on every mod before it can be merged.
+- Fixed the Windows release check, so the Windows installer and portable exe build on every release.
+
 ## 1.1.2 (2026-10-29)
 
 - Undo for mass changes. Turning a whole category on or off has an Undo button in its message, and removing a marketplace mod can be undone by putting it back.
