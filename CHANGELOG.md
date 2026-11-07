@@ -2,6 +2,12 @@
 
 What changed in each Yapnap release, newest first.
 
+## 2.0.1 (2026-11-07)
+
+- Marketplace: 481 mods, up from 402. The 79 new ones cover messages, the composer, the sidebar, members, voice and the look of the app.
+- Eight new accent colours (amber, coral, crimson, forest, indigo, mint, sky and slate). Each one picks a text colour that is easy to read on it.
+- Marketplace category tabs show a small icon for each category, in the app and on the website.
+
 ## 2.0.0 (2026-11-07)
 
 - Marketplace: 402 mods, up from 241. Includes a Christmas theme and falling snow, both optional.
