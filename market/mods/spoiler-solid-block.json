@@ -1,0 +1,9 @@
+{
+  "id": "spoiler-solid-block",
+  "name": "Solid spoiler blocks",
+  "desc": "Spoiler blocks have a solid background.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".md-spoiler-block{background:var(--bg-elev)!important}"
+}

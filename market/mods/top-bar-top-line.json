@@ -1,0 +1,9 @@
+{
+  "id": "top-bar-top-line",
+  "name": "Line above the top bar",
+  "desc": "A thin line sits above the top bar.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".topbar{border-top:1px solid var(--border)!important}"
+}

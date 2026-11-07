@@ -1,0 +1,9 @@
+{
+  "id": "headings-tight",
+  "name": "Tighter headings",
+  "desc": "Headings sit closer together.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "h1,h2,h3{letter-spacing:-.02em!important}"
+}

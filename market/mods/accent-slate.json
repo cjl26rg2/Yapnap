@@ -1,0 +1,9 @@
+{
+  "id": "accent-slate",
+  "name": "Slate accent",
+  "desc": "A cool grey-blue accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#7d8da1!important;--accent-hover:#93a2b5!important;--accent-soft:rgba(125,141,161,.16)!important;--on-accent:#101114!important}"
+}

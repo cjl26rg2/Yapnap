@@ -1,0 +1,9 @@
+{
+  "id": "dm-call-tile-edge",
+  "name": "Accent direct call tiles",
+  "desc": "Direct call tiles get an accent outline under the pointer.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".dm-call-tile:hover{outline:1px solid var(--accent)}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "role-text-accent",
+  "name": "Accent role names",
+  "desc": "Role chips use the accent colour for their text.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".role-chip{color:var(--accent)!important}"
+}

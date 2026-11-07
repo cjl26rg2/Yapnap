@@ -1,0 +1,9 @@
+{
+  "id": "name-letter-space",
+  "name": "Spaced names",
+  "desc": "Author names have a little space between letters.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-author{letter-spacing:.02em!important}"
+}

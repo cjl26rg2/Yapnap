@@ -1,0 +1,9 @@
+{
+  "id": "send-press",
+  "name": "Send button presses in",
+  "desc": "The send button shrinks a little when pressed.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".send-btn:active{transform:scale(.94)}"
+}

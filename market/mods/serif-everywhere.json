@@ -1,0 +1,9 @@
+{
+  "id": "serif-everywhere",
+  "name": "Serif text",
+  "desc": "Text is set in a serif font.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "body{font-family:Georgia,serif!important}"
+}

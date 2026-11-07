@@ -1,0 +1,9 @@
+{
+  "id": "brand-heavy",
+  "name": "Heavy name at the top",
+  "desc": "The name at the top is very bold.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".topbar-brand{font-weight:900!important}"
+}

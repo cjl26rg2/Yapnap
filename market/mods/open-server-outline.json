@@ -1,0 +1,9 @@
+{
+  "id": "open-server-outline",
+  "name": "Outlined open server",
+  "desc": "The open server has an accent outline.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-item.active{outline:2px solid var(--accent);outline-offset:2px}"
+}

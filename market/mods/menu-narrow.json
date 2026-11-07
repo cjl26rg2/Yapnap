@@ -1,0 +1,9 @@
+{
+  "id": "menu-narrow",
+  "name": "Narrower right-click menus",
+  "desc": "Right-click menus are narrower.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ctx-menu{max-width:260px!important}"
+}

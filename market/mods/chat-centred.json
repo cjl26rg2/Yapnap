@@ -1,0 +1,9 @@
+{
+  "id": "chat-centred",
+  "name": "Centred chat column",
+  "desc": "The messages sit in a centred column.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".messages-inner{max-width:1100px!important;margin:0 auto}"
+}

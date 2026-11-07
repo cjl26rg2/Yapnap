@@ -1,0 +1,9 @@
+{
+  "id": "accent-amber",
+  "name": "Amber accent",
+  "desc": "A bright amber accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#ffb000!important;--accent-hover:#ffc133!important;--accent-soft:rgba(255,176,0,.16)!important;--on-accent:#101114!important}"
+}

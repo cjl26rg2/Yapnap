@@ -1,0 +1,9 @@
+{
+  "id": "button-press",
+  "name": "Buttons press in",
+  "desc": "Buttons shrink a little when pressed.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".btn:active{transform:scale(.97)}"
+}

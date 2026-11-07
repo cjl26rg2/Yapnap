@@ -1,0 +1,9 @@
+{
+  "id": "folder-open-tint",
+  "name": "Tinted open folder",
+  "desc": "An open server folder has a faint background.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-folder-open{background:var(--bg-hover)!important}"
+}

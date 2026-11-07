@@ -1,0 +1,9 @@
+{
+  "id": "member-roomy",
+  "name": "Roomy member rows",
+  "desc": "Member rows have more padding.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".member-row{padding:4px 8px!important}"
+}

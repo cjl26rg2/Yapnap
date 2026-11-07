@@ -1,0 +1,9 @@
+{
+  "id": "code-hover-edge",
+  "name": "Accent code edge on hover",
+  "desc": "A code block gets an accent outline under the pointer.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".md-code:hover{border-color:var(--accent)}"
+}

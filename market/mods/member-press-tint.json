@@ -1,0 +1,9 @@
+{
+  "id": "member-press-tint",
+  "name": "Members darken when pressed",
+  "desc": "A member row darkens when pressed.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".member-row:active{background:var(--bg-active)!important}"
+}

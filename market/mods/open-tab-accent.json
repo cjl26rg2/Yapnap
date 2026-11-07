@@ -1,0 +1,9 @@
+{
+  "id": "open-tab-accent",
+  "name": "Accent open tab",
+  "desc": "The open tab uses the accent colour.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".nl-tab.active{color:var(--accent)!important}"
+}

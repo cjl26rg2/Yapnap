@@ -1,0 +1,9 @@
+{
+  "id": "accent-sky",
+  "name": "Sky accent",
+  "desc": "A light sky blue accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#7ec8ff!important;--accent-hover:#97d5ff!important;--accent-soft:rgba(126,200,255,.16)!important;--on-accent:#101114!important}"
+}

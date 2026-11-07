@@ -1,0 +1,9 @@
+{
+  "id": "reaction-yours-tint",
+  "name": "Tinted reactions you added",
+  "desc": "Reactions you added have an accent tint.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reaction.active{background:var(--accent-soft)!important}"
+}

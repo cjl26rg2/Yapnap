@@ -1,0 +1,9 @@
+{
+  "id": "accent-mint",
+  "name": "Mint accent",
+  "desc": "A fresh mint accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#7fe0c4!important;--accent-hover:#97e8d0!important;--accent-soft:rgba(127,224,196,.16)!important;--on-accent:#101114!important}"
+}

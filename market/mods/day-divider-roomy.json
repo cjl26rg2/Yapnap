@@ -1,0 +1,9 @@
+{
+  "id": "day-divider-roomy",
+  "name": "Roomier day dividers",
+  "desc": "Day dividers have more space around them.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".day-divider{margin:12px 0!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "avatar-border-dark",
+  "name": "Dark avatar border",
+  "desc": "Avatars have a dark border.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".avatar{border:2px solid var(--bg-side)!important}"
+}

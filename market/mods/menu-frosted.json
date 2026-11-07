@@ -1,0 +1,9 @@
+{
+  "id": "menu-frosted",
+  "name": "Frosted right-click menus",
+  "desc": "Right-click menus look frosted behind the chat.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".ctx-menu{backdrop-filter:blur(10px)}"
+}

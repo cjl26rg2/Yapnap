@@ -1,0 +1,9 @@
+{
+  "id": "server-name-spaced",
+  "name": "Spaced server names",
+  "desc": "Server names have wider letter spacing.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-label-text{letter-spacing:.04em}"
+}

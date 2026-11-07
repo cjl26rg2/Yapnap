@@ -1,0 +1,9 @@
+{
+  "id": "reaction-lift-hover",
+  "name": "Reactions lift on hover",
+  "desc": "Reactions rise a little under the pointer.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".reaction:hover{transform:translateY(-1px)}"
+}

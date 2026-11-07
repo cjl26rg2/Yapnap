@@ -1,0 +1,9 @@
+{
+  "id": "messages-narrow",
+  "name": "Narrower messages",
+  "desc": "Messages take up less of the width.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-body{max-width:80%}"
+}

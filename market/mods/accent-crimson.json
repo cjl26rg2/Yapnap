@@ -1,0 +1,9 @@
+{
+  "id": "accent-crimson",
+  "name": "Crimson accent",
+  "desc": "A deep crimson accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#c8102e!important;--accent-hover:#de2a46!important;--accent-soft:rgba(200,16,46,.16)!important;--on-accent:#ffffff!important}"
+}

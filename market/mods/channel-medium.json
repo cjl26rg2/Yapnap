@@ -1,0 +1,9 @@
+{
+  "id": "channel-medium",
+  "name": "Medium channel names",
+  "desc": "Channel names are a little heavier.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row{font-weight:500!important}"
+}

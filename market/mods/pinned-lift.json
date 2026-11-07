@@ -1,0 +1,9 @@
+{
+  "id": "pinned-lift",
+  "name": "Lifted pinned bar",
+  "desc": "The pinned bar casts a soft shadow.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".pinned{box-shadow:0 4px 12px rgba(0,0,0,.25)!important}"
+}

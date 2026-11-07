@@ -1,0 +1,9 @@
+{
+  "id": "open-channel-tint",
+  "name": "Tinted open channel",
+  "desc": "The open channel has an accent tint.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row.active{background:var(--accent-soft)!important}"
+}

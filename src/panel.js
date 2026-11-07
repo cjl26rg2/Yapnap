@@ -133,6 +133,9 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
 .ym-seg button:hover{background:var(--bg-hover,#2f3038);color:var(--text,#ececf1)}
 .ym-seg button[aria-pressed="true"]{background:var(--bg-active,#383944);color:var(--text,#ececf1);border-color:transparent}
 .ym-seg button:focus-visible{outline:2px solid var(--ym-accent);outline-offset:2px}
+.ym-seg button{display:inline-flex;align-items:center;gap:6px}
+.ym-seg button img{width:14px;height:14px;flex:none;opacity:.8}
+.ym-seg button[aria-pressed="true"] img{opacity:1}
 .ym-btn.small{height:28px;padding:0 10px;font-size:12.5px}
 .ym-plugin-ctl [hidden]{display:none!important}
 .ym-plugin{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 24px;align-items:center;padding:14px 0;border-bottom:1px solid var(--border,#ffffff12)}
@@ -1588,7 +1591,9 @@ textarea.ym-input{height:auto;padding:10px 12px;font-family:ui-monospace,Consola
       cats.setAttribute('role', 'group');
       cats.setAttribute('aria-label', 'Category');
       ['All'].concat(Y.categories).forEach(function (c) {
-        var b = el('button', null, c);
+        var b = el('button', null);
+        if (c !== 'All') b.appendChild(art('cat-' + c.toLowerCase(), 14));
+        b.appendChild(document.createTextNode(c));
         b.type = 'button';
         b.setAttribute('data-cat', c);
         b.addEventListener('click', function () {

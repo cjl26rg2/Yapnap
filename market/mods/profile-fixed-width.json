@@ -1,0 +1,9 @@
+{
+  "id": "profile-fixed-width",
+  "name": "Fixed profile width",
+  "desc": "Profile cards have a fixed width.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card{width:320px!important}"
+}

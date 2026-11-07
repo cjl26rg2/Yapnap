@@ -1,0 +1,9 @@
+{
+  "id": "video-hover-fade",
+  "name": "Videos fade on hover",
+  "desc": "Videos in messages fade a little under the pointer.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-video-box:hover{opacity:.9}"
+}

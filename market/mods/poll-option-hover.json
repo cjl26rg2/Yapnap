@@ -1,0 +1,9 @@
+{
+  "id": "poll-option-hover",
+  "name": "Poll option hover",
+  "desc": "A poll option gets a tint under the pointer.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".poll-opt:hover{background:var(--bg-hover)!important}"
+}

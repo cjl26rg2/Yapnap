@@ -1,0 +1,9 @@
+{
+  "id": "name-bar-inner-line",
+  "name": "Line inside the name bar",
+  "desc": "A thin highlight runs along the top of the name bar.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".user-bar{box-shadow:inset 0 1px 0 var(--border)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "profile-name-heavy",
+  "name": "Heavy profile names",
+  "desc": "Names on profile cards are extra bold.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".profile-card-name{font-weight:800!important}"
+}

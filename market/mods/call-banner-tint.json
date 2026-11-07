@@ -1,0 +1,9 @@
+{
+  "id": "call-banner-tint",
+  "name": "Accent call banner",
+  "desc": "The call banner has an accent tint.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".call-banner{background:var(--accent-soft)!important}"
+}

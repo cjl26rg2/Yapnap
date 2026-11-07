@@ -1,0 +1,9 @@
+{
+  "id": "emoji-section-gap",
+  "name": "Space between emoji sections",
+  "desc": "More space between emoji sections.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".emoji-section{margin-top:12px}"
+}

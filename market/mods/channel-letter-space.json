@@ -1,0 +1,9 @@
+{
+  "id": "channel-letter-space",
+  "name": "Spaced channel names",
+  "desc": "Channel names have a little space between letters.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".channel-row{letter-spacing:.01em}"
+}

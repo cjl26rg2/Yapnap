@@ -1,0 +1,9 @@
+{
+  "id": "role-chips-left",
+  "name": "Roles aligned left",
+  "desc": "Role chips line up on the left.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".role-chips{justify-content:flex-start!important}"
+}

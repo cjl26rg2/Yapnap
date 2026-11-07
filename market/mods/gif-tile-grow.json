@@ -1,0 +1,9 @@
+{
+  "id": "gif-tile-grow",
+  "name": "GIFs grow on hover",
+  "desc": "GIF tiles grow a little under the pointer.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".gif-tile:hover{transform:scale(1.03)}"
+}

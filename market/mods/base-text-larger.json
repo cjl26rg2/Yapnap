@@ -1,0 +1,9 @@
+{
+  "id": "base-text-larger",
+  "name": "Larger base text",
+  "desc": "Text across the app is a little bigger.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": "body{font-size:15px!important}"
+}

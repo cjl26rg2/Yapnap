@@ -1,0 +1,9 @@
+{
+  "id": "accent-coral",
+  "name": "Coral accent",
+  "desc": "A soft coral accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#ff7f6e!important;--accent-hover:#ff9585!important;--accent-soft:rgba(255,127,110,.16)!important;--on-accent:#101114!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "emoji-picker-narrow",
+  "name": "Narrower emoji picker",
+  "desc": "The emoji picker is narrower.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".emoji-picker{width:360px}"
+}

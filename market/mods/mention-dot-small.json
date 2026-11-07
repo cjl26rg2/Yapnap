@@ -1,0 +1,9 @@
+{
+  "id": "mention-dot-small",
+  "name": "Small mention dots",
+  "desc": "The dots by roles in mentions are smaller.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".mention-role-dot{width:8px;height:8px}"
+}

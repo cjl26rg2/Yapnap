@@ -1,0 +1,9 @@
+{
+  "id": "composer-centred",
+  "name": "Centred text box",
+  "desc": "The text box sits in the middle of the chat.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".composer{max-width:900px!important;margin:0 auto}"
+}

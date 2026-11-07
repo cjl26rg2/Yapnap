@@ -1,0 +1,9 @@
+{
+  "id": "link-image-grow",
+  "name": "Linked pictures grow",
+  "desc": "Pictures from links grow a little under the pointer.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-linkimgs img:hover{transform:scale(1.02)}"
+}

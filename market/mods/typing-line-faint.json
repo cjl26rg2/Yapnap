@@ -1,0 +1,9 @@
+{
+  "id": "typing-line-faint",
+  "name": "Faint typing line",
+  "desc": "The typing line is faint.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".typing-line{opacity:.6}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "emoji-button-hover",
+  "name": "Emoji button hover",
+  "desc": "The emoji button gets a tint under the pointer.",
+  "category": "Composer",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".eb-button:hover{background:var(--bg-hover)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "voice-tile-grow",
+  "name": "Voice tiles grow on hover",
+  "desc": "Voice tiles grow a little under the pointer.",
+  "category": "Voice",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".voice-tile:hover{transform:scale(1.02)}"
+}

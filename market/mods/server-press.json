@@ -1,0 +1,9 @@
+{
+  "id": "server-press",
+  "name": "Servers press in",
+  "desc": "Server icons shrink a little when pressed.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".rail-item:active{transform:scale(.94)}"
+}

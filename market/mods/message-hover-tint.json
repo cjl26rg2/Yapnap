@@ -1,0 +1,9 @@
+{
+  "id": "message-hover-tint",
+  "name": "Message hover tint",
+  "desc": "A message gets a tint when you point at it.",
+  "category": "Messages",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".msg-body:hover{background:var(--bg-hover)!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "tab-bar-padded",
+  "name": "Padded tabs",
+  "desc": "The tab bar has more space around the tabs.",
+  "category": "Sidebar",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".nl-tabbar{padding:0 8px!important}"
+}

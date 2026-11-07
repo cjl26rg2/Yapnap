@@ -1,0 +1,9 @@
+{
+  "id": "accent-indigo",
+  "name": "Indigo accent",
+  "desc": "A rich indigo accent colour.",
+  "category": "Look",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ":root:root:root:root,.app.app.app.app{--accent:#5b6cff!important;--accent-hover:#7384ff!important;--accent-soft:rgba(91,108,255,.16)!important;--on-accent:#101114!important}"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "online-glow",
+  "name": "Glowing online dots",
+  "desc": "Online dots have a faint green glow.",
+  "category": "Members",
+  "version": 1,
+  "author": "Yapnap",
+  "css": ".online{box-shadow:0 0 6px #3fcf82}"
+}
